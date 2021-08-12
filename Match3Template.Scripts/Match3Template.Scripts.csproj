@@ -1,0 +1,31 @@
+<Project>
+
+  <PropertyGroup>
+    <MSBuildProjectExtensionsPath>obj/msbuild_project_extensions</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Match3Template.Scripts</RootNamespace>
+    <AssemblyName>Match3Template.Scripts</AssemblyName>
+    <LangVersion>8.0</LangVersion>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="RemoteScripting">
+      <HintPath>..\Citrus\\Lime\Extensions\RemoteScripting\RemoteScripting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Citrus\\Lime\Lime.Win.csproj" />
+    <ProjectReference Include="..\Citrus\\Yuzu\Yuzu.csproj" />
+    <ProjectReference Include="..\Match3Template.Win\Match3Template.Win.csproj" />
+  </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+</Project>
