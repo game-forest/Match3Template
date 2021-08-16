@@ -31,10 +31,10 @@ namespace Match3Template.Application
 			SetWindowSize();
 
 			if (AppData.Instance.EnableSplashScreen) {
-				The.DialogManager.Open<SplashScreen>();
+				The.DialogManager.Open("Shell/Splash");
 			}
 			else {
-				The.DialogManager.Open<MainMenu>();
+				The.DialogManager.Open("Shell/MainMenu");
 			}
 		}
 

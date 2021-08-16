@@ -7,25 +7,25 @@
 			"Markers":[
 				{
 					"Action":1,
-					"Id":"@Landscape",
+					"Id":"Landscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":10,
-					"Id":"@Portrait",
+					"Id":"Portrait",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":20,
-					"Id":"@TabletLandscape",
+					"Id":"TabletLandscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":30,
-					"Id":"@TabletPortrait",
+					"Id":"TabletPortrait",
 					"JumpTo":""
 				}
 			]
@@ -85,7 +85,7 @@
 					"Anchors":48,
 					"Color":[4294967295],
 					"ContentsPath":"Externals/BtnOk",
-					"Id":"@BtnOk",
+					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[557,566.1643],
 					"Size":[128,128]
@@ -94,7 +94,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"Id":">[CheckGroup]MusicGroup",
+					"Id":"MusicGroup",
 					"Nodes":[
 						{
 							"class":"Lime.Frame, Lime",
@@ -123,7 +123,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@Check",
+							"Id":"Check",
 							"Nodes":[
 								{
 									"class":"Lime.Image, Lime",
@@ -277,7 +277,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@BtnCheck",
+							"Id":"BtnCheck",
 							"Nodes":[
 								{
 									"class":"Lime.NineGrid, Lime",
@@ -324,7 +324,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"Id":">[CheckGroup]SoundGroup",
+					"Id":"SoundGroup",
 					"Nodes":[
 						{
 							"class":"Lime.Frame, Lime",
@@ -353,7 +353,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@Check",
+							"Id":"Check",
 							"Nodes":[
 								{
 									"class":"Lime.Image, Lime",
@@ -507,7 +507,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@BtnCheck",
+							"Id":"BtnCheck",
 							"Nodes":[
 								{
 									"class":"Lime.NineGrid, Lime",
@@ -554,7 +554,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"Id":">[CheckGroup]VoiceGroup",
+					"Id":"VoiceGroup",
 					"Nodes":[
 						{
 							"class":"Lime.Frame, Lime",
@@ -583,7 +583,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@Check",
+							"Id":"Check",
 							"Nodes":[
 								{
 									"class":"Lime.Image, Lime",
@@ -737,7 +737,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@BtnCheck",
+							"Id":"BtnCheck",
 							"Nodes":[
 								{
 									"class":"Lime.NineGrid, Lime",
@@ -784,7 +784,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"Id":">[CheckGroup]FullScreenGroup",
+					"Id":"FullScreenGroup",
 					"Nodes":[
 						{
 							"class":"Lime.Frame, Lime",
@@ -813,7 +813,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@Check",
+							"Id":"Check",
 							"Nodes":[
 								{
 									"class":"Lime.Image, Lime",
@@ -967,7 +967,7 @@
 								}
 							],
 							"Color":[4294967295],
-							"Id":"@BtnCheck",
+							"Id":"BtnCheck",
 							"Nodes":[
 								{
 									"class":"Lime.NineGrid, Lime",

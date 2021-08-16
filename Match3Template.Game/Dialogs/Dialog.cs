@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using Match3Template.Application;
 using Lime;
 using Match3Template.Scenes;
+using System.IO;
 
 namespace Match3Template.Dialogs
 {
 	public class Dialog : IDisposable
 	{
-		private const string DialogTag = "Dialog";
-
-		protected ParsedNode Scene { get; }
-		protected TaskList Tasks { get; } = new TaskList();
-		public Widget Root => (Widget)Scene.Node;
+		public Widget Root { get; private set; }
 		public DialogState State { get; protected set; }
 
-		protected Dialog(ParsedNode scene)
+		public string Path { get; private set; }
+
+		public Dialog(string path)
 		{
-			Scene = scene;
-			Root.Tag = DialogTag;
-			Root.Updating += Tasks.Update;
+			Path = path;
+			Root = Node.Load<Widget>(Path);
+			Root.Updating += Update;
+			ApplyLocalization();
+		}
+
+		public Dialog()
+		{
+			var a = (ScenePathAttribute)this.GetType().GetCustomAttributes(typeof(ScenePathAttribute), false)[0];
+			Path = a.ScenePath;
+			Root = Node.Load<Widget>(Path);
 			Root.Updating += Update;
 			ApplyLocalization();
 		}
@@ -50,7 +57,7 @@ namespace Match3Template.Dialogs
 
 		private void Show(string animation)
 		{
-			Tasks.Add(ShowTask(animation));
+			Root.Tasks.Add(ShowTask(animation));
 		}
 
 		private IEnumerator<object> ShowTask(string animation)
@@ -82,27 +89,12 @@ namespace Match3Template.Dialogs
 			}
 		}
 
-		protected void Open<T>() where T : Dialog, new()
+		public void CrossFadeInto(string scenePath)
 		{
-			DialogManager.Open<T>();
+			The.World.Tasks.Add(CrossfadeIntoTask(scenePath, true, true));
 		}
 
-		protected void Open<T>(T dialog) where T : Dialog
-		{
-			DialogManager.Open(dialog);
-		}
-
-		protected void CrossfadeInto<T>() where T : Dialog, new()
-		{
-			CrossfadeInto<T>(true, true);
-		}
-
-		protected void CrossfadeInto<T>(bool fadeIn, bool fadeOut) where T : Dialog, new()
-		{
-			World.Tasks.Add(CrossfadeIntoTask<T>(fadeIn, fadeOut));
-		}
-
-		private IEnumerator<object> CrossfadeIntoTask<T>(bool fadeIn, bool fadeOut) where T : Dialog, new()
+		private IEnumerator<object> CrossfadeIntoTask(string scenePath, bool fadeIn, bool fadeOut)
 		{
 			var crossfade = new ScreenCrossfade();
 			crossfade.Attach();
@@ -110,20 +102,21 @@ namespace Match3Template.Dialogs
 			if (fadeIn)
 				yield return crossfade.FadeInTask();
 			CloseImmediately();
-			Open<T>();
+			DialogManager.Open(scenePath);
 			crossfade.ReleaseInput();
-			if (fadeOut)
+			if (fadeOut) {
 				yield return crossfade.FadeOutTask();
+			}
 			crossfade.Detach();
 			crossfade.Dispose();
 		}
 
 		private void ApplyLocalization()
 		{
-			var animationName = string.IsNullOrEmpty(Lime.Application.CurrentLanguage) ? "@EN" : ("@" + Lime.Application.CurrentLanguage);
+			var animationName = string.IsNullOrEmpty(Lime.Application.CurrentLanguage) ? "EN" : (Lime.Application.CurrentLanguage);
 			foreach (var node in Root.Descendants) {
 				if (!node.TryRunAnimation(animationName)) {
-					node.TryRunAnimation("@other");
+					node.TryRunAnimation("other");
 				}
 			}
 		}
@@ -138,7 +131,7 @@ namespace Match3Template.Dialogs
 		public void Close()
 		{
 			BeginClose();
-			Tasks.Add(CloseTask(HideAnimationName));
+			Root.Tasks.Add(CloseTask(HideAnimationName));
 		}
 
 		public void CloseImmediately()
@@ -183,8 +176,8 @@ namespace Match3Template.Dialogs
 			return true;
 		}
 
-		public void Dispose()
-		{
+        public void Dispose()
+        {
 			CloseImmediately();
 		}
 
@@ -203,13 +196,6 @@ namespace Match3Template.Dialogs
 		protected Profile Profile => The.Profile;
 		protected DialogManager DialogManager => The.DialogManager;
 		protected Logger Log => The.Log;
-	}
-
-	public class Dialog<T> : Dialog where T: ParsedNode, new()
-	{
-		protected Dialog(): base(new T()) { }
-
-		protected new T Scene => (T) base.Scene;
 	}
 
 	public enum DialogState

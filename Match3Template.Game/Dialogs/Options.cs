@@ -1,22 +1,23 @@
 using System;
 using System.Reflection;
-using Match3Template.Scenes.Common;
 using Lime;
 
 namespace Match3Template.Dialogs
 {
-	public class Options : Dialog<Scenes.Data.Options>
+
+	[ScenePath("Shell/Options")]
+	public class Options : Dialog
 	{
 		public Options()
 		{
-			CreateCheckBox(Scene._MusicGroup.CheckGroup, nameof(MusicEnabled));
-			CreateCheckBox(Scene._SoundGroup.CheckGroup, nameof(SoundEnabled));
-			CreateCheckBox(Scene._VoiceGroup.CheckGroup, nameof(VoiceEnabled));
-			CreateCheckBox(Scene._FullScreenGroup.CheckGroup, nameof(Fullscreen));
-			Scene._BtnOk.It.Clicked = Close;
+			CreateCheckBox(Root["MusicGroup"], nameof(MusicEnabled));
+			CreateCheckBox(Root["SoundGroup"], nameof(SoundEnabled));
+			CreateCheckBox(Root["VoiceGroup"], nameof(VoiceEnabled));
+			CreateCheckBox(Root["FullScreenGroup"], nameof(Fullscreen));
+			Root["BtnOk"].Clicked = Close;
 		}
 
-		private void CreateCheckBox(CheckGroup checkGroup, string propertyName, bool autoUpdate = false)
+		private void CreateCheckBox(Widget checkGroup, string propertyName, bool autoUpdate = false)
 		{
 			var property = GetType().GetProperty(propertyName, BindingFlags.NonPublic | BindingFlags.Instance);
 			var getValue = new Func<bool>(() => (bool) property.GetValue(this));
@@ -24,24 +25,23 @@ namespace Match3Template.Dialogs
 			CreateCheckBox(checkGroup, getValue, toggle, autoUpdate);
 		}
 
-		private static void CreateCheckBox(CheckGroup checkGroup,
-			Func<bool> getValue, Action toggleValue, bool autoUpdate = false)
+		private static void CreateCheckBox(Widget checkGroup, Func<bool> getValue, Action toggleValue, bool autoUpdate = false)
 		{
-			var check = checkGroup._Check;
-			RunConditionalAnimation(getValue, check.RunAnimationChecked, check.RunAnimationUnchecked);
-			checkGroup._BtnCheck.It.Clicked = () => {
+			var check = checkGroup["Check"];
+			RunConditionalAnimation(getValue, () => check.RunAnimation("Checked"), () => check.RunAnimation("Unchecked"));
+			checkGroup["BtnCheck"].Clicked = () => {
 				toggleValue?.Invoke();
-				RunConditionalAnimation(getValue, check.RunAnimationCheck, check.RunAnimationUncheck);
+				RunConditionalAnimation(getValue, () => check.RunAnimation("Checked"), () => check.RunAnimation("Unchecked"));
 			};
 			if (autoUpdate) {
-				checkGroup.It.Updating += delta => {
-					if (check.It.IsStopped)
-						RunConditionalAnimation(getValue, check.RunAnimationChecked, check.RunAnimationUnchecked);
+				checkGroup.Updating += delta => {
+					if (check.IsStopped)
+						RunConditionalAnimation(getValue, () => check.RunAnimation("Checked"), () => check.RunAnimation("Unchecked"));
 				};
 			}
 		}
 
-		private static void RunConditionalAnimation(Func<bool> getValue, Func<Frame> trueAnimation, Func<Frame> falseAnimation)
+		private static void RunConditionalAnimation(Func<bool> getValue, Action trueAnimation, Action falseAnimation)
 		{
 			if (getValue())
 				trueAnimation();

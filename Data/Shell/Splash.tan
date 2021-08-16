@@ -7,25 +7,25 @@
 			"Markers":[
 				{
 					"Action":1,
-					"Id":"@Landscape",
+					"Id":"Landscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":10,
-					"Id":"@Portrait",
+					"Id":"Portrait",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":20,
-					"Id":"@TabletLandscape",
+					"Id":"TabletLandscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":30,
-					"Id":"@TabletPortrait",
+					"Id":"TabletPortrait",
 					"JumpTo":""
 				}
 			]
@@ -45,7 +45,7 @@
 		}
 	],
 	"Color":[4294967295],
-	"Id":"@",
+	"Id":"",
 	"Nodes":[
 		{
 			"class":"Lime.Image, Lime",

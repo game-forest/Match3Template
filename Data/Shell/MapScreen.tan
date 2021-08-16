@@ -7,25 +7,25 @@
 			"Markers":[
 				{
 					"Action":1,
-					"Id":"@Landscape",
+					"Id":"Landscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":10,
-					"Id":"@Portrait",
+					"Id":"Portrait",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":20,
-					"Id":"@TabletLandscape",
+					"Id":"TabletLandscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":30,
-					"Id":"@TabletPortrait",
+					"Id":"TabletPortrait",
 					"JumpTo":""
 				}
 			]
@@ -127,7 +127,7 @@
 			"Anchors":6,
 			"Color":[4294967295],
 			"ContentsPath":"Externals/BtnX",
-			"Id":"@BtnExit",
+			"Id":"BtnExit",
 			"Pivot":[0.5,0.5],
 			"Position":[1283,77],
 			"Scale":[0.8,0.8],

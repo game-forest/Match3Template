@@ -7,25 +7,25 @@
 			"Markers":[
 				{
 					"Action":1,
-					"Id":"@Landscape",
+					"Id":"Landscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":10,
-					"Id":"@Portrait",
+					"Id":"Portrait",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":20,
-					"Id":"@TabletLandscape",
+					"Id":"TabletLandscape",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
 					"Frame":30,
-					"Id":"@TabletPortrait",
+					"Id":"TabletPortrait",
 					"JumpTo":""
 				}
 			]
@@ -85,7 +85,7 @@
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
 					"ContentsPath":"Externals/BtnPlay",
-					"Id":"@BtnPlay",
+					"Id":"BtnPlay",
 					"Pivot":[0.5,0.5],
 					"Position":[517,493],
 					"Size":[232,148],
@@ -95,7 +95,7 @@
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
 					"ContentsPath":"Externals/BtnOptions",
-					"Id":"@BtnOptions",
+					"Id":"BtnOptions",
 					"Pivot":[0.5,0.5],
 					"Position":[729.03687,551.03674],
 					"Size":[128,128]

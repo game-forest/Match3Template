@@ -2,12 +2,14 @@ using Lime;
 
 namespace Match3Template.Dialogs
 {
-	public class GameScreen : Dialog<Scenes.Data.GameScreen>
+	[ScenePath("Shell/GameScreen")]
+	public class GameScreen : Dialog
 	{
 		public GameScreen()
 		{
 			SoundManager.PlayMusic("Ingame");
-			Scene._BtnExit.It.Clicked = ReturnToMenu;
+			var exitButton = Root["BtnExit"];
+			exitButton.Clicked = ReturnToMenu;
 		}
 
 		protected override void Update(float delta)
@@ -26,8 +28,8 @@ namespace Match3Template.Dialogs
 		private void ReturnToMenu()
 		{
 			var confirmation = new Confirmation("Are you sure?");
-			confirmation.OkClicked += CrossfadeInto<MainMenu>;
-			Open(confirmation);
+			confirmation.OkClicked += () => CrossFadeInto("Shell/MainMenu");
+			DialogManager.Open(confirmation);
 		}
 	}
 }
