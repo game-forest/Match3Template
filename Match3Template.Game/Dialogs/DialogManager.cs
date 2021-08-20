@@ -4,12 +4,13 @@ using System.Linq;
 
 namespace Match3Template.Dialogs
 {
-	public class DialogManager
+	public class DialogManager : IDialogManager
 	{
 		public static DialogManager Instance { get; } = new DialogManager();
 
 		public DialogManager()
 		{
+			IDialogManager.Instance = this;
 			var baseType = typeof(Dialog);
 			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies()) {
 				foreach (var type in assembly.GetTypes()) {
@@ -31,6 +32,13 @@ namespace Match3Template.Dialogs
 
 		public void Open(string scenePath)
 		{
+			if (scenePath.EndsWith(".tan",  StringComparison.OrdinalIgnoreCase)) {
+				scenePath = scenePath[0..^4];
+			}
+			if (!Lime.AssetBundle.Current.FileExists(System.IO.Path.ChangeExtension(scenePath, ".tan"))) {
+				Open(new AlertDialog($"Can't find {scenePath}"));
+				return;
+			}
 			var dialog = Overrides.ContainsKey(scenePath) ? Overrides[scenePath]() : new Dialog(scenePath);
 			Open(dialog);
 		}
@@ -44,6 +52,11 @@ namespace Match3Template.Dialogs
 		public void Remove(Dialog dialog)
 		{
 			ActiveDialogs.Remove(dialog);
+		}
+
+		public void CloseActiveDialog()
+		{
+			Top.Close();
 		}
 	}
 

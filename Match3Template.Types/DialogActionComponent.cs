@@ -1,4 +1,4 @@
-﻿using Lime;
+using Lime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +15,14 @@ namespace Match3Template.Types
     [TangerineAllowedParentTypes(typeof(Button))]
 	public class DialogActionComponent : NodeComponent
 	{
-        [YuzuMember]
+		[TangerineFileProperty(new[] { ".tan" })]
+		[YuzuMember]
         public string ScenePath { get; set; }
 
         [YuzuMember]
         public bool CloseDialog { get; set; } = true;
 
-		DialogActionComponent()
+		public DialogActionComponent()
         {
 
         }
@@ -30,8 +31,12 @@ namespace Match3Template.Types
         {
             base.OnOwnerChanged(oldOwner);
             (Owner as Button).Clicked += () => {
-
-            };
+				if (string.IsNullOrEmpty(ScenePath)) {
+					IDialogManager.Instance.CloseActiveDialog();
+					return;
+				}
+				IDialogManager.Instance.Open(ScenePath);
+			};
         }
     }
 }
