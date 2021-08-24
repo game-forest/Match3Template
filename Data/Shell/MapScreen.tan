@@ -3,6 +3,26 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"Appear",
+			"Markers":[
+				{
+					"Id":"Hide"
+				},
+				{
+					"Action":1,
+					"Frame":5
+				},
+				{
+					"Frame":10,
+					"Id":"Show"
+				},
+				{
+					"Action":1,
+					"Frame":15
+				}
+			]
+		},
+		{
 			"Id":"Resolutions",
 			"Markers":[
 				{
@@ -155,6 +175,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
