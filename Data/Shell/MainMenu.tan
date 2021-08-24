@@ -95,7 +95,7 @@
 							"ScenePath":"Shell/DoesnNotExist"
 						}
 					],
-					"ContentsPath":"Ui/BtnOk",
+					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[878,620],
@@ -110,7 +110,7 @@
 							"ScenePath":"Shell/MapScreen"
 						}
 					],
-					"ContentsPath":"Ui/BtnOk",
+					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[882,442],
@@ -126,7 +126,7 @@
 							"ScenePath":"Shell/Options.tan"
 						}
 					],
-					"ContentsPath":"Ui/BtnOk",
+					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[861,307],
@@ -141,7 +141,7 @@
 							"ScenePath":"Shell/Options.tan"
 						}
 					],
-					"ContentsPath":"Ui/BtnOk",
+					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[857.3334,181],
@@ -150,7 +150,7 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Ui/BtnPlay",
+					"ContentsPath":"Externals/BtnPlay",
 					"Id":"BtnPlay",
 					"Pivot":[0.5,0.5],
 					"Position":[517,493],
@@ -160,7 +160,7 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Ui/BtnOptions",
+					"ContentsPath":"Externals/BtnOptions",
 					"Id":"BtnOptions",
 					"Pivot":[0.5,0.5],
 					"Position":[729.03687,551.03674],
@@ -201,7 +201,7 @@
 				{
 					"class":"Lime.Frame, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Ui/TitleBar",
+					"ContentsPath":"Externals/TitleBar",
 					"Id":"TitleBar",
 					"Pivot":[0.5,0.5],
 					"Position":[464.01935,148.27159],
@@ -245,7 +245,7 @@
 				{
 					"class":"Lime.Frame, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Ui/Win",
+					"ContentsPath":"Externals/Win",
 					"Id":"Win",
 					"Pivot":[0.5,0.5],
 					"Position":[532,384],
@@ -322,18 +322,28 @@
 									"Id":"Focus"
 								},
 								{
-									"Action":1,
 									"Frame":20,
 									"Id":"Press"
 								},
 								{
 									"Action":1,
-									"Frame":30,
+									"Frame":22,
+									"Id":"",
+									"JumpTo":""
+								},
+								{
+									"Frame":23,
 									"Id":"Release"
 								},
 								{
 									"Action":1,
-									"Frame":40,
+									"Frame":26,
+									"Id":"",
+									"JumpTo":""
+								},
+								{
+									"Action":1,
+									"Frame":33,
 									"Id":"Disable"
 								}
 							]
@@ -341,6 +351,35 @@
 					],
 					"Color":[4294967295],
 					"Id":"BtnGFLink",
+					"Nodes":[
+						{
+							"class":"Lime.Image, Lime",
+							"Anchors":10,
+							"Animators":[
+								{
+									"class":"Lime.Vector2Animator, Lime",
+									"ReadonlyKeys":[
+										[20,2,[0.6376132,0.6376132]],
+										[22,2,[0.4814094,0.4814094]],
+										[23,2,[0.4814094,0.4814094]],
+										[26,2,[0.6376132,0.6376132]]
+									],
+									"TargetProperty":"Scale"
+								}
+							],
+							"Color":[3170893823],
+							"Id":"GameForest",
+							"Pivot":[0.5000001,0.5000011],
+							"Position":[47.36664,48.99998],
+							"Scale":[0.6376132,0.6376132],
+							"Size":[128,114],
+							"TangerineFlags":4,
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/Splash/GF"
+							}
+						}
+					],
 					"Pivot":[0.5,0.5],
 					"Position":[154.69965,56],
 					"Size":[102.73253,112]
@@ -361,18 +400,28 @@
 									"Id":"Focus"
 								},
 								{
-									"Action":1,
 									"Frame":20,
 									"Id":"Press"
 								},
 								{
 									"Action":1,
-									"Frame":30,
+									"Frame":22,
+									"Id":"",
+									"JumpTo":""
+								},
+								{
+									"Frame":23,
 									"Id":"Release"
 								},
 								{
 									"Action":1,
-									"Frame":40,
+									"Frame":26,
+									"Id":"",
+									"JumpTo":""
+								},
+								{
+									"Action":1,
+									"Frame":33,
 									"Id":"Disable"
 								}
 							]
@@ -380,40 +429,39 @@
 					],
 					"Color":[4294967295],
 					"Id":"BtnCitrusLink",
+					"Nodes":[
+						{
+							"class":"Lime.Image, Lime",
+							"Anchors":10,
+							"Animators":[
+								{
+									"class":"Lime.Vector2Animator, Lime",
+									"ReadonlyKeys":[
+										[20,2,[0.34875566,0.34875566]],
+										[22,2,[0.26902533,0.26902533]],
+										[23,2,[0.26902533,0.26902533]],
+										[26,2,[0.34875566,0.34875566]]
+									],
+									"TargetProperty":"Scale"
+								}
+							],
+							"Color":[2868903935],
+							"Id":"CitrusLogo",
+							"Pivot":[0.5,0.49999952],
+							"Position":[55.933876,50.490715],
+							"Scale":[0.34875566,0.34875566],
+							"Size":[220,219.89764],
+							"TangerineFlags":4,
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/Splash/CitrusLogo"
+							},
+							"UV1":[1,0.67]
+						}
+					],
 					"Pivot":[0.5,0.5],
 					"Position":[51.366264,56],
 					"Size":[102.73253,112]
-				},
-				{
-					"class":"Lime.Image, Lime",
-					"Anchors":10,
-					"Color":[2868903935],
-					"Id":"CitrusLogo",
-					"Pivot":[1,0.99999964],
-					"Position":[94.297,88.836],
-					"Scale":[0.34875566,0.34875566],
-					"Size":[220,219.89764],
-					"TangerineFlags":4,
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Data/Splash/CitrusLogo"
-					},
-					"UV1":[1,0.67]
-				},
-				{
-					"class":"Lime.Image, Lime",
-					"Anchors":10,
-					"Color":[3170893823],
-					"Id":"GameForest",
-					"Pivot":[1.0000001,1.0000011],
-					"Position":[192.08752,85.878265],
-					"Scale":[0.6376132,0.6376132],
-					"Size":[128,114],
-					"TangerineFlags":4,
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Data/Splash/GF"
-					}
 				}
 			],
 			"Pivot":[1,1],
@@ -450,6 +498,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

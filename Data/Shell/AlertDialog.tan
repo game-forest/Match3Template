@@ -90,7 +90,7 @@
 					"class":"Lime.Button, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"ContentsPath":"Ui/BtnOk",
+					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[518.33325,510.6667],
@@ -100,7 +100,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"ContentsPath":"Ui/Win",
+					"ContentsPath":"Externals/Win",
 					"Id":"Win",
 					"Pivot":[0.5,0.5],
 					"Position":[384,384],
@@ -129,7 +129,7 @@
 				}
 			],
 			"Color":[4294967295],
-			"ContentsPath":"Ui/Shade",
+			"ContentsPath":"Externals/Shade",
 			"Id":"Shade",
 			"Pivot":[0.5,0.5],
 			"Position":[512,384],
@@ -138,6 +138,7 @@
 	],
 	"Size":[1024,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
