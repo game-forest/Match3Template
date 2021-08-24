@@ -129,7 +129,7 @@
 							"Size":[128,128],
 							"Texture":{
 								"class":"Lime.SerializableTexture, Lime",
-								"SerializationPath":"/Stuff/Circle"
+								"SerializationPath":"/Common/Masks/Circle"
 							}
 						}
 					],
@@ -151,7 +151,7 @@
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types"
 				}
 			],
-			"ContentsPath":"Externals/BtnX",
+			"ContentsPath":"Ui/BtnX",
 			"Id":"BtnExit",
 			"Pivot":[0.5,0.5],
 			"Position":[1283,77],
@@ -168,7 +168,7 @@
 			"Size":[1366,768],
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"Ui/Bg"
+				"SerializationPath":"Data/UI/Bg"
 			},
 			"TileSize":[256,512]
 		}

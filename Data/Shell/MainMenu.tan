@@ -95,7 +95,7 @@
 							"ScenePath":"Shell/DoesnNotExist"
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
+					"ContentsPath":"Ui/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[878,620],
@@ -110,7 +110,7 @@
 							"ScenePath":"Shell/MapScreen"
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
+					"ContentsPath":"Ui/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[882,442],
@@ -126,7 +126,7 @@
 							"ScenePath":"Shell/Options.tan"
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
+					"ContentsPath":"Ui/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[861,307],
@@ -141,7 +141,7 @@
 							"ScenePath":"Shell/Options.tan"
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
+					"ContentsPath":"Ui/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[857.3334,181],
@@ -150,7 +150,7 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Externals/BtnPlay",
+					"ContentsPath":"Ui/BtnPlay",
 					"Id":"BtnPlay",
 					"Pivot":[0.5,0.5],
 					"Position":[517,493],
@@ -160,7 +160,7 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Externals/BtnOptions",
+					"ContentsPath":"Ui/BtnOptions",
 					"Id":"BtnOptions",
 					"Pivot":[0.5,0.5],
 					"Position":[729.03687,551.03674],
@@ -201,7 +201,7 @@
 				{
 					"class":"Lime.Frame, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Externals/TitleBar",
+					"ContentsPath":"Ui/TitleBar",
 					"Id":"TitleBar",
 					"Pivot":[0.5,0.5],
 					"Position":[464.01935,148.27159],
@@ -245,7 +245,7 @@
 				{
 					"class":"Lime.Frame, Lime",
 					"Color":[4294967295],
-					"ContentsPath":"Externals/Win",
+					"ContentsPath":"Ui/Win",
 					"Id":"Win",
 					"Pivot":[0.5,0.5],
 					"Position":[532,384],
@@ -283,7 +283,7 @@
 			"TangerineFlags":4,
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Stuff/LineGradient"
+				"SerializationPath":"/Common/Masks/LineGradient"
 			},
 			"UV1":[1,0.5]
 		},
@@ -396,7 +396,7 @@
 					"TangerineFlags":4,
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Splash/CitrusLogo"
+						"SerializationPath":"Data/Splash/CitrusLogo"
 					},
 					"UV1":[1,0.67]
 				},
@@ -412,7 +412,7 @@
 					"TangerineFlags":4,
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Splash/GF"
+						"SerializationPath":"Data/Splash/GF"
 					}
 				}
 			],
@@ -443,9 +443,9 @@
 			"Size":[1366,768],
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"Ui/Bg"
+				"SerializationPath":"Data/UI/Bg"
 			},
-			"TileSize":[332,512]
+			"TileSize":[256,512]
 		}
 	],
 	"Size":[1366,768]

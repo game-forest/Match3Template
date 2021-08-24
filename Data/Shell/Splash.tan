@@ -73,7 +73,7 @@
 			"TangerineFlags":4,
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Stuff/LineGradient"
+				"SerializationPath":"/Common/Masks/LineGradient"
 			},
 			"UV1":[1,0.5]
 		},
@@ -116,7 +116,7 @@
 					"Size":[220,328],
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Splash/CitrusLogo"
+						"SerializationPath":"Data/Splash/CitrusLogo"
 					}
 				},
 				{
@@ -131,7 +131,7 @@
 					"TangerineFlags":4,
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Splash/GameForest"
+						"SerializationPath":"Data/Splash/GameForest"
 					}
 				},
 				{
@@ -144,7 +144,7 @@
 					"Size":[7,346],
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Stuff/LineGradient"
+						"SerializationPath":"/Common/Masks/LineGradient"
 					}
 				}
 			],
@@ -174,7 +174,7 @@
 			"Size":[1366,768],
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"Ui/Bg"
+				"SerializationPath":"Data/UI/Bg"
 			},
 			"TileSize":[256,512]
 		}

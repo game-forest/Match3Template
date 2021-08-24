@@ -88,7 +88,7 @@
 					"class":"Lime.Button, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"ContentsPath":"Externals/BtnOk",
+					"ContentsPath":"Ui/BtnOk",
 					"Id":"BtnOk",
 					"Pivot":[0.5,0.5],
 					"Position":[557,566.1643],
@@ -165,7 +165,7 @@
 									"Size":[65,54],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/IcoCheck"
+										"SerializationPath":"Data/UI/IcoCheck"
 									}
 								},
 								{
@@ -190,7 +190,7 @@
 									"Size":[105,105],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/BtnOrange"
+										"SerializationPath":"Data/UI/BtnOrange"
 									}
 								}
 							],
@@ -198,36 +198,6 @@
 							"Position":[29.21643,32.21643],
 							"Scale":[0.8806,0.8806],
 							"Size":[47.3913,47.10146]
-						},
-						{
-							"class":"Lime.SimpleText, Lime",
-							"Color":[4294967295],
-							"Components":[
-								{
-									"class":"Lime.SignedDistanceFieldComponent, Lime",
-									"Gradient":[
-										{
-											"Color":[4294967295]
-										},
-										{
-											"Color":[4278190080],
-											"Position":1
-										}
-									]
-								}
-							],
-							"Font":{
-								"Name":"RobotoMed"
-							},
-							"FontHeight":41,
-							"Id":"Text",
-							"Pivot":[0,0.5],
-							"Position":[76,29],
-							"Size":[197.33325,55],
-							"Spacing":-14,
-							"Text":"Music",
-							"TextColor":[4287880191],
-							"VAlignment":1
 						},
 						{
 							"class":"Lime.Button, Lime",
@@ -309,7 +279,7 @@
 									"Size":[52,52],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/WinGrey"
+										"SerializationPath":"Data/UI/WinGrey"
 									},
 									"TopOffset":0.4
 								}
@@ -317,6 +287,36 @@
 							"Pivot":[0.5,0.5],
 							"Position":[136.49506,29],
 							"Size":[270.9901,58]
+						},
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RobotoMed"
+							},
+							"FontHeight":41,
+							"Id":"Text",
+							"Pivot":[0,0.5],
+							"Position":[76,29],
+							"Size":[197.33325,55],
+							"Spacing":-14,
+							"Text":"Music",
+							"TextColor":[4287880191],
+							"VAlignment":1
 						}
 					],
 					"Pivot":[0.5,0.5],
@@ -395,7 +395,7 @@
 									"Size":[65,54],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/IcoCheck"
+										"SerializationPath":"Data/UI/IcoCheck"
 									}
 								},
 								{
@@ -420,7 +420,7 @@
 									"Size":[105,105],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/BtnOrange"
+										"SerializationPath":"Data/UI/BtnOrange"
 									}
 								}
 							],
@@ -428,36 +428,6 @@
 							"Position":[29.21643,32.21643],
 							"Scale":[0.8806,0.8806],
 							"Size":[47.3913,47.10146]
-						},
-						{
-							"class":"Lime.SimpleText, Lime",
-							"Color":[4294967295],
-							"Components":[
-								{
-									"class":"Lime.SignedDistanceFieldComponent, Lime",
-									"Gradient":[
-										{
-											"Color":[4294967295]
-										},
-										{
-											"Color":[4278190080],
-											"Position":1
-										}
-									]
-								}
-							],
-							"Font":{
-								"Name":"RobotoMed"
-							},
-							"FontHeight":41,
-							"Id":"Text",
-							"Pivot":[0,0.5],
-							"Position":[76,29],
-							"Size":[197.33325,55],
-							"Spacing":-14,
-							"Text":"Sound",
-							"TextColor":[4287880191],
-							"VAlignment":1
 						},
 						{
 							"class":"Lime.Button, Lime",
@@ -539,7 +509,7 @@
 									"Size":[52,52],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/WinGrey"
+										"SerializationPath":"Data/UI/WinGrey"
 									},
 									"TopOffset":0.4
 								}
@@ -547,6 +517,36 @@
 							"Pivot":[0.5,0.5],
 							"Position":[136.49506,29],
 							"Size":[270.9901,58]
+						},
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RobotoMed"
+							},
+							"FontHeight":41,
+							"Id":"Text",
+							"Pivot":[0,0.5],
+							"Position":[76,29],
+							"Size":[197.33325,55],
+							"Spacing":-14,
+							"Text":"Sound",
+							"TextColor":[4287880191],
+							"VAlignment":1
 						}
 					],
 					"Pivot":[0.5,0.5],
@@ -625,7 +625,7 @@
 									"Size":[65,54],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/IcoCheck"
+										"SerializationPath":"Data/UI/IcoCheck"
 									}
 								},
 								{
@@ -650,7 +650,7 @@
 									"Size":[105,105],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/BtnOrange"
+										"SerializationPath":"Data/UI/BtnOrange"
 									}
 								}
 							],
@@ -658,36 +658,6 @@
 							"Position":[29.21643,32.21643],
 							"Scale":[0.8806,0.8806],
 							"Size":[47.3913,47.10146]
-						},
-						{
-							"class":"Lime.SimpleText, Lime",
-							"Color":[4294967295],
-							"Components":[
-								{
-									"class":"Lime.SignedDistanceFieldComponent, Lime",
-									"Gradient":[
-										{
-											"Color":[4294967295]
-										},
-										{
-											"Color":[4278190080],
-											"Position":1
-										}
-									]
-								}
-							],
-							"Font":{
-								"Name":"RobotoMed"
-							},
-							"FontHeight":41,
-							"Id":"Text",
-							"Pivot":[0,0.5],
-							"Position":[76,29],
-							"Size":[197.33325,55],
-							"Spacing":-14,
-							"Text":"Voice",
-							"TextColor":[4287880191],
-							"VAlignment":1
 						},
 						{
 							"class":"Lime.Button, Lime",
@@ -769,7 +739,7 @@
 									"Size":[52,52],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/WinGrey"
+										"SerializationPath":"Data/UI/WinGrey"
 									},
 									"TopOffset":0.4
 								}
@@ -777,6 +747,36 @@
 							"Pivot":[0.5,0.5],
 							"Position":[136.49506,29],
 							"Size":[270.9901,58]
+						},
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RobotoMed"
+							},
+							"FontHeight":41,
+							"Id":"Text",
+							"Pivot":[0,0.5],
+							"Position":[76,29],
+							"Size":[197.33325,55],
+							"Spacing":-14,
+							"Text":"Voice",
+							"TextColor":[4287880191],
+							"VAlignment":1
 						}
 					],
 					"Pivot":[0.5,0.5],
@@ -855,7 +855,7 @@
 									"Size":[65,54],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/IcoCheck"
+										"SerializationPath":"Data/UI/IcoCheck"
 									}
 								},
 								{
@@ -880,7 +880,7 @@
 									"Size":[105,105],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/BtnOrange"
+										"SerializationPath":"Data/UI/BtnOrange"
 									}
 								}
 							],
@@ -999,7 +999,7 @@
 									"Size":[52,52],
 									"Texture":{
 										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"Ui/WinGrey"
+										"SerializationPath":"Data/UI/WinGrey"
 									},
 									"TopOffset":0.4
 								}
@@ -1051,7 +1051,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"ContentsPath":"Externals/TitleBar",
+					"ContentsPath":"Ui/TitleBar",
 					"Id":"TitleBar",
 					"Pivot":[0.5,0.5],
 					"Position":[346.01935,149.43588],
@@ -1064,7 +1064,7 @@
 					"class":"Lime.Frame, Lime",
 					"Anchors":48,
 					"Color":[4294967295],
-					"ContentsPath":"Externals/Win",
+					"ContentsPath":"Ui/Win",
 					"Id":"Win",
 					"Pivot":[0.5,0.5],
 					"Position":[384,397.1643],
@@ -1093,7 +1093,7 @@
 				}
 			],
 			"Color":[4294967295],
-			"ContentsPath":"Externals/Shade",
+			"ContentsPath":"Ui/Shade",
 			"Id":"Shade",
 			"Pivot":[0.5,0.5],
 			"Position":[512,384],
@@ -1102,6 +1102,7 @@
 	],
 	"Size":[1024,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
