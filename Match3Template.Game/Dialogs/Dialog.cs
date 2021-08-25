@@ -41,31 +41,31 @@ namespace Match3Template.Dialogs
 			DisplayInfo.BeforeOrientationOrResolutionChanged += OnBeforeOrientationOrResolutionChanged;
 			DisplayInfo.OrientationOrResolutionChanged += OnOrientationOrResolutionChanged;
 
-			Show(ShowAnimationName);
+			Show(ShowAnimationName.Marker, ShowAnimationName.Animation);
 			Root.Update(0);
 		}
 
 		protected virtual int Layer => Layers.Interface;
 
-		protected virtual string ShowAnimationName => "Show";
+		protected virtual (string Marker, string Animation) ShowAnimationName => ("Show", "Appear");
 
-		protected virtual string HideAnimationName => "Hide";
-
-		protected virtual string CustomRotationAnimation => null;
+		protected virtual (string Marker, string Animation) HideAnimationName => ("Hide", "Appear");
 
 		protected virtual void Update(float delta) { }
 
-		private void Show(string animation)
+		private void Show(string marker, string animation)
 		{
-			Root.Tasks.Add(ShowTask(animation));
+			Root.Tasks.Add(ShowTask(marker, animation));
 		}
 
-		private IEnumerator<object> ShowTask(string animation)
+		private IEnumerator<object> ShowTask(string marker, string animation)
 		{
 			State = DialogState.Showing;
 			Orientate();
-			if (animation != null && Root.TryRunAnimation(animation)) {
-				yield return Root;
+			if (animation != null && Root.TryRunAnimation(marker, animation)) {
+				while (Root.Animations.Find(animation).IsRunning) {
+					yield return null;
+				}
 			}
 			State = DialogState.Shown;
 		}
@@ -80,12 +80,9 @@ namespace Match3Template.Dialogs
 
 		protected virtual void Orientate()
 		{
-			var animationName = DisplayInfo.IsLandscapeOrientation() ? "@Landscape" : "@Portrait";
-			var preferredAnimationNameCustom = CustomRotationAnimation;
+			var markerName = DisplayInfo.IsLandscapeOrientation() ? "Landscape" : "Portrait";
 			foreach (var node in Root.Descendants) {
-				if (preferredAnimationNameCustom == null || !node.TryRunAnimation(preferredAnimationNameCustom)) {
-					node.TryRunAnimation(animationName);
-				}
+				node.TryRunAnimation(markerName, "Resolutions");
 			}
 		}
 
@@ -131,7 +128,7 @@ namespace Match3Template.Dialogs
 		public void Close()
 		{
 			BeginClose();
-			Root.Tasks.Add(CloseTask(HideAnimationName));
+			Root.Tasks.Add(CloseTask(HideAnimationName.Marker, HideAnimationName.Animation));
 		}
 
 		public void CloseImmediately()
@@ -150,12 +147,13 @@ namespace Match3Template.Dialogs
 
 		protected virtual void Closing() { }
 
-		private IEnumerator<object> CloseTask(string animation)
+		private IEnumerator<object> CloseTask(string marker, string animation)
 		{
 			State = DialogState.Closing;
-			if (animation != null && Root.TryRunAnimation(animation))
-			{
-				yield return Root;
+			if (animation != null && Root.TryRunAnimation(marker, animation)) {
+				while (Root.Animations.Find(animation).IsRunning) {
+					yield return null;
+				}
 			}
 			UnlinkAndDispose();
 			State = DialogState.Closed;

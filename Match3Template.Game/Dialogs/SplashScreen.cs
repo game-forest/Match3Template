@@ -5,8 +5,8 @@ namespace Match3Template.Dialogs
 	{
 		public SplashScreen()
 		{
-			Root.RunAnimation("Start");
-			Root.AnimationStopped += () => CrossFadeInto("Shell/MainMenu");
+			Root.RunAnimation("Start", "Appear");
+			Root.Animations.Find("Appear").Stopped += () => CrossFadeInto("Shell/MainMenu");
 		}
 	}
 }
