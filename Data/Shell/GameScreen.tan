@@ -199,14 +199,16 @@
 					"Nodes":[
 						{
 							"class":"Lime.Image, Lime",
-							"Color":[4294967295],
+							"Color":[4294933475],
 							"Id":"GoalsIcon",
 							"Pivot":[0.5,0.5],
 							"Position":[146.49527,87.00696],
-							"Size":[64,64],
+							"Scale":[0.68224585,0.68224585],
+							"Shader":3,
+							"Size":[90,90],
 							"Texture":{
 								"class":"Lime.SerializableTexture, Lime",
-								"SerializationPath":"/Common/Masks/Circle"
+								"SerializationPath":"/Game/Match3/Drop/Drop"
 							}
 						},
 						{
@@ -276,6 +278,15 @@
 					"Pivot":[0.5,0.5],
 					"Position":[145.00473,266.99304],
 					"Size":[337,120]
+				},
+				{
+					"class":"Lime.Frame, Lime",
+					"Color":[4294967295],
+					"ContentsPath":"Externals/Win",
+					"Id":"Win",
+					"Pivot":[0.5,0.5],
+					"Position":[12.5,116.5],
+					"Size":[512,512]
 				}
 			],
 			"Pivot":[0.5,0.5],
@@ -300,7 +311,7 @@
 					"TangerineFlags":6,
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Game/Match3/BoardPlaceHolder"
+						"SerializationPath":"/Game/Match3/Board/Board"
 					},
 					"Visible":false
 				}
@@ -363,6 +374,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
