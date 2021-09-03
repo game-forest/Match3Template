@@ -9,22 +9,18 @@
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
-			"Color":[4294967295],
-			"Id":"Sticker",
-			"Nodes":[
+			"Animators":[
 				{
-					"class":"Lime.Image, Lime",
-					"Color":[4294967295],
-					"Id":"Sticker",
-					"Pivot":[0.5,0.5],
-					"Position":[45,45],
-					"Size":[90,90],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Game/Match3/Sticker/Sticker"
-					}
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"ReadonlyKeys":[
+						[0,0,"Shown@Show"]
+					],
+					"TargetProperty":"Trigger"
 				}
 			],
+			"Color":[4294967295],
+			"ContentsPath":"/Game/Match3/ObstacleSticker",
+			"Id":"Sticker",
 			"Pivot":[0.5,0.5],
 			"Position":[196.83331,428.8333],
 			"Size":[90,90]
@@ -200,11 +196,29 @@
 				}
 			],
 			"Color":[4294967295],
+			"ContentsPath":"/Game/Match3/BonusLightningFX",
+			"Id":"BonusLightningFX",
+			"Pivot":[0.5,0.5],
+			"Position":[377.33157,249.0063],
+			"Size":[90,90]
+		},
+		{
+			"class":"Lime.Frame, Lime",
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"ReadonlyKeys":[
+						[0,0,"Start@Act"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
+			"Color":[4294967295],
 			"ContentsPath":"/Game/Match3/BonusLineFX",
 			"Id":"LineFX",
-			"Pivot":[0.5,0.5],
-			"Position":[197.83328,249.1667],
-			"Size":[88,90]
+			"Pivot":[2.9802322E-8,0.5],
+			"Position":[423,159],
+			"Size":[180,90]
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -263,21 +277,8 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Color":[4294967295],
+			"ContentsPath":"/Game/Match3/Drop",
 			"Id":"Drop",
-			"Nodes":[
-				{
-					"class":"Lime.Image, Lime",
-					"Color":[4294967295],
-					"Id":"Drop",
-					"Pivot":[0.5,0.5],
-					"Position":[45,45],
-					"Size":[90,90],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Game/Match3/Drop/Drop"
-					}
-				}
-			],
 			"Pivot":[0.5,0.5],
 			"Position":[196.5,339.49997],
 			"Size":[90,90]

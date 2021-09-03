@@ -11,7 +11,7 @@
 				},
 				{
 					"Action":1,
-					"Frame":7,
+					"Frame":18,
 					"Id":"",
 					"JumpTo":""
 				}
@@ -25,13 +25,14 @@
 	"Nodes":[
 		{
 			"class":"Lime.SplineGear, Lime",
+			"AlongPathOrientation":true,
 			"Animators":[
 				{
 					"class":"Lime.NumericAnimator, Lime",
 					"AnimationId":"Act",
 					"ReadonlyKeys":[
 						[0,0,0],
-						[7,0,1]
+						[18,0,1]
 					],
 					"TargetProperty":"SplineOffset"
 				}
@@ -46,28 +47,27 @@
 		},
 		{
 			"class":"Lime.Spline, Lime",
-			"Anchors":15,
 			"Color":[4294967295],
 			"Id":"Spline",
 			"Nodes":[
 				{
 					"class":"Lime.SplinePoint, Lime",
-					"Id":"SplinePoint",
-					"Position":[0,0.5],
+					"Id":"Start",
+					"Position":[0.5,0.5],
 					"TangentAngle":90,
 					"TangentWeight":3.8146973E-7
 				},
 				{
 					"class":"Lime.SplinePoint, Lime",
-					"Id":"SplinePoint1",
-					"Position":[1,0.5],
-					"TangentAngle":-90,
-					"TangentWeight":3.8146973E-7
+					"Id":"End",
+					"Position":[3.753704,-1.5537037],
+					"TangentAngle":26.916498,
+					"TangentWeight":2.4299073
 				}
 			],
 			"Pivot":[0.5,0.5],
-			"Position":[68.52725,45],
-			"Size":[42.9455,90]
+			"Position":[45,45],
+			"Size":[90,90]
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -81,8 +81,8 @@
 							"class":"Lime.Color4Animator, Lime",
 							"AnimationId":"Act",
 							"ReadonlyKeys":[
-								[6,0,[4294967295]],
-								[7,0,[16777215]]
+								[17,0,[4294967295]],
+								[18,0,[16777215]]
 							],
 							"TargetProperty":"Color"
 						},
@@ -90,8 +90,8 @@
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Act",
 							"ReadonlyKeys":[
-								[6,0,[0.2623912,0.7330516]],
-								[7,0,[0.08627247,0.7330516]]
+								[17,0,[0.1670145,0.46659428]],
+								[18,0,[0.054913245,0.46659428]]
 							],
 							"TargetProperty":"Scale"
 						},
@@ -99,8 +99,8 @@
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Act",
 							"ReadonlyKeys":[
-								[6,0,[25.583038,47.281807]],
-								[7,0,[51.58304,47.281807]]
+								[17,0,[25.583035,47.281815]],
+								[18,0,[42.13228,47.281815]]
 							],
 							"TargetProperty":"Position"
 						},
@@ -117,8 +117,8 @@
 					"Color":[4294967295],
 					"Id":"SpikeBlur",
 					"Pivot":[0.5,0.5],
-					"Position":[25.583038,47.281807],
-					"Scale":[0.2623912,0.7330516],
+					"Position":[25.583035,47.281815],
+					"Scale":[0.1670145,0.46659428],
 					"Shader":3,
 					"Size":[195,129],
 					"Texture":{
@@ -126,6 +126,83 @@
 						"SerializationPath":"/Common/Masks/Arrow"
 					},
 					"Visible":false
+				},
+				{
+					"class":"Lime.ParticleEmitter, Lime",
+					"Animations":[
+						{
+							"IsLegacy":true
+						}
+					],
+					"Animators":[
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Act",
+							"ReadonlyKeys":[
+								[2,0,0],
+								[3,1,80],
+								[17,1,0]
+							],
+							"TargetProperty":"Number"
+						}
+					],
+					"Blending":3,
+					"Color":[4282167548],
+					"Id":"ParticleEmitter",
+					"Nodes":[
+						{
+							"class":"Lime.ParticleModifier, Lime",
+							"Animators":[
+								{
+									"class":"Lime.Color4Animator, Lime",
+									"ReadonlyKeys":[
+										[0,0,[16777215]],
+										[30,0,[4294967295]],
+										[60,0,[16777215]]
+									],
+									"TargetProperty":"Color"
+								},
+								{
+									"class":"Lime.Vector2Animator, Lime",
+									"AnimationId":"Act",
+									"ReadonlyKeys":[
+										[0,0,[1,1]],
+										[18,0,[0,0]]
+									],
+									"TargetProperty":"Scale"
+								},
+								{
+									"class":"Lime.Color4Animator, Lime",
+									"AnimationId":"Act",
+									"ReadonlyKeys":[
+										[0,0,[16777215]],
+										[1,0,[4294967295]],
+										[18,0,[16777215]]
+									],
+									"TargetProperty":"Color"
+								}
+							],
+							"Color":[16777215],
+							"Id":"ParticleModifier",
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"/Common/Particles/SpellIcoLightningIndicator"
+							}
+						}
+					],
+					"Number":0,
+					"ParticlesLinkage":0,
+					"Pivot":[0.5,0.5],
+					"Position":[25.583046,47.28182],
+					"Shape":3,
+					"Size":[34.666687,42.666687],
+					"TimeShift":0.9000001,
+					"Velocity":{
+					},
+					"Zoom":{
+						"Dispersion":0.39999992,
+						"Median":1
+					}
 				},
 				{
 					"class":"Lime.Image, Lime",
@@ -136,7 +213,7 @@
 							"ReadonlyKeys":[
 								[1,0,[40447]],
 								[2,0,[4278230527]],
-								[6,0,[40447]]
+								[17,0,[40447]]
 							],
 							"TargetProperty":"Color"
 						}
@@ -147,7 +224,7 @@
 					"Pivot":[0.5,1],
 					"Position":[15.583038,47.281803],
 					"Rotation":-90,
-					"Scale":[0.2593,1],
+					"Scale":[0.098986775,0.52850604],
 					"Size":[256,93.294754],
 					"Texture":{
 						"class":"Lime.SerializableTexture, Lime",
@@ -157,7 +234,8 @@
 				}
 			],
 			"Pivot":[0.5,0.5],
-			"Position":[47.054504,45],
+			"Position":[45,45],
+			"Rotation":90,
 			"Size":[51.166077,94.563614]
 		}
 	],
