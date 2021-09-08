@@ -174,8 +174,8 @@ namespace Match3Template.Dialogs
 			return true;
 		}
 
-        public void Dispose()
-        {
+		public void Dispose()
+		{
 			CloseImmediately();
 		}
 

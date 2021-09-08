@@ -1,15 +1,18 @@
 using Lime;
+using Match3Template.Types;
 
 namespace Match3Template.Dialogs
 {
 	[ScenePath("Shell/GameScreen")]
 	public class GameScreen : Dialog
 	{
+		private Board board;
 		public GameScreen()
 		{
 			SoundManager.PlayMusic("Ingame");
 			var exitButton = Root["BtnExit"];
 			exitButton.Clicked = ReturnToMenu;
+			board = Board.CreateBoard(Root);
 		}
 
 		protected override void Update(float delta)

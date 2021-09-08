@@ -89,7 +89,7 @@ namespace Match3Template.Types
 	}
 
 	[TangerineRegisterComponent]
-	[MutuallyExclusiveDerivedComponents]
+	[AllowOnlyOneComponent]
 	[TangerineMenuPath("Effects/")]
 	[TangerineTooltip(
 		"Paints gray image with selected Color hue."

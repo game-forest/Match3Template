@@ -95,7 +95,7 @@
 				},
 				{
 					"Frame":8,
-					"Id":"Deselect"
+					"Id":"Unselect"
 				},
 				{
 					"Action":1,
