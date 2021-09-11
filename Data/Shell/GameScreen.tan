@@ -105,7 +105,8 @@
 			"class":"Match3Template.Types.Match3ConfigComponent, Match3Template.Types"
 		},
 		{
-			"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types"
+			"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
+			"ColumnCount":8
 		}
 	],
 	"Nodes":[
@@ -382,6 +383,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

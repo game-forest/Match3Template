@@ -24,6 +24,9 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public bool WaitForAnimateDropDownLand { get; set; } = true;
+
+		[YuzuMember]
+		public bool WaitForAnimateDropDownFall { get; set; } = true;
 	}
 }
 

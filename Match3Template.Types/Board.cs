@@ -5,6 +5,24 @@ using System.Linq;
 
 namespace Match3Template.Types
 {
+	[TangerineRegisterNode]
+	public class TangerineBoard : Frame
+	{
+		public TangerineBoard()
+		{
+
+		}
+
+		protected override void OnParentChanged(Node oldParent)
+		{
+			base.OnParentChanged(oldParent);
+			if (Parent == null) {
+				return;
+			}
+			var board = Board.CreateBoard(GetRoot().AsWidget);
+		}
+	}
+
 	public class Board
 	{
 		private readonly Widget topLevelContainer;
@@ -117,12 +135,15 @@ namespace Match3Template.Types
 
 		private IEnumerator<object> FallTask(ItemComponent item)
 		{
-			yield return item.AnimateDropDownFall();
+			var a = item.AnimateDropDownFall();
+			if (match3Config.WaitForAnimateDropDownFall) {
+				yield return a;
+			}
 			while (CanFall(item)) {
 				var belowPosition = item.GridPosition + IntVector2.Down;
 				yield return item.MoveTo(belowPosition, grid);
 			}
-			var a = item.AnimateDropDownLand();
+			a = item.AnimateDropDownLand();
 			if (match3Config.WaitForAnimateDropDownLand) {
 				yield return a;
 			}
@@ -151,6 +172,7 @@ namespace Match3Template.Types
 			var p0 = input.GetTouchPosition(i);
 			item.Owner.Parent.Nodes.Swap(0, item.Owner.Parent.Nodes.IndexOf(item.Owner));
 			var p1 = input.GetTouchPosition(i);
+			var originalItemPosition = item.Owner.AsWidget.Position;
 
 			do {
 				yield return null;
@@ -160,7 +182,6 @@ namespace Match3Template.Types
 			Vector2 projectionAxis;
 			IntVector2 neighbourOffset;
 			{
-
 				var positionDelta = p1 - p0;
 				var angle = Mathf.RadToDeg * Mathf.Atan2(positionDelta);
 				angle = Mathf.Wrap360(angle);
@@ -182,19 +203,33 @@ namespace Match3Template.Types
 				}
 				Console.WriteLine(angle);
 			}
+			bool finished = false;
 			float projectionAmount = 0.0f;
-			ItemComponent nextItem = null;
+			ItemComponent swapItem = null;
+			Vector2 projectedDelta = Vector2.Zero;
 			while (input.IsTouching(i)) {
 				p1 = input.GetTouchPosition(i);
 				var positionDelta = p1 - p0;
 				projectionAmount = Vector2.DotProduct(projectionAxis, positionDelta);
 				var sign = Mathf.Sign(projectionAmount);
 				projectionAmount = Mathf.Clamp(Mathf.Abs(projectionAmount), 0, item.Owner.AsWidget.Width);
-				var projectedDelta = projectionAmount * sign * projectionAxis;
+				projectedDelta = projectionAmount * sign * projectionAxis;
 				item.Owner.AsWidget.Position = item.WidgetPosition(item.GridPosition) + projectedDelta;
-				nextItem = grid[item.GridPosition + neighbourOffset * (sign < 0 ? -1 : 1)];
-				if (nextItem != null) {
-					nextItem.Owner.AsWidget.Position = nextItem.WidgetPosition(nextItem.GridPosition) - projectedDelta;
+				var nextItem = grid[item.GridPosition + neighbourOffset * (sign < 0 ? -1 : 1)];
+				if (swapItem != null && swapItem != nextItem) {
+					swapItem.CancelTask();
+					swapItem.RunTask(MoveItemToOriginalPosition(swapItem));
+				}
+				if (swapItem != nextItem && nextItem != null && nextItem.Task == null) {
+					swapItem = nextItem;
+					var swapItemOriginalPosition = swapItem.Owner.AsWidget.Position;
+					Func<bool> syncPosition = () => {
+						swapItem.Owner.AsWidget.Position =
+							swapItemOriginalPosition
+							+ (originalItemPosition - item.Owner.AsWidget.Position);
+						return !finished;
+					};
+					swapItem.RunTask(Task.Repeat(syncPosition));
 				}
 				yield return null;
 			}
@@ -202,25 +237,23 @@ namespace Match3Template.Types
 			item.AnimateUnselect();
 			if (
 				projectionAmount > match3Config.DragPercentOfPieceSizeRequiredForSwapActivation
-				&& nextItem != null
-				&& nextItem.Task == null
+				&& swapItem != null
 			) {
 				var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
-				var i1 = nextItem.Owner.Parent.Nodes.IndexOf(nextItem.Owner);
+				var i1 = swapItem.Owner.Parent.Nodes.IndexOf(swapItem.Owner);
 				// item.Owner.Parent.Nodes.Swap(i0, i1);
 				var temp = item.GridPosition;
-				grid[temp] = nextItem;
-				item.gridPosition = nextItem.GridPosition;
-				grid[nextItem.GridPosition] = item;
-				nextItem.gridPosition = temp;
+				grid[temp] = swapItem;
+				item.gridPosition = swapItem.GridPosition;
+				grid[swapItem.GridPosition] = item;
+				swapItem.gridPosition = temp;
 				item.RunTask(MoveItemToOriginalPosition(item));
-				nextItem.RunTask(MoveItemToOriginalPosition(nextItem));
-			} else {
-				item.RunTask(MoveItemToOriginalPosition(item));
-				if (nextItem != null && nextItem.Task == null) {
-					nextItem.RunTask(MoveItemToOriginalPosition(nextItem));
-				}
 			}
+			item.RunTask(MoveItemToOriginalPosition(item));
+			while (item.Task != null) {
+				yield return null;
+			}
+			finished = true;
 		}
 
 		private IEnumerator<object> MoveItemToOriginalPosition(ItemComponent item)

@@ -42,7 +42,7 @@ namespace Match3Template.Types
 
 		public void CancelTask()
 		{
-			Debug.Assert(Task != null);
+			// Debug.Assert(Task != null);
 			Owner.Tasks.Remove(Task);
 			Task = null;
 		}
