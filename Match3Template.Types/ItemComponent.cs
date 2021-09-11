@@ -1,5 +1,6 @@
 using Lime;
 using System.Collections.Generic;
+using Debug = System.Diagnostics.Debug;
 
 namespace Match3Template.Types
 {
@@ -8,6 +9,43 @@ namespace Match3Template.Types
 		private BoardConfigComponent boardConfig;
 		private Match3ConfigComponent match3Config;
 		private Widget widget;
+
+		public Task Task { get; private set; }
+
+		private Task monitorTask;
+
+		protected override void OnOwnerChanged(Node oldOwner)
+		{
+			base.OnOwnerChanged(oldOwner);
+			widget = Owner as Widget;
+			widget.HitTestTarget = true;
+			if (monitorTask != null && oldOwner != null) {
+				oldOwner.Tasks.Remove(monitorTask);
+				Owner.Tasks.Add(monitorTask);
+			} else {
+				monitorTask = Owner.Tasks.Add(MonitorTask());
+			}
+		}
+
+		private IEnumerator<object> MonitorTask()
+		{
+			while (true) {
+				Task = Task?.Completed ?? false ? null : Task;
+				yield return null;
+			}
+		}
+
+		public void RunTask(IEnumerator<object> task)
+		{
+			Task = Owner.Tasks.Add(task);
+		}
+
+		public void CancelTask()
+		{
+			Debug.Assert(Task != null);
+			Owner.Tasks.Remove(Task);
+			Task = null;
+		}
 
 		public int Kind { get; set; }
 
@@ -97,13 +135,6 @@ namespace Match3Template.Types
 		public Vector2 WidgetPosition(IntVector2 position)
 		{
 			return (Vector2)position * widget.Size + widget.Size * 0.5f;
-		}
-
-		protected override void OnOwnerChanged(Node oldOwner)
-		{
-			base.OnOwnerChanged(oldOwner);
-			widget = Owner as Widget;
-			widget.HitTestTarget = true;
 		}
 	}
 }

@@ -17,10 +17,61 @@ namespace Match3Template.Types
 		private readonly List<ItemComponent> items = new List<ItemComponent>();
 		private static readonly List<ItemComponent> itemPool = new List<ItemComponent>();
 
-		private int GetPieceKindCount()
+		public static Board CreateBoard(Widget root)
 		{
-			var kindAnimation = pieceTemplate.Animations.Find("Color");
-			return kindAnimation.Markers.Count;
+			var match3Config = root.SelfAndDescendants
+				.FirstOrDefault(n => n.Components.Contains<Match3ConfigComponent>())
+				?.Components
+				.Get<Match3ConfigComponent>();
+
+			var boardWidget = root.SelfAndDescendants
+				.FirstOrDefault(n => n.Components.Contains<BoardConfigComponent>())
+				as Widget;
+
+			var boardConfig = boardWidget?.Components.Get<BoardConfigComponent>();
+
+			return new Board(boardWidget, boardConfig, match3Config);
+		}
+
+		public Board(Widget boardWidget, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
+		{
+			this.topLevelContainer = boardWidget;
+			this.boardConfig = boardConfig;
+			this.match3Config = match3Config;
+			boardTemplateScene = Node.Load<Frame>("Shell/Board");
+			pieceTemplate = boardTemplateScene["MultiMarble"] as Frame;
+			itemContainer = new Frame {
+				//ClipChildren = ClipMethod.ScissorTest,
+				Width = boardConfig.ColumnCount * pieceTemplate.Width,
+				Height = boardConfig.RowCount * pieceTemplate.Height
+			};
+			topLevelContainer.Nodes.Insert(0, itemContainer);
+			itemContainer.CenterOnParent();
+			itemContainer.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Red, 2.0f));
+			topLevelContainer.Tasks.Add(Update);
+		}
+
+		private IEnumerator<object> Update()
+		{
+			while (true) {
+				SpawnItems();
+				Fall();
+				HandleInput();
+				CheckMatches();
+				yield return null;
+			}
+		}
+
+		private void SpawnItems()
+		{
+			for (int i = 0; i < boardConfig.ColumnCount; i++) {
+				var gridPosition = new IntVector2(i, -1);
+				if (grid[gridPosition] == null) {
+					int pieceKind = Mathf.RandomInt(0, GetPieceKindCount() - 1);
+					var piece = CreatePiece(gridPosition, pieceKind);
+					piece.AnimateShow();
+				}
+			}
 		}
 
 		private ItemComponent CreatePiece(IntVector2 gridPosition, int kind)
@@ -39,97 +90,58 @@ namespace Match3Template.Types
 			return piece;
 		}
 
-		public Board(Widget boardWidget, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
+		private int GetPieceKindCount()
 		{
-			this.topLevelContainer = boardWidget;
-			this.boardConfig = boardConfig;
-			this.match3Config = match3Config;
-			boardTemplateScene = Node.Load<Frame>("Shell/Board");
-			pieceTemplate = boardTemplateScene["MultiMarble"] as Frame;
-			itemContainer = new Frame {
-				ClipChildren = ClipMethod.ScissorTest,
-				Width = boardConfig.ColumnCount * pieceTemplate.Width,
-				Height = boardConfig.RowCount * pieceTemplate.Height
-			};
-			topLevelContainer.Nodes.Insert(0, itemContainer);
-			itemContainer.CenterOnParent();
-			itemContainer.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Red, 2.0f));
-			topLevelContainer.Tasks.Add(Update);
+			var kindAnimation = pieceTemplate.Animations.Find("Color");
+			return kindAnimation.Markers.Count;
 		}
 
-		private IEnumerator<object> Update()
+		private void Fall()
 		{
-			var blowTime = 1.0f;
-			while (true) {
-				for (int i = 0; i < boardConfig.ColumnCount; i++) {
-					var gridPosition = new IntVector2(i, -1);
-					if (grid[gridPosition] == null) {
-						int pieceKind = Mathf.RandomInt(0, GetPieceKindCount() - 1);
-						var piece = CreatePiece(gridPosition, pieceKind);
-						piece.AnimateShow();
-					}
+			foreach (var item in items) {
+				if (item.Task != null) {
+					continue;
 				}
-
-				foreach (var item in items) {
-					if (itemTasks.ContainsKey(item)) {
-						continue;
-					}
-					if (!CanFall(item)) {
-						continue;
-					}
-					var task = topLevelContainer.Tasks.Add(FallTask(item));
-					itemTasks.Add(item, task);
+				if (!CanFall(item)) {
+					continue;
 				}
-
-				for (int i = 0; i < 4; i++) {
-					if (Window.Current.Input.WasTouchBegan(i)) {
-						var item = WidgetContext.Current.NodeUnderMouse?.Components.Get<ItemComponent>();
-						if (item == null) {
-							continue;
-						}
-						if (itemTasks.ContainsKey(item)) {
-							continue;
-						}
-						var task = topLevelContainer.Tasks.Add(InputTask(item, i));
-						itemTasks[item] = task;
-
-						// to blow selected
-						//items.Remove(item);
-						//var task = topLevelContainer.Tasks.Add(BlowTask(item));
-						//itemTasks.Add(item, task);
-					}
-				}
-
-				CheckMatches();
-				//blowTime -= Task.Current.Delta;
-				//if (blowTime < 0.0f) {
-				//	blowTime = 0.1f;
-				//	var freeItems = items.Where(i => !itemTasks.ContainsKey(i)).ToList();
-				//	if (freeItems.Any()) {
-				//		var item = Mathf.RandomItem(freeItems);
-				//		items.Remove(item);
-				//		var task = topLevelContainer.Tasks.Add(BlowTask(item));
-				//		itemTasks.Add(item, task);
-				//	}
-				//}
-				yield return null;
+				item.RunTask(FallTask(item));
 			}
 		}
 
-		private IEnumerator<object> MoveItemToOriginalPosition(ItemComponent item)
+		private bool CanFall(ItemComponent item)
 		{
-			var t = match3Config.PieceReturnOnTouchEndTime;
-			var p0 = item.Owner.AsWidget.Position;
-			var p1 = item.WidgetPosition(item.GridPosition);
-			while (t > 0.0f) {
-				item.Owner.AsWidget.Position = Mathf.Lerp(1 - t / match3Config.PieceReturnOnTouchEndTime, p0, p1);
-				t -= Task.Current.Delta;
-				if (t < 0.0f) {
-					item.Owner.AsWidget.Position = p1;
-				}
-				yield return null;
+			var belowPosition = item.GridPosition + IntVector2.Down;
+			return grid[belowPosition] == null && belowPosition.Y < boardConfig.RowCount;
+		}
+
+		private IEnumerator<object> FallTask(ItemComponent item)
+		{
+			yield return item.AnimateDropDownFall();
+			while (CanFall(item)) {
+				var belowPosition = item.GridPosition + IntVector2.Down;
+				yield return item.MoveTo(belowPosition, grid);
 			}
-			itemTasks.Remove(item);
+			var a = item.AnimateDropDownLand();
+			if (match3Config.WaitForAnimateDropDownLand) {
+				yield return a;
+			}
+		}
+
+		private void HandleInput()
+		{
+			for (int i = 0; i < 4; i++) {
+				if (Window.Current.Input.WasTouchBegan(i)) {
+					var item = WidgetContext.Current.NodeUnderMouse?.Components.Get<ItemComponent>();
+					if (item == null) {
+						continue;
+					}
+					if (item.Task != null) {
+						continue;
+					}
+					item.RunTask(InputTask(item, i));
+				}
+			}
 		}
 
 		private IEnumerator<object> InputTask(ItemComponent item, int i)
@@ -156,7 +168,6 @@ namespace Match3Template.Types
 				for (int j = 0; j < 4; j++) {
 					var a = j * 90 + 45;
 					if (angle < a + deadZoneAngleAmount && angle > a - deadZoneAngleAmount) {
-						itemTasks.Remove(item);
 						item.AnimateUnselect();
 						yield break;
 					}
@@ -188,12 +199,11 @@ namespace Match3Template.Types
 				yield return null;
 			}
 			Console.WriteLine("Exiting");
-			itemTasks.Remove(item);
 			item.AnimateUnselect();
 			if (
 				projectionAmount > match3Config.DragPercentOfPieceSizeRequiredForSwapActivation
 				&& nextItem != null
-				&& !itemTasks.ContainsKey(nextItem)
+				&& nextItem.Task == null
 			) {
 				var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
 				var i1 = nextItem.Owner.Parent.Nodes.IndexOf(nextItem.Owner);
@@ -203,13 +213,28 @@ namespace Match3Template.Types
 				item.gridPosition = nextItem.GridPosition;
 				grid[nextItem.GridPosition] = item;
 				nextItem.gridPosition = temp;
-				itemTasks.Add(item, topLevelContainer.Tasks.Add(MoveItemToOriginalPosition(item)));
-				itemTasks.Add(nextItem, topLevelContainer.Tasks.Add(MoveItemToOriginalPosition(nextItem)));
+				item.RunTask(MoveItemToOriginalPosition(item));
+				nextItem.RunTask(MoveItemToOriginalPosition(nextItem));
 			} else {
-				itemTasks.Add(item, topLevelContainer.Tasks.Add(MoveItemToOriginalPosition(item)));
-				if (nextItem != null && !itemTasks.ContainsKey(nextItem)) {
-					itemTasks.Add(nextItem, topLevelContainer.Tasks.Add(MoveItemToOriginalPosition(nextItem)));
+				item.RunTask(MoveItemToOriginalPosition(item));
+				if (nextItem != null && nextItem.Task == null) {
+					nextItem.RunTask(MoveItemToOriginalPosition(nextItem));
 				}
+			}
+		}
+
+		private IEnumerator<object> MoveItemToOriginalPosition(ItemComponent item)
+		{
+			var t = match3Config.PieceReturnOnTouchEndTime;
+			var p0 = item.Owner.AsWidget.Position;
+			var p1 = item.WidgetPosition(item.GridPosition);
+			while (t > 0.0f) {
+				item.Owner.AsWidget.Position = Mathf.Lerp(1 - t / match3Config.PieceReturnOnTouchEndTime, p0, p1);
+				t -= Task.Current.Delta;
+				if (t < 0.0f) {
+					item.Owner.AsWidget.Position = p1;
+				}
+				yield return null;
 			}
 		}
 
@@ -232,11 +257,10 @@ namespace Match3Template.Types
 					p -= IntVector2.Right;
 					count++;
 				}
-				if (count >= 3 && matchItems.All(i => !itemTasks.ContainsKey(i))) {
+				if (count >= 3 && matchItems.All(i => i.Task == null)) {
 					foreach (var matchItem in matchItems) {
 						items.Remove(matchItem);
-						var task = topLevelContainer.Tasks.Add(BlowTask(matchItem));
-						itemTasks.Add(matchItem, task);
+						matchItem.RunTask(BlowTask(matchItem));
 					}
 				}
 				// TODO: remove dup code
@@ -255,47 +279,13 @@ namespace Match3Template.Types
 					p -= IntVector2.Down;
 					count++;
 				}
-				if (count >= 3 && matchItems.All(i => !itemTasks.ContainsKey(i))) {
+				if (count >= 3 && matchItems.All(i => i.Task == null)) {
 					foreach (var matchItem in matchItems) {
 						items.Remove(matchItem);
-						var task = topLevelContainer.Tasks.Add(BlowTask(matchItem));
-						itemTasks.Add(matchItem, task);
+						matchItem.RunTask(BlowTask(matchItem));
 					}
 				}
 			}
-		}
-
-		//private IEnumerator<object> SwapItemsTask(ItemComponent item1, ItemComponent item2)
-		//{
-		//	grid[item1.GridPosition] = item2;
-		//	grid[item2.GridPosition] = item1;
-
-		//	gridPosition = position;
-		//	var p0 = widget.Position;
-		//	var p1 = WidgetPosition(position);
-		//	var t = match3Config.OneCellFallTime;
-		//	bool finished = false;
-		//	while (true) {
-		//		t -= Task.Current.Delta;
-		//		if (t < 0.0f) {
-		//			t = 0.0f;
-		//			finished = true;
-		//			GridPosition = position;
-		//		}
-		//		widget.Position = Mathf.Lerp(1.0f - t / match3Config.OneCellFallTime, p0, p1);
-		//		if (finished) {
-		//			yield break;
-		//		}
-		//		yield return null;
-		//	}
-		//}
-
-		private Dictionary<ItemComponent, Task> itemTasks = new Dictionary<ItemComponent, Task>();
-
-		private bool CanFall(ItemComponent item)
-		{
-			var belowPosition = item.GridPosition + IntVector2.Down;
-			return grid[belowPosition] == null && belowPosition.Y < boardConfig.RowCount;
 		}
 
 		private IEnumerator<object> BlowTask(ItemComponent item)
@@ -303,40 +293,7 @@ namespace Match3Template.Types
 			yield return item.AnimateMatch();
 			grid[item.GridPosition] = null;
 			items.Remove(item);
-			itemTasks.Remove(item);
 			item.Owner.UnlinkAndDispose();
-		}
-
-		private IEnumerator<object> FallTask(ItemComponent item)
-		{
-			yield return item.AnimateDropDownFall();
-			while (CanFall(item)) {
-				var belowPosition = item.GridPosition + IntVector2.Down;
-				yield return item.MoveTo(belowPosition, grid);
-			}
-			yield return item.AnimateDropDownLand();
-			itemTasks.Remove(item);
-		}
-
-		//private IEnumerator<object> SwapTask(ItemComponent item)
-		//{
-		//	//yield return item.AnimateDropDownFall();
-		//}
-
-		public static Board CreateBoard(Widget root)
-		{
-			var match3Config = root.SelfAndDescendants
-				.FirstOrDefault(n => n.Components.Contains<Match3ConfigComponent>())
-				?.Components
-				.Get<Match3ConfigComponent>();
-
-			var boardWidget = root.SelfAndDescendants
-				.FirstOrDefault(n => n.Components.Contains<BoardConfigComponent>())
-				as Widget;
-
-			var boardConfig = boardWidget?.Components.Get<BoardConfigComponent>();
-
-			return new Board(boardWidget, boardConfig, match3Config);
 		}
 	}
 }

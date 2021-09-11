@@ -21,6 +21,9 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public float DragPercentOfPieceSizeRequiredForSwapActivation { get; set; } = 30.0f;
+
+		[YuzuMember]
+		public bool WaitForAnimateDropDownLand { get; set; } = true;
 	}
 }
 
