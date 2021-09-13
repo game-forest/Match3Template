@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -147,6 +147,10 @@
     <ProjectReference Include="..\Match3Template.GeneratedScenes\Match3Template.GeneratedScenes.Android.csproj">
       <Project>{cf150772-5f4a-453c-91bd-d52911174b4e}</Project>
       <Name>Match3Template.GeneratedScenes.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Match3Template.Types\Match3Template.Types.Android.csproj">
+      <Project>{f5c4e327-1130-438a-9b1f-87907876f29b}</Project>
+      <Name>Match3Template.Types.Android</Name>
     </ProjectReference>
     <ProjectReference Include="Assets\Assets.Android.csproj">
       <Project>{1C601E58-2EF5-462E-86CB-B7443A410FC5}</Project>
