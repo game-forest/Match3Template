@@ -8,24 +8,6 @@
 	"Color":[4294967295],
 	"Nodes":[
 		{
-			"class":"Lime.Frame, Lime",
-			"Animators":[
-				{
-					"class":"Lime.Animator`1[[System.String]], Lime",
-					"ReadonlyKeys":[
-						[0,0,"Shown@Show"]
-					],
-					"TargetProperty":"Trigger"
-				}
-			],
-			"Color":[4294967295],
-			"ContentsPath":"/Game/Match3/ObstacleSticker",
-			"Id":"Sticker",
-			"Pivot":[0.5,0.5],
-			"Position":[196.83331,428.8333],
-			"Size":[90,90]
-		},
-		{
 			"class":"Lime.SimpleText, Lime",
 			"Color":[4294967295],
 			"Components":[
@@ -190,6 +172,24 @@
 				{
 					"class":"Lime.Animator`1[[System.String]], Lime",
 					"ReadonlyKeys":[
+						[0,0,"Shown@Show"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
+			"Color":[4294967295],
+			"ContentsPath":"/Game/Match3/ObstacleSticker",
+			"Id":"Sticker",
+			"Pivot":[0.5,0.5],
+			"Position":[196.83331,428.8333],
+			"Size":[90,90]
+		},
+		{
+			"class":"Lime.Frame, Lime",
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"ReadonlyKeys":[
 						[0,0,"Start@Act"]
 					],
 					"TargetProperty":"Trigger"
@@ -331,6 +331,7 @@
 	],
 	"Size":[1024,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

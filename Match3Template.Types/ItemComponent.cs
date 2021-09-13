@@ -4,15 +4,57 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Match3Template.Types
 {
+	public enum ItemType
+	{
+		Piece,
+		Blocker,
+		Drop
+	}
+
 	public class ItemComponent : NodeComponent
 	{
-		private BoardConfigComponent boardConfig;
-		private Match3ConfigComponent match3Config;
+		private readonly Grid grid;
 		private Widget widget;
-
-		public Task Task { get; private set; }
-
 		private Task monitorTask;
+		IPresenter hasTaskPresenter = null;
+		public ItemType Type { get; set; }
+		public Task Task { get; private set; }
+		public int Kind
+		{
+			get => kind;
+			set
+			{
+				if (Owner.Animations.TryFind("Kind", out var kindAnimation)) {
+					var marker = kindAnimation.Markers[value];
+					Owner.RunAnimation(marker.Id, kindAnimation.Id);
+				}
+				kind = value;
+			}
+		}
+		private int kind;
+		public IntVector2 GridPosition
+		{
+			get => gridPosition;
+			set
+			{
+				grid[gridPosition] = null;
+				gridPosition = value;
+				grid[value] = this;
+			}
+		}
+		private IntVector2 gridPosition = new IntVector2(int.MinValue, int.MinValue);
+
+		public void SwapWith(ItemComponent item)
+		{
+			grid[item.GridPosition] = this;
+			grid[GridPosition] = item;
+			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
+		}
+
+		public ItemComponent(Grid grid)
+		{
+			this.grid = grid;
+		}
 
 		protected override void OnOwnerChanged(Node oldOwner)
 		{
@@ -27,58 +69,53 @@ namespace Match3Template.Types
 			}
 		}
 
+		public override void Dispose()
+		{
+			base.Dispose();
+			grid[gridPosition] = null;
+		}
+
 		private IEnumerator<object> MonitorTask()
 		{
 			while (true) {
-				Task = Task?.Completed ?? false ? null : Task;
+				if (Task != null && Task.Completed) {
+					Task = null;
+					Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+				}
+				if (Task != null && !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)) {
+					Owner.CompoundPostPresenter.Add(hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f));
+				}
 				yield return null;
 			}
 		}
 
 		public void RunTask(IEnumerator<object> task)
 		{
+			Debug.Assert(Task == null);
 			Task = Owner.Tasks.Add(task);
 		}
 
 		public void CancelTask()
 		{
 			// Debug.Assert(Task != null);
-			Owner.Tasks.Remove(Task);
-			Task = null;
-		}
-
-		public int Kind { get; set; }
-
-		// TODO: make private again
-		public IntVector2 gridPosition;
-
-		public IntVector2 GridPosition
-		{
-			get => gridPosition;
-			set
-			{
-				gridPosition = value;
-				widget.Position = WidgetPosition(value);
+			if (Task != null) {
+				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+				Owner.Tasks.Remove(Task);
+				Task = null;
 			}
-		}
-
-		public ItemComponent(BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
-		{
-			this.boardConfig = boardConfig;
-			this.match3Config = match3Config;
-		}
-
-		public void SetPieceKind(int kind)
-		{
-			var kindAnimation = Owner.Animations.Find("Color");
-			var marker = kindAnimation.Markers[kind];
-			Owner.RunAnimation(marker.Id, kindAnimation.Id);
-			Kind = kind;
 		}
 
 		public Animation AnimateShow()
 		{
 			return Owner.RunAnimation("Start", "Show");
+		}
+
+		public Animation AnimateIdle()
+		{
+			if (Owner.Animations.TryFind("Idle", out var a)) {
+				a.Run("Start");
+			}
+			return a;
 		}
 
 		public Animation AnimateDropDownFall()
@@ -108,28 +145,17 @@ namespace Match3Template.Types
 			return animation;
 		}
 
-		public IEnumerator<object> MoveTo(IntVector2 position, Grid grid)
+		public IEnumerator<object> MoveTo(IntVector2 position, float time)
 		{
-			grid[GridPosition] = null;
-			grid[position] = this;
-			gridPosition = position;
+			GridPosition = position;
 			var p0 = widget.Position;
 			var p1 = WidgetPosition(position);
-			var t = match3Config.OneCellFallTime;
-			bool finished = false;
-			while (true) {
+			var t = time;
+			do {
 				t -= Task.Current.Delta;
-				if (t < 0.0f) {
-					t = 0.0f;
-					finished = true;
-					GridPosition = position;
-				}
-				widget.Position = Mathf.Lerp(1.0f - t / match3Config.OneCellFallTime, p0, p1);
-				if (finished) {
-					yield break;
-				}
+				widget.Position = t < 0.0f ? p1 : Mathf.Lerp(1.0f - t / time, p0, p1);
 				yield return null;
-			}
+			} while (t > 0.0f);
 		}
 
 		public Vector2 WidgetPosition(IntVector2 position)

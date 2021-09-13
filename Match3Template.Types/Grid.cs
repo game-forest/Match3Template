@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Match3Template.Types
 {
-public class Grid
+	public class Grid
 	{
 		private readonly Dictionary<IntVector2, ItemComponent> state = new Dictionary<IntVector2, ItemComponent>();
 

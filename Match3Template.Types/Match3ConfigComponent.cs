@@ -27,6 +27,12 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public bool WaitForAnimateDropDownFall { get; set; } = true;
+
+		[YuzuMember]
+		public bool SwapBackOnNonMatchingSwap { get; set; } = true;
+
+		[YuzuMember]
+		public float DiagonalSwipeDeadZoneAngle { get; set; } = 30.0f;
 	}
 }
 
