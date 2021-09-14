@@ -59,28 +59,6 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
-			"Animations":[
-				{
-					"IsLegacy":true,
-					"Markers":[
-						{
-							"Id":"Hide"
-						},
-						{
-							"Action":1,
-							"Frame":5
-						},
-						{
-							"Frame":10,
-							"Id":"Show"
-						},
-						{
-							"Action":1,
-							"Frame":15
-						}
-					]
-				}
-			],
 			"Color":[4294967295],
 			"Id":"Content",
 			"Nodes":[
@@ -134,7 +112,7 @@
 						}
 					],
 					"Pivot":[0.5,0.5],
-					"Position":[697.8333,7.0000305],
+					"Position":[697.8333,-79.99997],
 					"Size":[128,128.00003]
 				}
 			],
@@ -151,7 +129,7 @@
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types"
 				}
 			],
-			"ContentsPath":"Ui/BtnX",
+			"ContentsPath":"Externals/BtnX",
 			"Id":"BtnExit",
 			"Pivot":[0.5,0.5],
 			"Position":[1283,77],
@@ -175,6 +153,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
