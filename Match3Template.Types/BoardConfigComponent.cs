@@ -21,10 +21,10 @@ namespace Match3Template.Types
 		public List<int> AllowedPieces { get; private set; } = new List<int> { 0, 1, 2, 3, 4 };
 
 		[YuzuMember]
-		public int DropCount { get; set; } = 4;
+		public int DropCount { get; set; } = 0;
 
 		[YuzuMember]
-		public int BlockerCount { get; set; } = 8;
+		public int BlockerCount { get; set; } = 0;
 
 		[YuzuMember]
 		public List<IntVector2> CutoutCells { get; private set; } = new List<IntVector2>();

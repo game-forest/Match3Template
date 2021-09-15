@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Match3Template.Types
 {
-	public class Grid
+	public class Grid<T>
 	{
-		private readonly Dictionary<IntVector2, ItemComponent> state = new Dictionary<IntVector2, ItemComponent>();
+		private readonly Dictionary<IntVector2, T> state = new Dictionary<IntVector2, T>();
 
-		public ItemComponent this[IntVector2 position]
+		public T this[IntVector2 position]
 		{
 			get
 			{
 				if (!state.ContainsKey(position)) {
-					state.Add(position, null);
+					state.Add(position, default);
 				}
 				return state[position];
 			}

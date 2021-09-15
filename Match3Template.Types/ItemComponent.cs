@@ -13,7 +13,7 @@ namespace Match3Template.Types
 
 	public class ItemComponent : NodeComponent
 	{
-		private readonly Grid grid;
+		private readonly Grid<ItemComponent> grid;
 		private Widget widget;
 		private Task monitorTask;
 		IPresenter hasTaskPresenter = null;
@@ -51,7 +51,7 @@ namespace Match3Template.Types
 			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
 		}
 
-		public ItemComponent(Grid grid)
+		public ItemComponent(Grid<ItemComponent> grid)
 		{
 			this.grid = grid;
 		}
@@ -91,7 +91,7 @@ namespace Match3Template.Types
 
 		public void RunTask(IEnumerator<object> task)
 		{
-			Debug.Assert(Task == null);
+			//Debug.Assert(Task == null);
 			Task = Owner.Tasks.Add(task);
 		}
 

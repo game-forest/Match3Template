@@ -39,7 +39,7 @@ namespace Match3Template.Types
 		private readonly Widget lineBonusFxTemplate;
 		private readonly Widget lightningBonusFxTemplate;
 
-		private readonly Grid grid = new Grid();
+		private readonly Grid<ItemComponent> grid = new Grid<ItemComponent>();
 		private readonly List<ItemComponent> items = new List<ItemComponent>();
 
 		public static Board CreateBoard(Widget root)
@@ -328,7 +328,7 @@ namespace Match3Template.Types
 					item.GridPosition += projectionAxis;
 					if (match3Config.SwapBackOnNonMatchingSwap) {
 						var match = FindMatchForItem(item);
-						if (FindMatchForItem(item).Count < 3) {
+						if (FindMatchForItem(item).Any()) {
 							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 							movingBack = false;
 							if (grid[item.GridPosition - projectionAxis] == null) {
@@ -341,7 +341,7 @@ namespace Match3Template.Types
 				} else {
 					item.SwapWith(nextItem);
 					if (match3Config.SwapBackOnNonMatchingSwap) {
-						if (FindMatchForItem(item).Count < 3 && FindMatchForItem(nextItem).Count < 3) {
+						if (FindMatchForItem(item).Any() && FindMatchForItem(nextItem).Any()) {
 							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 							item.SwapWith(nextItem);
 							var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
@@ -371,46 +371,192 @@ namespace Match3Template.Types
 		private void CheckMatches()
 		{
 			HashSet<ItemComponent> blownItems = new HashSet<ItemComponent>();
-			HashSet<ItemComponent> matchedItems = new HashSet<ItemComponent>();
-			foreach (var item in items) {
-				if (matchedItems.Contains(item) || blownItems.Contains(item)) {
-					continue;
-				}
-				var match = FindMatchForItem(item);
-				foreach (var matchedItem in match) {
-					matchedItems.Add(matchedItem);
-				}
-				if (match.Count >= 3 && match.All(i => i.Task == null)) {
-					foreach (var matchedItem in match) {
-						matchedItem.RunTask(BlowTask(matchedItem));
-						blownItems.Add(matchedItem);
-					}
+			var allMatches = FindAllMatches();
+			foreach (var (match, bonus) in allMatches) {
+				foreach (var item in match) {
+					blownItems.Add(item);
+					item.RunTask(BlowTask(item));
 				}
 			}
+
+			//HashSet<ItemComponent> matchedItems = new HashSet<ItemComponent>();
+			//foreach (var item in items) {
+			//	if (matchedItems.Contains(item) || blownItems.Contains(item)) {
+			//		continue;
+			//	}
+			//	var match = FindMatchForItem(item);
+			//	foreach (var matchedItem in match) {
+			//		matchedItems.Add(matchedItem);
+			//	}
+			//	if (match.Any() && match.All(i => i.Task == null)) {
+			//		foreach (var matchedItem in match) {
+			//			matchedItem.RunTask(BlowTask(matchedItem));
+			//			blownItems.Add(matchedItem);
+			//		}
+			//	}
+			//}
 			foreach (var item in blownItems) {
 				items.Remove(item);
 			}
 		}
 
-		private List<ItemComponent> FindMatchForItem(ItemComponent item)
+		private static bool CanCombineIntoMatch(ItemComponent a, ItemComponent b)
 		{
-			if (item.Type != ItemType.Piece) {
-				return new List<ItemComponent>();
+			return a != null
+				&& b != null
+				&& a.Task == null
+				&& b.Task == null
+				&& a.Type == ItemType.Piece
+				&& b.Type == ItemType.Piece
+				&& a.Kind == b.Kind;
+		}
+
+		private List<(List<ItemComponent>, int)> FindAllMatches()
+		{
+			var hGrid = new Grid<int>();
+			var vGrid = new Grid<int>();
+			var hlGrid = new Grid<int>();
+			var vlGrid = new Grid<int>();
+			var matches = new List<(List<ItemComponent>, int)>();
+			var intersections = new Queue<IntVector2>();
+
+			FillGrid(hGrid, hlGrid, 0);
+			FillGrid(vGrid, vlGrid, 1);
+
+			while (intersections.Any()) {
+				var i = intersections.Dequeue();
+				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), 3));
+			}
+
+			for (int x = 0; x < boardConfig.ColumnCount; x++) {
+				for (int y = 0; y < boardConfig.RowCount; y++) {
+					var p = new IntVector2(x, y);
+					var ph = hGrid[p];
+					var pv = vGrid[p];
+					if (ph >= 3) {
+						matches.Add((TraceMatch(hGrid, p, 0), ph - 1));
+					}
+					if (pv >= 3) {
+						matches.Add((TraceMatch(vGrid, p, 1), pv - 1));
+					}
+				}
+			}
+
+			return matches;
+
+			void FillGrid(Grid<int> mGrid, Grid<int> lGrid, int d)
+			{
+				var dims = new [] { boardConfig.RowCount , boardConfig.ColumnCount };
+				for (int i = 0; i < dims[d]; i++) {
+					ItemComponent a = null;
+					for (int j = 0; j < dims[(d + 1) % 2]; j++) {
+						var t = new [] { i, j };
+						var p = new IntVector2(t[d], t[(d + 1) % 2]);
+						if (j == 0) {
+							a = grid[p];
+							continue;
+						}
+						var b = grid[p];
+						var pp = p - DeltaFromDirection(d);
+						if (CanCombineIntoMatch(a, b)) {
+							if (mGrid[pp] == 0) {
+								mGrid[pp] = 1;
+							}
+							mGrid[p] = mGrid[pp] + 1;
+						} else {
+							if (mGrid[pp] >= 5) {
+								matches.Add((TraceMatch(mGrid, pp, d), 4));
+							} else {
+								FillMatchSize(mGrid, lGrid, pp, d);
+								TraceIntersections(mGrid, pp, d);
+							}
+						}
+						a = b;
+					}
+				}
+			}
+
+			void FillMatchSize(Grid<int> mGrid, Grid<int> lGrid, IntVector2 s, int d)
+			{
+				var step = DeltaFromDirection(d);
+				var v = mGrid[s];
+				while (mGrid[s] != 0) {
+					lGrid[s] = v;
+					s -= step;
+				}
+			}
+
+			void TraceIntersections(Grid<int> mGrid, IntVector2 s, int d)
+			{
+				var step = DeltaFromDirection(d);
+				while (mGrid[s] != 0) {
+					if (hlGrid[s] >= 3 && vlGrid[s] >= 3) {
+						intersections.Enqueue(s);
+					}
+					s -= step;
+				}
+			}
+
+			List<ItemComponent> TraceMatch(Grid<int> mGrid, IntVector2 s, int d)
+			{
+				var step = DeltaFromDirection(d);
+				while (mGrid[s] < mGrid[s + step]) {
+					s += step;
+				}
+				var r = new List<ItemComponent>();
+				while (mGrid[s] != 0) {
+					r.Add(grid[s]);
+					mGrid[s] = 0;
+					s -= step;
+				}
+				return r;
+			}
+
+			IntVector2 DeltaFromDirection(int d)
+			{
+				var td = new[] { 0, 1 };
+				return new IntVector2(td[d], td[(d + 1) % 2]);
+			}
+		}
+
+		public enum Direction
+		{
+			Any,
+			Horizontal,
+			Vertical,
+		}
+
+		private IEnumerable<ItemComponent> FindMatchForItem(ItemComponent item)
+		{
+			if (item.Type != ItemType.Piece || item.Task != null) {
+				return Array.Empty<ItemComponent>();
 			}
 			HashSet<IntVector2> Visited = new HashSet<IntVector2>();
-			Queue<ItemComponent> queue = new Queue<ItemComponent>();
-			List<ItemComponent> match = new List<ItemComponent>();
+			Queue<(ItemComponent, Direction)> queue = new Queue<(ItemComponent, Direction)>();
+			List<ItemComponent> horizontalMatch = new List<ItemComponent>();
+			List<ItemComponent> verticalMatch = new List<ItemComponent>();
 			Visited.Add(item.GridPosition);
-			match.Add(item);
-			queue.Enqueue(item);
+			horizontalMatch.Add(item);
+			verticalMatch.Add(item);
+			queue.Enqueue((item, Direction.Any));
 			while (queue.Any()) {
-				var currentItem = queue.Dequeue();
+				var (currentItem, direction) = queue.Dequeue();
 				for (int i = 0; i < 4; i++) {
-					var nextPosition = currentItem.GridPosition
-						+ new IntVector2(
-							x: Math.Abs(i - 1) - 1,
-							y: -Math.Abs(i - 2) + 1
-						);
+					var delta = new IntVector2(
+						x: Math.Abs(i - 1) - 1,
+						y: -Math.Abs(i - 2) + 1
+					);
+					Direction nextDirection = delta switch {
+						IntVector2 (-1, 0) => Direction.Horizontal,
+						IntVector2 (1, 0) => Direction.Horizontal,
+						IntVector2 (0, -1) => Direction.Vertical,
+						IntVector2 (0, 1) => Direction.Vertical,
+						_ => throw new NotImplementedException()
+					};
+					if (direction != Direction.Any && nextDirection != direction) {
+						continue;
+					}
+					var nextPosition = currentItem.GridPosition + delta;
 					if (Visited.Contains(nextPosition)) {
 						continue;
 					}
@@ -419,18 +565,31 @@ namespace Match3Template.Types
 					if (
 						nextItem != null
 						&& nextItem.Kind == currentItem.Kind
-						//&& nextItem.Task == null
+						&& nextItem.Task == null
 					) {
-						queue.Enqueue(nextItem);
-						Debug.Assert(!match.Contains(nextItem));
-						match.Add(nextItem);
+						queue.Enqueue((nextItem, nextDirection));
+						switch (nextDirection) {
+							case Direction.Horizontal:
+								horizontalMatch.Add(nextItem);
+								break;
+							case Direction.Vertical:
+								verticalMatch.Add(nextItem);
+								break;
+						}
 					}
 				}
 			}
-			return match;
+			var r = new List<ItemComponent>();
+			if (horizontalMatch.Count >= 3) {
+				r.AddRange(horizontalMatch);
+			}
+			if (verticalMatch.Count >= 3) {
+				r.AddRange(verticalMatch);
+			}
+			return r.Distinct();
 		}
 
-		private IEnumerator<object> BlowMatch(List<ItemComponent> match)
+		private IEnumerator<object> BlowMatch(IEnumerable<ItemComponent> match)
 		{
 			var tasks = new List<Lime.Task>();
 			foreach (var item in match) {
@@ -446,6 +605,15 @@ namespace Match3Template.Types
 			yield return item.AnimateMatch();
 			items.Remove(item);
 			item.Owner.UnlinkAndDispose();
+		}
+	}
+
+	public static class IntVector2Extensions
+	{
+		public static void Deconstruct(this IntVector2 v, out int x, out int y)
+		{
+			x = v.X;
+			y = v.Y;
 		}
 	}
 }
