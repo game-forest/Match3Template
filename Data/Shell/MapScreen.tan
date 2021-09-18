@@ -58,62 +58,58 @@
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
+			"Anchors":20,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"ReadonlyKeys":[
+						[0,0,"Start@Add"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
+			"Color":[4294967295],
+			"ContentsPath":"Externals/Coins",
+			"Id":"Coins",
+			"Pivot":[0.5,0.5],
+			"Position":[683,63.5],
+			"Size":[256,64]
+		},
+		{
+			"class":"Lime.Frame, Lime",
 			"Anchors":15,
 			"Color":[4294967295],
 			"Id":"Content",
 			"Nodes":[
 				{
 					"class":"Lime.Button, Lime",
-					"Animations":[
-						{
-							"IsLegacy":true,
-							"Markers":[
-								{
-									"Action":1,
-									"Id":"Normal"
-								},
-								{
-									"Action":1,
-									"Frame":10,
-									"Id":"Focus"
-								},
-								{
-									"Action":1,
-									"Frame":20,
-									"Id":"Press"
-								},
-								{
-									"Action":1,
-									"Frame":30,
-									"Id":"Release"
-								},
-								{
-									"Action":1,
-									"Frame":40,
-									"Id":"Disable"
-								}
-							]
-						}
-					],
+					"Anchors":48,
 					"Color":[4294967295],
-					"Id":"BtnBullet",
-					"Nodes":[
-						{
-							"class":"Lime.Image, Lime",
-							"Color":[4294967295],
-							"Id":"Circle",
-							"Pivot":[0.5,0.5],
-							"Position":[64,64],
-							"Size":[128,128],
-							"Texture":{
-								"class":"Lime.SerializableTexture, Lime",
-								"SerializationPath":"/Common/Masks/Circle"
-							}
-						}
-					],
-					"Pivot":[0.5,0.5],
-					"Position":[697.8333,-79.99997],
-					"Size":[128,128.00003]
+					"ContentsPath":"Externals/Bullet",
+					"Id":"Bullet01",
+					"Pivot":[0.5,0.99999994],
+					"Position":[952.8333,446.77588],
+					"Size":[84,118.775894]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
+					"Color":[4294967295],
+					"ContentsPath":"Externals/Bullet",
+					"Id":"Bullet01",
+					"Pivot":[0.5,0.99999994],
+					"Position":[674.8333,463.77588],
+					"Size":[84,118.775894]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
+					"Color":[4294967295],
+					"ContentsPath":"Externals/Bullet",
+					"Id":"Bullet01",
+					"Pivot":[0.5,0.99999994],
+					"Position":[389.8333,538.7759],
+					"Size":[84,118.775894]
 				}
 			],
 			"Pivot":[0.5,0.5],
@@ -153,6 +149,8 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
 
 
 
