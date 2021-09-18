@@ -30,23 +30,24 @@ namespace Match3Template.Dialogs
 
 		public Dictionary<string, Func<Dialog>> Overrides { get; } = new Dictionary<string, Func<Dialog>>();
 
-		public void Open(string scenePath)
+		public IDialog Open(string scenePath)
 		{
 			if (scenePath.EndsWith(".tan",  StringComparison.OrdinalIgnoreCase)) {
 				scenePath = scenePath[0..^4];
 			}
 			if (!Lime.AssetBundle.Current.FileExists(System.IO.Path.ChangeExtension(scenePath, ".tan"))) {
 				Open(new AlertDialog($"Can't find {scenePath}"));
-				return;
+				return null;
 			}
 			var dialog = Overrides.ContainsKey(scenePath) ? Overrides[scenePath]() : new Dialog(scenePath);
-			Open(dialog);
+			return Open(dialog);
 		}
 
-		public void Open(Dialog dialog)
+		public IDialog Open(Dialog dialog)
 		{
 			dialog.Attach(The.World);
 			ActiveDialogs.Insert(0, dialog);
+			return dialog;
 		}
 
 		public void Remove(Dialog dialog)
@@ -54,9 +55,11 @@ namespace Match3Template.Dialogs
 			ActiveDialogs.Remove(dialog);
 		}
 
-		public void CloseActiveDialog()
+		public IDialog GetActiveDialog() => Top;
+
+		public void CloseDialog(IDialog dialog)
 		{
-			Top.Close();
+			dialog.Close();
 		}
 	}
 
@@ -64,6 +67,6 @@ namespace Match3Template.Dialogs
 	public class ScenePathAttribute : Attribute
 	{
 		public string ScenePath { get; set;}
-		public ScenePathAttribute(string scenePath) { ScenePath = scenePath;} 
+		public ScenePathAttribute(string scenePath) { ScenePath = scenePath;}
 	}
 }

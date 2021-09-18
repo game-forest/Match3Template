@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Match3Template.Dialogs
 {
-	public class Dialog : IDisposable
+	public class Dialog : IDialog, IDisposable
 	{
 		public Widget Root { get; private set; }
 		public DialogState State { get; protected set; }

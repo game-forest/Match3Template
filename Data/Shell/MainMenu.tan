@@ -91,8 +91,10 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"CloseDialog":false,
-							"ScenePath":"Shell/DoesnNotExist"
+							"ActiveDialogAnimation":"",
+							"CloseActiveDialog":false,
+							"NewDialogAnimation":"4@Index",
+							"ScenePath":"Shell/StoryDialogs"
 						}
 					],
 					"ContentsPath":"Externals/BtnOk",
@@ -513,6 +515,12 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
+
+
+
+
 
 
 

@@ -1,15 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Lime;
 
 namespace Match3Template
 {
+	public interface IDialog
+	{
+		public Widget Root { get; }
+
+		void Close();
+	}
+
 	public interface IDialogManager
 	{
 		static IDialogManager Instance { get; set; }
-		void Open(string scenePath);
-		void CloseActiveDialog();
+		IDialog Open(string scenePath);
+		IDialog GetActiveDialog();
+		void CloseDialog(IDialog dialog);
 	}
 }
