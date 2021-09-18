@@ -110,46 +110,6 @@
 							"ScenePath":"Shell/MapScreen"
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
-					"Id":"BtnOk",
-					"Pivot":[0.5,0.5],
-					"Position":[882,442],
-					"Size":[128,128]
-				},
-				{
-					"class":"Lime.Button, Lime",
-					"Color":[4294967295],
-					"Components":[
-						{
-							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"CloseDialog":false,
-							"ScenePath":"Shell/Options.tan"
-						}
-					],
-					"ContentsPath":"Externals/BtnOk",
-					"Id":"BtnOk",
-					"Pivot":[0.5,0.5],
-					"Position":[861,307],
-					"Size":[128,128]
-				},
-				{
-					"class":"Lime.Button, Lime",
-					"Color":[4294967295],
-					"Components":[
-						{
-							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"ScenePath":"Shell/Options.tan"
-						}
-					],
-					"ContentsPath":"Externals/BtnOk",
-					"Id":"BtnOk",
-					"Pivot":[0.5,0.5],
-					"Position":[857.3334,181],
-					"Size":[128,128]
-				},
-				{
-					"class":"Lime.Button, Lime",
-					"Color":[4294967295],
 					"ContentsPath":"Externals/BtnPlay",
 					"Id":"BtnPlay",
 					"Pivot":[0.5,0.5],
@@ -160,6 +120,12 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Color":[4294967295],
+					"Components":[
+						{
+							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
+							"ScenePath":"Shell/Options"
+						}
+					],
 					"ContentsPath":"Externals/BtnOptions",
 					"Id":"BtnOptions",
 					"Pivot":[0.5,0.5],
@@ -236,9 +202,9 @@
 					"Id":"Text",
 					"OverflowMode":1,
 					"Pivot":[0.5,0.5],
-					"Position":[522,311.96194],
-					"Size":[336,180],
-					"Text":"Welcome to\n\"Match3 Template\"",
+					"Position":[518.96234,311.96194],
+					"Size":[329.92465,180],
+					"Text":"Добро пожаловать\nв Match3 Template!",
 					"TextColor":[4287880191],
 					"VAlignment":1
 				},
@@ -289,7 +255,7 @@
 		},
 		{
 			"class":"Lime.Frame, Lime",
-			"Anchors":10,
+			"Anchors":11,
 			"Animators":[
 				{
 					"class":"Lime.Color4Animator, Lime",
@@ -307,7 +273,55 @@
 			"Id":"Logos",
 			"Nodes":[
 				{
+					"class":"Lime.SimpleText, Lime",
+					"Anchors":9,
+					"Color":[2868903935],
+					"Components":[
+						{
+							"class":"Lime.SignedDistanceFieldComponent, Lime",
+							"Dilate":2,
+							"Gradient":[
+								{
+									"Color":[4294967295]
+								},
+								{
+									"Color":[4278190080],
+									"Position":1
+								}
+							]
+						}
+					],
+					"Font":{
+						"Name":"RussoOne"
+					},
+					"FontHeight":60,
+					"Id":"Text",
+					"OverflowMode":1,
+					"Pivot":[0,0.5],
+					"Position":[99.8331,58.459595],
+					"Size":[337,64],
+					"Text":"2021",
+					"TextColor":[4292576057],
+					"VAlignment":1
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Anchors":9,
+					"Blending":3,
+					"Color":[2868903935],
+					"Id":"FEFU",
+					"Pivot":[0.5,0.5],
+					"Position":[61.166626,52.166626],
+					"Scale":[0.64038336,0.64038336],
+					"Size":[68,128],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"Data/Splash/FEFU"
+					}
+				},
+				{
 					"class":"Lime.Button, Lime",
+					"Anchors":10,
 					"Animations":[
 						{
 							"IsLegacy":true,
@@ -381,11 +395,12 @@
 						}
 					],
 					"Pivot":[0.5,0.5],
-					"Position":[154.69965,56],
+					"Position":[1292.6997,52.000008],
 					"Size":[102.73253,112]
 				},
 				{
 					"class":"Lime.Button, Lime",
+					"Anchors":10,
 					"Animations":[
 						{
 							"IsLegacy":true,
@@ -460,13 +475,13 @@
 						}
 					],
 					"Pivot":[0.5,0.5],
-					"Position":[51.366264,56],
+					"Position":[1189.3662,52.000008],
 					"Size":[102.73253,112]
 				}
 			],
 			"Pivot":[1,1],
 			"Position":[1366,768],
-			"Size":[228,112]
+			"Size":[1366,108]
 		},
 		{
 			"class":"Lime.TiledImage, Lime",
@@ -498,6 +513,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

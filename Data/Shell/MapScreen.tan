@@ -59,15 +59,6 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":20,
-			"Animators":[
-				{
-					"class":"Lime.Animator`1[[System.String]], Lime",
-					"ReadonlyKeys":[
-						[0,0,"Start@Add"]
-					],
-					"TargetProperty":"Trigger"
-				}
-			],
 			"Color":[4294967295],
 			"ContentsPath":"Externals/Coins",
 			"Id":"Coins",
@@ -128,7 +119,7 @@
 			"ContentsPath":"Externals/BtnX",
 			"Id":"BtnExit",
 			"Pivot":[0.5,0.5],
-			"Position":[1283,77],
+			"Position":[1298,72],
 			"Scale":[0.8,0.8],
 			"Size":[128,128]
 		},
