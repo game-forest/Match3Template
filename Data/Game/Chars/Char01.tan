@@ -1,77 +1,399 @@
 {
 	"class":"Lime.Frame, Lime",
+	"Animations":[
+		{
+			"ApplyZeroPose":false,
+			"Id":"ZeroPose"
+		},
+		{
+			"Id":"Appear",
+			"Markers":[
+				{
+					"Id":"Hide"
+				},
+				{
+					"Action":1,
+					"Frame":7,
+					"Id":"",
+					"JumpTo":""
+				},
+				{
+					"Frame":12,
+					"Id":"Show"
+				},
+				{
+					"Action":1,
+					"Frame":17,
+					"Id":"Shown",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"ApplyZeroPose":false,
+			"Id":"Idle",
+			"Markers":[
+				{
+					"Id":"Loop"
+				},
+				{
+					"Action":2,
+					"Frame":46,
+					"Id":"",
+					"JumpTo":"Loop"
+				}
+			]
+		},
+		{
+			"ApplyZeroPose":false,
+			"Id":"Emotion",
+			"Markers":[
+				{
+					"Action":1,
+					"Id":"Def",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"TrollFace",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"IsLegacy":true
+		}
+	],
 	"Color":[4294967295],
 	"Nodes":[
 		{
-			"class":"Lime.Image, Lime",
-			"Color":[4285822068],
-			"Id":"RingBlured",
-			"Pivot":[0.5,0.5],
-			"Position":[117.82,184.0378],
-			"Rotation":-13.679504,
-			"Shader":3,
-			"Size":[112.64,46.33878],
-			"Texture":{
-				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Common/Masks/RingBlured"
-			},
-			"UV0":[0,0.5]
-		},
-		{
-			"class":"Lime.Image, Lime",
-			"Color":[4285822068],
-			"Id":"Circle",
-			"Pivot":[0.5,0.5],
-			"Position":[139.5,116.5],
-			"Scale":[0.58428305,0.58428305],
-			"Size":[128,128],
-			"Texture":{
-				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Common/Masks/Circle"
-			}
-		},
-		{
-			"class":"Lime.Image, Lime",
-			"Color":[4285822068],
-			"Id":"Circle",
-			"Pivot":[0.5,0.5],
-			"Position":[74.5,122.5],
-			"Scale":[0.4212634,0.4212634],
-			"Size":[128,128],
-			"Texture":{
-				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Common/Masks/Circle"
-			}
-		},
-		{
-			"class":"Lime.Image, Lime",
+			"class":"Lime.Frame, Lime",
+			"Animators":[
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Idle",
+					"ReadonlyKeys":[
+						[0,0,[1,1]]
+					],
+					"TargetProperty":"Scale"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Appear",
+					"ReadonlyKeys":[
+						[0,2,[1,1]],
+						[4,2,[1.0476235,1.0476235]],
+						[7,2,[0.5177362,0.5177362]],
+						[12,2,[0.5177362,0.5177362]],
+						[15,2,[1.0476235,1.0476235]],
+						[17,2,[1,1]]
+					],
+					"TargetProperty":"Scale"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"Idle",
+					"ReadonlyKeys":[
+						[13,0,true]
+					],
+					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"Appear",
+					"ReadonlyKeys":[
+						[6,0,true],
+						[7,0,false],
+						[13,0,true]
+					],
+					"TargetProperty":"Visible"
+				}
+			],
 			"Color":[4294967295],
-			"Id":"CircleBig",
-			"Pivot":[0.5,0.5],
-			"Position":[116.5,141.5],
-			"Scale":[0.7444287,0.7444287],
-			"Shader":3,
-			"Size":[256,256],
-			"Texture":{
-				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Common/Masks/CircleBig"
-			}
-		},
-		{
-			"class":"Lime.NineGrid, Lime",
-			"BottomOffset":0.5,
-			"Color":[4294967295],
-			"Id":"CircleBig",
-			"Pivot":[0.5,0.5],
-			"Position":[139.5,326.57007],
-			"Scale":[0.7889685,0.6311748],
-			"Size":[256,476.14008],
-			"Texture":{
-				"class":"Lime.SerializableTexture, Lime",
-				"SerializationPath":"/Common/Masks/CircleBig"
-			}
+			"Id":"RingBluredGroup",
+			"Nodes":[
+				{
+					"class":"Lime.Bone, Lime",
+					"Animators":[
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,-91.30195]
+							],
+							"TargetProperty":"Rotation"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Idle",
+							"ReadonlyKeys":[
+								[0,2,-91.30195],
+								[16,2,-92.202],
+								[31,2,-90.131],
+								[46,2,-91.30195]
+							],
+							"TargetProperty":"Rotation"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,220.05681]
+							],
+							"TargetProperty":"Length"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Idle",
+							"ReadonlyKeys":[
+								[0,2,220.05681],
+								[16,2,221.35701],
+								[31,2,218.976],
+								[46,2,220.05681]
+							],
+							"TargetProperty":"Length"
+						}
+					],
+					"Id":"Bone",
+					"Index":1,
+					"Length":220.05681,
+					"Position":[116.78711,409.2871],
+					"RefLength":220.05681,
+					"RefPosition":[116.78711,409.2871],
+					"RefRotation":-91.30195,
+					"Rotation":-91.30195
+				},
+				{
+					"class":"Lime.Bone, Lime",
+					"Animators":[
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,-13.333846]
+							],
+							"TargetProperty":"Rotation"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Idle",
+							"ReadonlyKeys":[
+								[0,2,-13.333846],
+								[15,2,-13.71],
+								[27,2,-6.934],
+								[46,2,-13.333846]
+							],
+							"TargetProperty":"Rotation"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Idle",
+							"ReadonlyKeys":[
+								[0,0,162.26521]
+							],
+							"TargetProperty":"Length"
+						}
+					],
+					"BaseIndex":1,
+					"Id":"Bone1",
+					"Index":2,
+					"Length":162.26521,
+					"RefLength":162.26521,
+					"RefPosition":[111.78738,189.28711],
+					"RefRotation":-104.635796,
+					"Rotation":-13.333846
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Color":[4285822068],
+					"Id":"Mouth",
+					"Pivot":[0.5,0.5],
+					"Position":[96.60711,137.8249],
+					"Rotation":-13.679504,
+					"Shader":3,
+					"Size":[112.64,46.33878],
+					"SkinningWeights":[[2,1],[0,0],[0,0],[0,0]],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/RingBlured"
+					},
+					"UV0":[0,0.5]
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[128,128]]
+							],
+							"TargetProperty":"Size"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[128,128]],
+								[10,0,[128,22]]
+							],
+							"TargetProperty":"Size"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[0,0]]
+							],
+							"TargetProperty":"UV0"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[0,0]],
+								[10,0,[0,0.5]]
+							],
+							"TargetProperty":"UV0"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[1,1]]
+							],
+							"TargetProperty":"UV1"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[1,1]],
+								[10,0,[1,0.5]]
+							],
+							"TargetProperty":"UV1"
+						}
+					],
+					"Color":[4285822068],
+					"Id":"EyeL",
+					"Pivot":[0.5,0.5],
+					"Position":[118.28711,70.28711],
+					"Scale":[0.58428305,0.58428305],
+					"Size":[128,128],
+					"SkinningWeights":[[2,1],[0,0],[0,0],[0,0]],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/Circle"
+					}
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[128,128]]
+							],
+							"TargetProperty":"Size"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[128,128]],
+								[10,0,[128,22]]
+							],
+							"TargetProperty":"Size"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[1,1]]
+							],
+							"TargetProperty":"UV1"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[1,1]],
+								[10,0,[1,0.5]]
+							],
+							"TargetProperty":"UV1"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"ZeroPose",
+							"ReadonlyKeys":[
+								[0,0,[0,0]]
+							],
+							"TargetProperty":"UV0"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,0,[0,0]],
+								[10,0,[0,0.5]]
+							],
+							"TargetProperty":"UV0"
+						}
+					],
+					"Color":[4285822068],
+					"Id":"EyeR",
+					"Pivot":[0.5,0.5],
+					"Position":[53.28711,76.28711],
+					"Scale":[0.4212634,0.4212634],
+					"Size":[128,128],
+					"SkinningWeights":[[2,1],[0,0],[0,0],[0,0]],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/Circle"
+					}
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Color":[4294967295],
+					"Id":"Head",
+					"Pivot":[0.5,0.5],
+					"Position":[95.28711,95.28711],
+					"Scale":[0.7444287,0.7444287],
+					"Shader":3,
+					"Size":[256,256],
+					"SkinningWeights":[[2,1],[0,0],[0,0],[0,0]],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/CircleBig"
+					}
+				},
+				{
+					"class":"Lime.NineGrid, Lime",
+					"BottomOffset":0.5,
+					"Color":[4294967295],
+					"Id":"Body",
+					"Pivot":[0.5,0.5],
+					"Position":[118.28679,280.35962],
+					"Scale":[0.7889685,0.6311748],
+					"Size":[256,476.14008],
+					"SkinningWeights":[[1,1],[0,0],[0,0],[0,0]],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/CircleBig"
+					}
+				}
+			],
+			"Pivot":[0.5,0.8622696],
+			"Position":[130.85059,417.52216],
+			"Size":[219.27539,430.61853]
 		}
 	],
 	"Size":[256,512]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
+
+
 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

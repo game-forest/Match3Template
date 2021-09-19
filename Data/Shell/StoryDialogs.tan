@@ -7,25 +7,39 @@
 			"Markers":[
 				{
 					"Action":1,
-					"Id":"1",
+					"Id":"Story01",
+					"JumpTo":""
+				},
+				{
+					"Frame":10,
+					"Id":"Story02"
+				},
+				{
+					"Action":1,
+					"Frame":16,
+					"Id":"",
+					"JumpTo":""
+				},
+				{
+					"Frame":20,
+					"Id":"Story022"
+				},
+				{
+					"Action":1,
+					"Frame":29,
+					"Id":"",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
-					"Frame":1,
-					"Id":"2",
+					"Frame":35,
+					"Id":"Story03",
 					"JumpTo":""
 				},
 				{
 					"Action":1,
-					"Frame":2,
-					"Id":"3",
-					"JumpTo":""
-				},
-				{
-					"Action":1,
-					"Frame":3,
-					"Id":"4",
+					"Frame":40,
+					"Id":"Story04",
 					"JumpTo":""
 				}
 			]
@@ -38,15 +52,16 @@
 				},
 				{
 					"Action":1,
-					"Frame":5
+					"Frame":9
 				},
 				{
-					"Frame":10,
+					"Frame":14,
 					"Id":"Show"
 				},
 				{
 					"Action":1,
-					"Frame":15
+					"Frame":19,
+					"Id":"Shown"
 				}
 			]
 		},
@@ -84,20 +99,6 @@
 	],
 	"Color":[4294967295],
 	"Nodes":[
-		{
-			"class":"Lime.Button, Lime",
-			"Color":[4294967295],
-			"Components":[
-				{
-					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types"
-				}
-			],
-			"ContentsPath":"Externals/BtnX",
-			"Id":"BtnX",
-			"Pivot":[0.5,0.5],
-			"Position":[1252.9998,91.333374],
-			"Size":[128,128]
-		},
 		{
 			"class":"Lime.Button, Lime",
 			"Anchors":15,
@@ -138,13 +139,51 @@
 					"AnimationId":"Appear",
 					"ReadonlyKeys":[
 						[0,0,true],
-						[1,0,false],
-						[15,0,true]
+						[3,0,false],
+						[19,0,true]
 					],
 					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"Index",
+					"ReadonlyKeys":[
+						[0,0,"Shell/GameScreen"],
+						[10,0,""],
+						[29,0,"Shell/GameScreen"],
+						[40,1,"Shell/MainMenu"]
+					],
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].ScenePath"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"Index",
+					"ReadonlyKeys":[
+						[0,0,"Hide@Appear"],
+						[10,0,"Story022@Index"],
+						[29,0,"Hide@Appear"]
+					],
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].ActiveDialogAnimation"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"Index",
+					"ReadonlyKeys":[
+						[39,0,false],
+						[40,0,true]
+					],
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].CloseActiveDialog"
 				}
 			],
 			"Color":[4294967295],
+			"Components":[
+				{
+					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
+					"ActiveDialogAnimation":"Hide@Appear",
+					"CloseActiveDialog":false,
+					"ScenePath":"Shell/GameScreen"
+				}
+			],
 			"Id":"Button",
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
@@ -153,24 +192,144 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
-			"Animators":[
-				{
-					"class":"Lime.Color4Animator, Lime",
-					"AnimationId":"Index",
-					"ReadonlyKeys":[
-						[0,1,[4294967295]],
-						[1,1,[4278190335]],
-						[2,1,[4278255492]],
-						[3,1,[4294508799]]
-					],
-					"TargetProperty":"Color"
-				}
-			],
 			"Color":[4294967295],
 			"Id":"Content",
 			"Nodes":[
 				{
+					"class":"Lime.Frame, Lime",
+					"Animations":[
+						{
+							"Id":"Loop",
+							"Markers":[
+								{
+									"Id":"Start",
+									"JumpTo":""
+								},
+								{
+									"Action":2,
+									"Frame":13,
+									"Id":"",
+									"JumpTo":"Start"
+								}
+							]
+						},
+						{
+							"IsLegacy":true
+						}
+					],
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[10,2,[1225.8335,670.8334]],
+								[16,2,[1225.8335,685.8334]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.Color4Animator, Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[10,0,[16777215]],
+								[16,0,[4294967295]],
+								[20,0,[4294967295]],
+								[23,0,[16777215]]
+							],
+							"TargetProperty":"Color"
+						},
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[10,0,"Start@Loop"]
+							],
+							"TargetProperty":"Trigger"
+						}
+					],
+					"Color":[16777215],
+					"Id":"IcoPlayGroup",
+					"Nodes":[
+						{
+							"class":"Lime.Image, Lime",
+							"Animators":[
+								{
+									"class":"Lime.Vector2Animator, Lime",
+									"AnimationId":"Loop",
+									"ReadonlyKeys":[
+										[0,2,[16.918945,14.609497]],
+										[7,2,[16.918945,18.609497]],
+										[13,2,[16.918945,14.609497]]
+									],
+									"TargetProperty":"Position"
+								}
+							],
+							"Color":[4278746041],
+							"Id":"IcoPlay",
+							"Pivot":[0.5,0.5],
+							"Position":[16.918945,14.609497],
+							"Rotation":90,
+							"Scale":[0.38446704,0.38446704],
+							"Shader":3,
+							"Size":[76,88],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/IcoPlay"
+							}
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[1225.8335,670.8334],
+					"Size":[33.83789,29.218994]
+				},
+				{
 					"class":"Lime.SimpleText, Lime",
+					"Anchors":10,
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,2,[986.4436,573.21155]],
+								[7,2,[986.4436,573.21155]],
+								[9,2,[986.4436,808.21155]],
+								[14,2,[986.4436,808.21155]],
+								[17,2,[986.4436,573.21155]],
+								[19,2,[986.4436,573.21155]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,0,true],
+								[9,0,false],
+								[15,0,true]
+							],
+							"TargetProperty":"Visible"
+						},
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[0,0,"????"],
+								[24,0,"Умник"],
+								[40,0,"Кэп Очевид"]
+							],
+							"TargetProperty":"Text"
+						},
+						{
+							"class":"Lime.Color4Animator, Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[20,0,[4294967295]],
+								[24,0,[16777215]],
+								[29,0,[4294967295]]
+							],
+							"TargetProperty":"Color"
+						}
+					],
 					"Color":[4294967295],
 					"Components":[
 						{
@@ -197,11 +356,95 @@
 					"Pivot":[0.5,1],
 					"Position":[986.4436,573.21155],
 					"Size":[262.5543,58.75194],
-					"Text":"Меня зовут...",
+					"Text":"????",
 					"VAlignment":1
 				},
 				{
+					"class":"Lime.Frame, Lime",
+					"Anchors":10,
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,2,[987.1665,542.6665]],
+								[7,2,[987.1665,542.6665]],
+								[9,2,[987.1665,777.6665]],
+								[14,2,[987.1665,777.6665]],
+								[17,2,[987.1665,542.6665]],
+								[19,2,[987.1665,542.6665]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,0,true],
+								[9,0,false],
+								[15,0,true]
+							],
+							"TargetProperty":"Visible"
+						}
+					],
+					"Color":[4294967295],
+					"ContentsPath":"Externals/TitleBar",
+					"Id":"TitleBar",
+					"Pivot":[0.5,0.5],
+					"Position":[987.1665,542.6665],
+					"Scale":[0.61167693,0.61167693],
+					"Size":[512,128]
+				},
+				{
 					"class":"Lime.SimpleText, Lime",
+					"Anchors":11,
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,2,[684.30524,635.70306]],
+								[7,2,[684.30524,635.70306]],
+								[9,2,[684.30524,870.70306]],
+								[14,2,[684.30524,870.70306]],
+								[17,2,[684.30524,635.70306]],
+								[19,2,[684.30524,635.70306]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,0,true],
+								[9,0,false],
+								[15,0,true]
+							],
+							"TargetProperty":"Visible"
+						},
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[0,0,"Привет, странник! Меня зовут.... а впрочем это не важно. Я просто хотел узнать уверен ли ты в себе?"],
+								[10,0,"Хм, да у тебя получилось... Возможно, имеет смысл помочь тебе в твоём пути..."],
+								[25,0,"Ты можешь звать меня < Умник >.\nДавай проверим, не ошибся ли я в тебе."],
+								[35,0,"Ну и последнее испытание прежде чем отдать тебе награду - ответ на «Главный вопрос жизни, вселенной и всего такого»."],
+								[40,0,"Итак, ты достоин этого знания! \nЭто... 42 =)"]
+							],
+							"TargetProperty":"Text"
+						},
+						{
+							"class":"Lime.Color4Animator, Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[20,0,[4294967295]],
+								[25,0,[16777215]],
+								[29,0,[4294967295]]
+							],
+							"TargetProperty":"Color"
+						}
+					],
 					"Color":[4294967295],
 					"Components":[
 						{
@@ -225,25 +468,40 @@
 					"Id":"StoryText",
 					"OverflowMode":1,
 					"Pivot":[0.5,0.5],
-					"Position":[679.3054,639.349],
-					"Size":[1060.5354,114.441376],
-					"Text":"Hello\n",
+					"Position":[684.30524,635.70306],
+					"Size":[1050.5358,121.73321],
+					"Text":"Привет, странник! Меня зовут.... а впрочем это не важно. Я просто хотел узнать уверен ли ты в себе?",
 					"TextColor":[4278746041],
 					"VAlignment":1
 				},
 				{
-					"class":"Lime.Frame, Lime",
-					"Color":[4294967295],
-					"ContentsPath":"Externals/TitleBar",
-					"Id":"TitleBar",
-					"Pivot":[0.5,0.5],
-					"Position":[987.1665,542.6665],
-					"Scale":[0.61167693,0.61167693],
-					"Size":[512,128]
-				},
-				{
 					"class":"Lime.NineGrid, Lime",
 					"Anchors":11,
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,2,[683.00006,629]],
+								[7,2,[683.00006,629]],
+								[9,2,[683.00006,864]],
+								[14,2,[683.00006,864]],
+								[17,2,[683.00006,629]],
+								[19,2,[683.00006,629]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[3,0,true],
+								[9,0,false],
+								[15,0,true]
+							],
+							"TargetProperty":"Visible"
+						}
+					],
 					"BottomOffset":0.5,
 					"Color":[4294967295],
 					"Id":"SpeechBubble",
@@ -260,9 +518,42 @@
 				},
 				{
 					"class":"Lime.Frame, Lime",
+					"Anchors":10,
+					"Animators":[
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[0,0,"Hide@Appear"],
+								[16,0,"Show@Appear"]
+							],
+							"TargetProperty":"Trigger"
+						},
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Index",
+							"ReadonlyKeys":[
+								[0,0,"Loop@Idle,Def@Emotion"],
+								[10,0,"Loop@Idle,Def@Emotion"],
+								[35,0,"Loop@Idle,Def@Emotion"],
+								[40,0,"Loop@Idle,TrollFace@Emotion"]
+							],
+							"TargetProperty":"Trigger"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Appear",
+							"ReadonlyKeys":[
+								[0,0,true],
+								[9,0,false],
+								[16,0,true]
+							],
+							"TargetProperty":"Visible"
+						}
+					],
 					"Color":[4294967295],
 					"ContentsPath":"/Game/Chars/Char01",
-					"Id":"CharContainer",
+					"Id":"Char",
 					"Pivot":[0.5,0.5],
 					"Position":[975.49976,423.49994],
 					"Size":[256,512]
@@ -270,7 +561,8 @@
 			],
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
-			"Size":[1366,768]
+			"Size":[1366,768],
+			"TangerineFlags":4
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -281,7 +573,7 @@
 					"AnimationId":"Appear",
 					"ReadonlyKeys":[
 						[0,0,"Hide"],
-						[10,0,"Show"]
+						[14,0,"Show"]
 					],
 					"TargetProperty":"Trigger"
 				}
@@ -296,6 +588,8 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
 
 
 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

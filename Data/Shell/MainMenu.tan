@@ -3,6 +3,7 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"ApplyZeroPose":false,
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -86,22 +87,49 @@
 			"Id":"Dialog",
 			"Nodes":[
 				{
-					"class":"Lime.Button, Lime",
+					"class":"Lime.SimpleText, Lime",
 					"Color":[4294967295],
 					"Components":[
 						{
-							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"ActiveDialogAnimation":"",
-							"CloseActiveDialog":false,
-							"NewDialogAnimation":"4@Index",
-							"ScenePath":"Shell/StoryDialogs"
+							"class":"Lime.SignedDistanceFieldComponent, Lime",
+							"Dilate":2,
+							"Gradient":[
+								{
+									"Color":[4294967295]
+								},
+								{
+									"Color":[4278190080],
+									"Position":1
+								}
+							]
 						}
 					],
-					"ContentsPath":"Externals/BtnOk",
-					"Id":"BtnOk",
+					"Font":{
+						"Name":"RobotoMed"
+					},
+					"FontHeight":38.8,
+					"HAlignment":1,
+					"Id":"TMP",
+					"OverflowMode":1,
 					"Pivot":[0.5,0.5],
-					"Position":[878,620],
-					"Size":[128,128]
+					"Position":[126.38027,323.35736],
+					"Rotation":-22.480423,
+					"Size":[156.76729,98.298515],
+					"Text":"Kill me!!!",
+					"VAlignment":1
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Color":[4294967295],
+					"ContentsPath":"Externals/BtnPlay",
+					"Enabled":false,
+					"Id":"BtnPlay",
+					"Pivot":[0.5,0.5],
+					"Position":[182,393],
+					"Rotation":-27.519043,
+					"Scale":[0.870649,0.870649],
+					"Size":[232,148],
+					"TangerineFlags":512
 				},
 				{
 					"class":"Lime.Button, Lime",
@@ -113,7 +141,7 @@
 						}
 					],
 					"ContentsPath":"Externals/BtnPlay",
-					"Id":"BtnPlay",
+					"Id":"BtnGo",
 					"Pivot":[0.5,0.5],
 					"Position":[517,493],
 					"Size":[232,148],
@@ -162,8 +190,8 @@
 					"Pivot":[0.5,1],
 					"Position":[472.66647,178.79285],
 					"Rotation":-3.0702667,
-					"Size":[337,64],
-					"Text":"Main Menu",
+					"Size":[374,64],
+					"Text":"Match 3 Template",
 					"VAlignment":1
 				},
 				{
@@ -206,7 +234,7 @@
 					"Pivot":[0.5,0.5],
 					"Position":[518.96234,311.96194],
 					"Size":[329.92465,180],
-					"Text":"Добро пожаловать\nв Match3 Template!",
+					"Text":"Добро пожаловать\nв чудесный мир!",
 					"TextColor":[4287880191],
 					"VAlignment":1
 				},
@@ -515,6 +543,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
