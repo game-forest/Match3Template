@@ -10,8 +10,6 @@ namespace Match3Template.Dialogs
 		public GameScreen()
 		{
 			SoundManager.PlayMusic("Ingame");
-			var exitButton = Root["BtnExit"];
-			exitButton.Clicked = ReturnToMenu;
 			board = Board.CreateBoard(Root);
 		}
 

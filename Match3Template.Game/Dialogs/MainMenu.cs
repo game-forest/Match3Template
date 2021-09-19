@@ -8,10 +8,6 @@ namespace Match3Template.Dialogs
 		public MainMenu()
 		{
 			SoundManager.PlayMusic("Theme");
-			var playButton = Root["BtnPlay"];
-			var optionsButton = Root["BtnOptions"];
-			playButton.Clicked = () => CrossFadeInto("Shell/GameScreen");
-			optionsButton.Clicked = () => DialogManager.Open("Shell/Options");
 		}
 
 		protected override bool HandleAndroidBackButton()
