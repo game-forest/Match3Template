@@ -35,6 +35,7 @@
 			"Pivot":[1,0.5],
 			"Position":[138,331.86438],
 			"Size":[120.92233,43.728813],
+			"TangerineFlags":2,
 			"Text":"Drop:",
 			"TextColor":[4287880191],
 			"VAlignment":1
@@ -67,6 +68,7 @@
 			"Pivot":[1,0.5],
 			"Position":[138,445.86435],
 			"Size":[133.52946,43.728813],
+			"TangerineFlags":2,
 			"Text":"Obstacle:",
 			"TextColor":[4287880191],
 			"VAlignment":1
@@ -98,6 +100,7 @@
 			"Pivot":[0,0.5],
 			"Position":[442.00003,250.30775],
 			"Size":[336,126.615486],
+			"TangerineFlags":2,
 			"Text":"Combo:\nLine + Lightning\nBomb + Lightning",
 			"TextColor":[4278215049],
 			"VAlignment":1
@@ -130,6 +133,7 @@
 			"Pivot":[1,0.5],
 			"Position":[138,244.86441],
 			"Size":[152.29343,43.728813],
+			"TangerineFlags":2,
 			"Text":"Bonuses:",
 			"TextColor":[4287880191],
 			"VAlignment":1
@@ -162,6 +166,7 @@
 			"Pivot":[1,0.5],
 			"Position":[138,155.86441],
 			"Size":[128.45427,43.728813],
+			"TangerineFlags":2,
 			"Text":"Marbles:",
 			"TextColor":[4287880191],
 			"VAlignment":1
@@ -182,7 +187,8 @@
 			"Id":"Sticker",
 			"Pivot":[0.5,0.5],
 			"Position":[196.83331,428.8333],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":1792
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -200,7 +206,8 @@
 			"Id":"BonusLightningFX",
 			"Pivot":[0.5,0.5],
 			"Position":[377.33157,249.0063],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":768
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -218,7 +225,8 @@
 			"Id":"LineFX",
 			"Pivot":[2.9802322E-8,0.5],
 			"Position":[423,159],
-			"Size":[180,90]
+			"Size":[180,90],
+			"TangerineFlags":768
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -236,7 +244,8 @@
 			"Id":"Line",
 			"Pivot":[0.5,0.5],
 			"Position":[196.83331,247.16669],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":512
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -254,7 +263,8 @@
 			"Id":"Bomb",
 			"Pivot":[0.5,0.5],
 			"Position":[286.5,250.16669],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":512
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -272,16 +282,27 @@
 			"Id":"Lightning",
 			"Pivot":[0.5,0.5],
 			"Position":[376.83337,248.5],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":512
 		},
 		{
 			"class":"Lime.Frame, Lime",
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"ReadonlyKeys":[
+						[0,0,"Start@Idle"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"ContentsPath":"/Game/Match3/Drop",
 			"Id":"Drop",
 			"Pivot":[0.5,0.5],
 			"Position":[196.5,339.49997],
-			"Size":[90,90]
+			"Size":[90,90],
+			"TangerineFlags":1536
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -309,6 +330,7 @@
 			"Pivot":[0.5,0.5],
 			"Position":[512,384],
 			"Size":[720,720],
+			"TangerineFlags":2,
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
 				"SerializationPath":"/Game/Match3/Board/Board"
@@ -331,6 +353,7 @@
 	],
 	"Size":[1024,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
