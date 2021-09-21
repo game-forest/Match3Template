@@ -148,9 +148,10 @@
 					"class":"Lime.Animator`1[[System.String]], Lime",
 					"AnimationId":"Index",
 					"ReadonlyKeys":[
-						[0,0,"Shell/GameScreen"],
+						[0,0,"Game/Levels/Level1"],
 						[10,0,""],
-						[29,0,"Shell/GameScreen"],
+						[29,0,"Game/Levels/Level2"],
+						[35,0,"Game/Levels/Level3"],
 						[40,1,"Shell/MainMenu"]
 					],
 					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].ScenePath"
@@ -169,7 +170,10 @@
 					"class":"Lime.Animator`1[[System.Boolean]], Lime",
 					"AnimationId":"Index",
 					"ReadonlyKeys":[
-						[39,0,false],
+						[0,0,true],
+						[10,0,false],
+						[29,0,true],
+						[35,0,true],
 						[40,0,true]
 					],
 					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].CloseActiveDialog"
@@ -180,8 +184,7 @@
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
 					"ActiveDialogAnimation":"Hide@Appear",
-					"CloseActiveDialog":false,
-					"ScenePath":"Shell/GameScreen"
+					"ScenePath":"Game/Levels/Level1"
 				}
 			],
 			"Id":"Button",
@@ -588,6 +591,8 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
 
 
 

@@ -2,25 +2,35 @@ using System.Collections.Generic;
 using System.Linq;
 using Match3Template.Application;
 using Lime;
+using System;
 
 namespace Match3Template.Debug
 {
-	public static class Cheats
+	public class Cheats : ICheatManager
 	{
-		private static readonly List<string> debugInfoStrings = new List<string>();
-		public static bool Enabled { get; set; }
-		public static bool IsDebugInfoVisible { get; set; }
+		private readonly List<string> debugInfoStrings = new List<string>();
+		public bool Enabled { get; set; }
+		public bool IsDebugInfoVisible { get; set; }
 
 		private static WindowInput Input => The.Window.Input;
+
+		public bool DebugMatch3 { get; set; }
+		public static Cheats Instance { get; internal set; } = new Cheats();
+
 		private static RainbowDash.Menu currentMenu;
 
-		static Cheats()
+		public Cheats()
 		{
+			if (ICheatManager.Instance != null) {
+				throw new InvalidOperationException();
+			}
+			ICheatManager.Instance = this;
 			Enabled = true;
 			IsDebugInfoVisible = true;
+			DebugMatch3 = false;
 		}
 
-		public static void ProcessCheatKeys()
+		public void ProcessCheatKeys()
 		{
 			if (Enabled) {
 				if (Input.WasKeyPressed(Key.F1) || Input.WasTouchBegan(3)) {
@@ -40,28 +50,28 @@ namespace Match3Template.Debug
 			}
 		}
 
-		public static bool WasKeyPressed(Key key)
+		public bool WasKeyPressed(Key key)
 		{
 			return Enabled && Input.WasKeyPressed(key);
 		}
 
-		public static bool IsKeyPressed(Key key)
+		public bool IsKeyPressed(Key key)
 		{
 			return Enabled && Input.IsKeyPressed(key);
 		}
 
-		public static bool WasTripleTouch()
+		public bool WasTripleTouch()
 		{
 			var isTouchJustStarted = Input.WasTouchBegan(0) || Input.WasTouchBegan(1) || Input.WasTouchBegan(2);
 			return Enabled && IsTripleTouch() && isTouchJustStarted;
 		}
 
-		public static bool IsTripleTouch()
+		public bool IsTripleTouch()
 		{
 			return Enabled && Input.IsTouching(0) && Input.IsTouching(1) && Input.IsTouching(2);
 		}
 
-		public static RainbowDash.Menu ShowMenu()
+		public RainbowDash.Menu ShowMenu()
 		{
 			if (currentMenu != null) {
 				return currentMenu;
@@ -82,13 +92,15 @@ namespace Match3Template.Debug
 			return menu;
 		}
 
-		private static void InitialFill(RainbowDash.Menu menu)
+		private void InitialFill(RainbowDash.Menu menu)
 		{
 			var debugSection = menu.Section("Debug");
 
 			debugSection.Item("Toggle Debug Info", () =>
 				IsDebugInfoVisible = !IsDebugInfoVisible
 			);
+
+			debugSection.Item("Debug Match3", () => DebugMatch3 = !DebugMatch3);
 
 			debugSection.Item("Enable Splash Screen", () => {
 				The.AppData.EnableSplashScreen = true;
@@ -126,12 +138,12 @@ namespace Match3Template.Debug
 		private static float overdrawAverageOverdraw = 0;
 #endif // PROFILER
 
-		public static void AddDebugInfo(string info)
+		public void AddDebugInfo(string info)
 		{
 			debugInfoStrings.Add(info);
 		}
 
-		public static void RenderDebugInfo()
+		public void RenderDebugInfo()
 		{
 			if (!IsDebugInfoVisible) {
 				return;
@@ -157,6 +169,11 @@ namespace Match3Template.Debug
 				fields.Add($"Overdraw average: {overdrawAverageOverdraw}");
 			}
 #endif // PROFILER
+
+			fields.Add("Active dialogs:");
+			foreach (var dialog in Dialogs.DialogManager.Instance.ActiveDialogs) {
+				fields.Add($"\t - {dialog.Root}");
+			}
 
 			var text = string.Join("\n", fields.Concat(debugInfoStrings));
 

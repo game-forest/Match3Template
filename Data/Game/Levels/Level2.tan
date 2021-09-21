@@ -1,0 +1,53 @@
+{
+	"class":"Lime.Frame, Lime",
+	"Anchors":15,
+	"Color":[4294967295],
+	"Nodes":[
+		{
+			"class":"Lime.Frame, Lime",
+			"Anchors":15,
+			"Color":[4294967295],
+			"Id":"Ui",
+			"Nodes":[
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":6,
+					"Color":[4294967295],
+					"Components":[
+						{
+							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
+							"ScenePath":""
+						}
+					],
+					"ContentsPath":"/Shell/Externals/BtnX",
+					"Id":"BtnExit",
+					"Pivot":[0.5,0.5],
+					"Position":[960.7969,61.200195],
+					"Scale":[0.8,0.8],
+					"Size":[128,128]
+				}
+			],
+			"Pivot":[0.5,0.5],
+			"Position":[512,384],
+			"Size":[1024,768],
+			"TangerineFlags":772
+		},
+		{
+			"class":"Lime.Frame, Lime",
+			"Anchors":48,
+			"Color":[4294967295],
+			"Components":[
+				{
+					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
+					"ColumnCount":8
+				}
+			],
+			"ContentsPath":"/Shell/GameScreen",
+			"Id":"GameScreen",
+			"Pivot":[0.5,0.5],
+			"Position":[512,384],
+			"Size":[1366,768]
+		}
+	],
+	"Size":[1024,768]
+}

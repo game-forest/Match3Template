@@ -108,12 +108,12 @@ namespace Match3Template.Application
 
 		private void OnUpdateFrame(float delta)
 		{
-			Cheats.ProcessCheatKeys();
+			The.Cheats.ProcessCheatKeys();
 			var speedMultiplier = 1.0f;
-			if (TimeAccelerationMode || Cheats.IsKeyPressed(Key.Shift) || Cheats.IsTripleTouch()) {
+			if (TimeAccelerationMode || The.Cheats.IsKeyPressed(Key.Shift) || The.Cheats.IsTripleTouch()) {
 				speedMultiplier = 10.0f;
 			}
-			if (Cheats.IsKeyPressed(Key.Tilde)) {
+			if (The.Cheats.IsKeyPressed(Key.Tilde)) {
 				speedMultiplier = 0.1f;
 			}
 
@@ -158,7 +158,7 @@ namespace Match3Template.Application
 
 		private void UpdateFrame(float delta, bool requiredInputSimulation = false)
 		{
-			Cheats.ProcessCheatKeys();
+			The.Cheats.ProcessCheatKeys();
 			The.World.Update(delta);
 			if (requiredInputSimulation && !requiredToWaitForWindowRendering) {
 				Lime.Application.Input.Simulator.OnBetweenFrames(delta);
@@ -180,7 +180,7 @@ namespace Match3Template.Application
 			Renderer.BeginFrame();
 			SetupViewportAndProjectionMatrix();
 			World.RenderAll();
-			Cheats.RenderDebugInfo();
+			The.Cheats.RenderDebugInfo();
 			Renderer.EndFrame();
 		}
 

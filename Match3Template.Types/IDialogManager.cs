@@ -16,4 +16,11 @@ namespace Match3Template
 		IDialog GetActiveDialog();
 		void CloseDialog(IDialog dialog);
 	}
+
+	public interface ICheatManager
+	{
+		static ICheatManager Instance { get; set; }
+
+		public bool DebugMatch3 { get; }
+	}
 }

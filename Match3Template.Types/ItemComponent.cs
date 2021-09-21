@@ -11,6 +11,14 @@ namespace Match3Template.Types
 		Drop
 	}
 
+	public enum BonusType
+	{
+		HorizontalLine,
+		VerticalLine,
+		Bomb,
+		Lightning
+	}
+
 	public class ItemComponent : NodeComponent
 	{
 		private readonly Grid<ItemComponent> grid;
@@ -82,7 +90,11 @@ namespace Match3Template.Types
 					Task = null;
 					Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
 				}
-				if (Task != null && !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)) {
+				if (
+					Task != null
+					&& !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)
+					&& ICheatManager.Instance.DebugMatch3
+				) {
 					Owner.CompoundPostPresenter.Add(hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f));
 				}
 				yield return null;

@@ -2,6 +2,7 @@ using System.Threading;
 using Match3Template.Application;
 using Match3Template.Dialogs;
 using Lime;
+using Match3Template.Debug;
 
 namespace Match3Template
 {
@@ -16,6 +17,9 @@ namespace Match3Template
 		public static DialogManager DialogManager => DialogManager.Instance;
 		public static Logger Log => Logger.Instance;
 		public static Persistence Persistence => persistence.Value;
+
 		private static readonly ThreadLocal<Persistence> persistence = new ThreadLocal<Persistence>(() => new Persistence());
+
+		public static Cheats Cheats => Cheats.Instance;
 	}
 }

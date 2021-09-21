@@ -213,28 +213,41 @@ namespace Match3Template.Types
 
 		private void OpenDialog()
 		{
+			WidgetContext.Current.Root.Tasks.Add(OpenDialogTask());
+		}
+
+		private IEnumerator<object> OpenDialogTask()
+		{
 			var m = IDialogManager.Instance;
 			var activeDialog = m.GetActiveDialog();
-			if (!string.IsNullOrEmpty(ScenePath)) {
-				var dialog = m.Open(ScenePath);
-				RunAnimationFromTriggerString(dialog.Root, NewDialogAnimation);
+			var scenePath = ScenePath;
+			var newDialogAnimation = NewDialogAnimation;
+			var closeActiveDialog = CloseActiveDialog;
+			if (activeDialog != null) {
+				if (!string.IsNullOrEmpty(ActiveDialogAnimation)) {
+					var animations = RunAnimationFromTriggerString(activeDialog.Root, ActiveDialogAnimation);
+					foreach (var animation in animations) {
+						yield return animation;
+					}
+				}
+				if (closeActiveDialog) {
+					m.CloseDialog(activeDialog);
+				}
 			}
-			if (activeDialog == null) {
-				return;
-			}
-			if (CloseActiveDialog) {
-				m.CloseDialog(activeDialog);
-			} else {
-				RunAnimationFromTriggerString(activeDialog.Root, ActiveDialogAnimation);
+			if (!string.IsNullOrEmpty(scenePath)) {
+				var dialog = m.Open(scenePath);
+				RunAnimationFromTriggerString(dialog.Root, newDialogAnimation);
 			}
 		}
 
-		private static void RunAnimationFromTriggerString(Node node, string trigger)
+		private static List<Animation> RunAnimationFromTriggerString(Node node, string trigger)
 		{
+			List<Animation> runAnimations = new List<Animation>();
 			if (string.IsNullOrEmpty(trigger)) {
-				return;
+				return runAnimations;
 			}
 			TriggerMultipleAnimations(trigger);
+			return runAnimations;
 
 			void TriggerMultipleAnimations(string trigger)
 			{
@@ -254,10 +267,16 @@ namespace Match3Template.Types
 					if (s.Length == 2) {
 						var markerId = s[0];
 						var animationId = s[1];
-						node.TryRunAnimation(markerId, animationId);
+						if (node.Animations.TryFind(animationId, out var animation)) {
+							if (animation.TryRun(markerId)) {
+								runAnimations.Add(animation);
+							}
+						}
 					}
 				} else {
-					node.TryRunAnimation(markerWithOptionalAnimationId, null);
+					if (node.TryRunAnimation(markerWithOptionalAnimationId, null)) {
+						runAnimations.Add(node.DefaultAnimation);
+					}
 				}
 			}
 		}

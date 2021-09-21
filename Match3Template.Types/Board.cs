@@ -24,6 +24,21 @@ namespace Match3Template.Types
 		}
 	}
 
+	[TangerineRegisterComponent]
+	public class CreateBoardComponent : NodeComponent
+	{
+		public CreateBoardComponent()
+		{
+
+		}
+#if !TANGERINE
+		protected override void OnBuilt()
+		{
+			var board = Board.CreateBoard(Owner.GetRoot().AsWidget);
+		}
+#endif // !TANGERINE
+	}
+
 	public class Board
 	{
 		private readonly Widget topLevelContainer;
@@ -55,6 +70,8 @@ namespace Match3Template.Types
 
 			var boardConfig = boardWidget?.Components.Get<BoardConfigComponent>();
 
+			boardWidget = boardWidget["BoardContainer"];
+
 			return new Board(boardWidget, boardConfig, match3Config);
 		}
 
@@ -78,8 +95,9 @@ namespace Match3Template.Types
 			};
 			topLevelContainer.Nodes.Insert(0, itemContainer);
 			itemContainer.CenterOnParent();
-			itemContainer.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Red, 2.0f));
 			topLevelContainer.Tasks.Add(Update);
+			containerBoundsPresenter = new WidgetBoundsPresenter(Color4.Red, 2.0f);
+			topLevelContainer.Tasks.Add(CheckCheatsTask);
 		}
 
 		private IEnumerator<object> Update()
@@ -93,6 +111,24 @@ namespace Match3Template.Types
 				yield return null;
 			}
 		}
+
+		private IEnumerator<object> CheckCheatsTask()
+		{
+			while (true) {
+				var containerPresenter = itemContainer.CompoundPostPresenter;
+				if (ICheatManager.Instance.DebugMatch3) {
+					if (!containerPresenter.Contains(containerBoundsPresenter)) {
+						containerPresenter.Add(containerBoundsPresenter);
+					}
+				} else {
+					containerPresenter.Remove(containerBoundsPresenter);
+				}
+				yield return 0.1f;
+			}
+
+		}
+
+		private IPresenter containerBoundsPresenter;
 
 		private void FillBoard()
 		{
