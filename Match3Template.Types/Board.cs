@@ -409,6 +409,11 @@ namespace Match3Template.Types
 			HashSet<ItemComponent> blownItems = new HashSet<ItemComponent>();
 			var allMatches = FindAllMatches();
 			foreach (var (match, bonus) in allMatches) {
+				var bonusItem = match.First();
+				if (bonus != BonusType.None) {
+					match.Remove(bonusItem);
+					bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
+				}
 				foreach (var item in match) {
 					blownItems.Add(item);
 					item.RunTask(BlowTask(item));
@@ -436,6 +441,28 @@ namespace Match3Template.Types
 			}
 		}
 
+		private IEnumerator<object> SpawnBonusTask(ItemComponent bonusItem, BonusType bonus)
+		{
+			bonusItem.SetBonus(CreateBonusWidget(bonus), bonus);
+			yield return bonusItem.AnimateShowBonus();
+			bonusItem.AnimateIdle();
+		}
+
+		private Widget CreateBonusWidget(BonusType bonus)
+		{
+			var r = bonus switch {
+				BonusType.HorizontalLine => lineBonusTemplate.Clone<Widget>(),
+				BonusType.VerticalLine => lineBonusTemplate.Clone<Widget>(),
+				BonusType.Bomb => bombBonusTemplate.Clone<Widget>(),
+				BonusType.Lightning => lightningBonusTemplate.Clone<Widget>(),
+				_ => throw new NotImplementedException(),
+			};
+			if (bonus == BonusType.VerticalLine) {
+				r.Rotation = 90;
+			}
+			return r;
+		}
+
 		private static bool CanCombineIntoMatch(ItemComponent a, ItemComponent b)
 		{
 			return a != null
@@ -447,13 +474,13 @@ namespace Match3Template.Types
 				&& a.Kind == b.Kind;
 		}
 
-		private List<(List<ItemComponent>, int)> FindAllMatches()
+		private List<(List<ItemComponent>, BonusType)> FindAllMatches()
 		{
 			var hGrid = new Grid<int>();
 			var vGrid = new Grid<int>();
 			var hlGrid = new Grid<int>();
 			var vlGrid = new Grid<int>();
-			var matches = new List<(List<ItemComponent>, int)>();
+			var matches = new List<(List<ItemComponent>, BonusType)>();
 			var intersections = new Queue<IntVector2>();
 
 			FillGrid(hGrid, hlGrid, 0);
@@ -461,7 +488,7 @@ namespace Match3Template.Types
 
 			while (intersections.Any()) {
 				var i = intersections.Dequeue();
-				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), 3));
+				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), BonusType.Bomb));
 			}
 
 			for (int x = 0; x < boardConfig.ColumnCount; x++) {
@@ -470,10 +497,10 @@ namespace Match3Template.Types
 					var ph = hGrid[p];
 					var pv = vGrid[p];
 					if (ph >= 3) {
-						matches.Add((TraceMatch(hGrid, p, 0), ph - 1));
+						matches.Add((TraceMatch(hGrid, p, 0), ph > 3 ? BonusType.HorizontalLine : BonusType.None));
 					}
 					if (pv >= 3) {
-						matches.Add((TraceMatch(vGrid, p, 1), pv - 1));
+						matches.Add((TraceMatch(vGrid, p, 1), pv > 3 ? BonusType.VerticalLine : BonusType.None));
 					}
 				}
 			}
@@ -501,7 +528,7 @@ namespace Match3Template.Types
 							mGrid[p] = mGrid[pp] + 1;
 						} else {
 							if (mGrid[pp] >= 5) {
-								matches.Add((TraceMatch(mGrid, pp, d), 4));
+								matches.Add((TraceMatch(mGrid, pp, d), BonusType.Lightning));
 							} else {
 								FillMatchSize(mGrid, lGrid, pp, d);
 								TraceIntersections(mGrid, pp, d);

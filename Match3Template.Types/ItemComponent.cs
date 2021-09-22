@@ -16,7 +16,8 @@ namespace Match3Template.Types
 		HorizontalLine,
 		VerticalLine,
 		Bomb,
-		Lightning
+		Lightning,
+		None
 	}
 
 	public class ItemComponent : NodeComponent
@@ -27,6 +28,8 @@ namespace Match3Template.Types
 		IPresenter hasTaskPresenter = null;
 		public ItemType Type { get; set; }
 		public Task Task { get; private set; }
+		public BonusType BonusType { get; set; } = BonusType.None;
+
 		public int Kind
 		{
 			get => kind;
@@ -117,6 +120,16 @@ namespace Match3Template.Types
 			}
 		}
 
+		public Animation AnimateShowBonus()
+		{
+			return bonusWidget.RunAnimation("Start", "Show");
+		}
+
+		public Animation AnimateActBonus()
+		{
+			return bonusWidget.RunAnimation("Start", "Act");
+		}
+
 		public Animation AnimateShow()
 		{
 			return Owner.RunAnimation("Start", "Show");
@@ -124,29 +137,48 @@ namespace Match3Template.Types
 
 		public Animation AnimateIdle()
 		{
-			if (Owner.Animations.TryFind("Idle", out var a)) {
-				a.Run("Start");
+			if (bonusWidget != null) {
+				if (bonusWidget.Animations.TryFind("Idle", out var a)) {
+					a.Run("Start");
+				}
 			}
-			return a;
+			{
+				if (Owner.Animations.TryFind("Idle", out var a)) {
+					a.Run("Start");
+				}
+				return a;
+			}
 		}
 
 		public Animation AnimateDropDownFall()
 		{
+			if (bonusWidget != null) {
+				bonusWidget.RunAnimation("Fall", "DropDown");
+			}
 			return Owner.RunAnimation("Fall", "DropDown");
 		}
 
 		public Animation AnimateDropDownLand()
 		{
+			if (bonusWidget != null) {
+				bonusWidget.RunAnimation("Land", "DropDown");
+			}
 			return Owner.RunAnimation("Land", "DropDown");
 		}
 
 		public Animation AnimateSelect()
 		{
+			if (bonusWidget != null) {
+				bonusWidget.RunAnimation("Select", "Selection");
+			}
 			return Owner.RunAnimation("Select", "Selection");
 		}
 
 		public Animation AnimateUnselect()
 		{
+			if (bonusWidget != null) {
+				bonusWidget.RunAnimation("Unselect", "Selection");
+			}
 			return Owner.RunAnimation("Unselect", "Selection");
 		}
 
@@ -174,6 +206,16 @@ namespace Match3Template.Types
 		{
 			return (Vector2)position * widget.Size + widget.Size * 0.5f;
 		}
+
+		internal void SetBonus(Widget widget, BonusType bonus)
+		{
+			bonusWidget = widget;
+			BonusType = bonus;
+			Owner.Nodes.Insert(0, bonusWidget);
+			bonusWidget.CenterOnParent();
+		}
+
+		private Widget bonusWidget;
 	}
 }
 
