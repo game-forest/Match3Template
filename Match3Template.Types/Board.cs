@@ -409,14 +409,44 @@ namespace Match3Template.Types
 			HashSet<ItemComponent> blownItems = new HashSet<ItemComponent>();
 			var allMatches = FindAllMatches();
 			foreach (var (match, bonus) in allMatches) {
-				var bonusItem = match.First();
+				var bonusItem = match.First(i => i.BonusType == BonusType.None);
 				if (bonus != BonusType.None) {
 					match.Remove(bonusItem);
 					bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
 				}
-				foreach (var item in match) {
+				var queue = new Queue<ItemComponent>(match);
+				while (queue.Any()) {
+					var item = queue.Dequeue();
+					if (item == null) {
+						continue;
+					}
+					if (item.Task != null) {
+						continue;
+					}
 					blownItems.Add(item);
 					item.RunTask(BlowTask(item));
+					if (item.BonusType == BonusType.HorizontalLine) {
+						for (int i = 0; i < boardConfig.ColumnCount; i++) {
+							queue.Enqueue(grid[new IntVector2(i, item.GridPosition.Y)]);
+						}
+					} else if (item.BonusType == BonusType.VerticalLine) {
+						for (int i = 0; i < boardConfig.RowCount; i++) {
+							queue.Enqueue(grid[new IntVector2(item.GridPosition.X, i)]);
+						}
+					} else if (item.BonusType == BonusType.Bomb) {
+						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
+							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
+								queue.Enqueue(grid[new IntVector2(i, j)]);
+							}
+						}
+					} else if (item.BonusType == BonusType.Lightning) {
+						var kind = boardConfig.AllowedPieces.RandomItem();
+						foreach (var i in items) {
+							if (i.Kind == kind) {
+								queue.Enqueue(i);
+							}
+						}
+					}
 				}
 			}
 
@@ -497,10 +527,12 @@ namespace Match3Template.Types
 					var ph = hGrid[p];
 					var pv = vGrid[p];
 					if (ph >= 3) {
-						matches.Add((TraceMatch(hGrid, p, 0), ph > 3 ? BonusType.HorizontalLine : BonusType.None));
+						var match = TraceMatch(hGrid, p, 0);
+						matches.Add((match, match.Count > 3 ? BonusType.HorizontalLine : BonusType.None));
 					}
 					if (pv >= 3) {
-						matches.Add((TraceMatch(vGrid, p, 1), pv > 3 ? BonusType.VerticalLine : BonusType.None));
+						var match = TraceMatch(vGrid, p, 1);
+						matches.Add((match, match.Count > 3 ? BonusType.VerticalLine : BonusType.None));
 					}
 				}
 			}
@@ -509,7 +541,7 @@ namespace Match3Template.Types
 
 			void FillGrid(Grid<int> mGrid, Grid<int> lGrid, int d)
 			{
-				var dims = new [] { boardConfig.RowCount , boardConfig.ColumnCount };
+				var dims = new [] { boardConfig.ColumnCount, boardConfig.RowCount };
 				for (int i = 0; i < dims[d]; i++) {
 					ItemComponent a = null;
 					for (int j = 0; j < dims[(d + 1) % 2]; j++) {
