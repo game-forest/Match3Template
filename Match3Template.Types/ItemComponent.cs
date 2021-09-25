@@ -20,12 +20,8 @@ namespace Match3Template.Types
 		None
 	}
 
-	public class ItemComponent : NodeComponent
+	public class ItemComponent : WidgetBehaviorComponent
 	{
-		private readonly Grid<ItemComponent> grid;
-		private Widget widget;
-		private Task monitorTask;
-		IPresenter hasTaskPresenter = null;
 		public ItemType Type { get; set; }
 		public Task Task { get; private set; }
 		public BonusType BonusType { get; set; } = BonusType.None;
@@ -54,6 +50,8 @@ namespace Match3Template.Types
 			}
 		}
 		private IntVector2 gridPosition = new IntVector2(int.MinValue, int.MinValue);
+		private Grid<ItemComponent> grid;
+		private IPresenter hasTaskPresenter;
 
 		public void SwapWith(ItemComponent item)
 		{
@@ -62,46 +60,12 @@ namespace Match3Template.Types
 			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
 		}
 
-		public ItemComponent(Grid<ItemComponent> grid)
+		private Vector2 cellSize;
+
+		public ItemComponent(Grid<ItemComponent> grid, Vector2 cellSize)
 		{
 			this.grid = grid;
-		}
-
-		protected override void OnOwnerChanged(Node oldOwner)
-		{
-			base.OnOwnerChanged(oldOwner);
-			widget = Owner as Widget;
-			widget.HitTestTarget = true;
-			if (monitorTask != null && oldOwner != null) {
-				oldOwner.Tasks.Remove(monitorTask);
-				Owner.Tasks.Add(monitorTask);
-			} else {
-				monitorTask = Owner.Tasks.Add(MonitorTask());
-			}
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			grid[gridPosition] = null;
-		}
-
-		private IEnumerator<object> MonitorTask()
-		{
-			while (true) {
-				if (Task != null && Task.Completed) {
-					Task = null;
-					Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
-				}
-				if (
-					Task != null
-					&& !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)
-					&& ICheatManager.Instance.DebugMatch3
-				) {
-					Owner.CompoundPostPresenter.Add(hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f));
-				}
-				yield return null;
-			}
+			this.cellSize = cellSize;
 		}
 
 		public void RunTask(IEnumerator<object> task)
@@ -192,19 +156,19 @@ namespace Match3Template.Types
 		public IEnumerator<object> MoveTo(IntVector2 position, float time)
 		{
 			GridPosition = position;
-			var p0 = widget.Position;
-			var p1 = WidgetPosition(position);
+			var p0 = Widget.Position;
+			var p1 = GridPositionToWidgetPosition(position);
 			var t = time;
 			do {
 				t -= Task.Current.Delta;
-				widget.Position = t < 0.0f ? p1 : Mathf.Lerp(1.0f - t / time, p0, p1);
+				Widget.Position = t < 0.0f ? p1 : Mathf.Lerp(1.0f - t / time, p0, p1);
 				yield return null;
 			} while (t > 0.0f);
 		}
 
-		public Vector2 WidgetPosition(IntVector2 position)
+		public Vector2 GridPositionToWidgetPosition(IntVector2 position)
 		{
-			return (Vector2)position * widget.Size + widget.Size * 0.5f;
+			return (Vector2)position * cellSize + cellSize * 0.5f;
 		}
 
 		internal void SetBonus(Widget widget, BonusType bonus)
@@ -213,6 +177,37 @@ namespace Match3Template.Types
 			BonusType = bonus;
 			Owner.Nodes.Insert(0, bonusWidget);
 			bonusWidget.CenterOnParent();
+		}
+
+		protected override void Start()
+		{
+			base.Start();
+			Widget.HitTestTarget = true;
+		}
+
+		protected override void Stop(Node owner)
+		{
+			Widget.HitTestTarget = false;
+			base.Stop(owner);
+			CancelTask();
+			grid[GridPosition] = null;
+			grid = null;
+		}
+
+		protected override void Update(float delta)
+		{
+			base.Update(delta);
+			if (Task != null && Task.Completed) {
+				Task = null;
+				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+			}
+			if (
+				Task != null
+				&& !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)
+				&& ICheatManager.Instance.DebugMatch3
+			) {
+				Owner.CompoundPostPresenter.Add(hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f));
+			}
 		}
 
 		private Widget bonusWidget;

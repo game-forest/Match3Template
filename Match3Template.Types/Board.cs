@@ -34,13 +34,20 @@ namespace Match3Template.Types
 #if !TANGERINE
 		protected override void OnBuilt()
 		{
-			var board = Board.CreateBoard(Owner.GetRoot().AsWidget);
+			//var board = Board.CreateBoard(Owner.GetRoot().AsWidget);
 		}
 #endif // !TANGERINE
 	}
 
+	public class DropCompletedEventArgs : EventArgs
+	{
+		public Widget ItemWidget { get; set; }
+	}
+
 	public class Board
 	{
+		public event EventHandler<DropCompletedEventArgs> DropCompleted;
+
 		private readonly Widget topLevelContainer;
 		private readonly Frame itemContainer;
 		private readonly BoardConfigComponent boardConfig;
@@ -187,12 +194,13 @@ namespace Match3Template.Types
 				_ => throw new NotImplementedException(),
 			};
 			ItemComponent item;
-			w.Components.Add(item = new ItemComponent(grid));
+			// Passing w.Size we set up cell size
+			w.Components.Add(item = new ItemComponent(grid, w.Size));
 			item.Kind = kind;
 			item.Type = type;
 			itemContainer.AddNode(w);
 			item.GridPosition = gridPosition;
-			item.Owner.AsWidget.Position = item.WidgetPosition(gridPosition);
+			item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(gridPosition);
 			items.Add(item);
 			item.RunTask(AnimateTask(item.AnimateShow()));
 			item.AnimateIdle();
@@ -206,6 +214,7 @@ namespace Match3Template.Types
 		private void Fall()
 		{
 			items.Sort((a, b) => - a.GridPosition.Y + b.GridPosition.Y);
+			var completedDrops = new List<ItemComponent>();
 			foreach (var item in items) {
 				if (item.Task != null) {
 					continue;
@@ -216,7 +225,17 @@ namespace Match3Template.Types
 					|| CanFallDiagonallyLeft(item))
 				{
 					item.RunTask(FallTask(item));
+				} else if (item.Type == ItemType.Drop && item.GridPosition.Y == boardConfig.RowCount - 1) {
+					completedDrops.Add(item);
 				}
+			}
+			foreach (var item in completedDrops) {
+				var e = new DropCompletedEventArgs() {
+					ItemWidget = item.Owner.AsWidget
+				};
+				items.Remove(item);
+				item.Owner.Components.Remove(item);
+				DropCompleted?.Invoke(this, e);
 			}
 		}
 
@@ -354,7 +373,7 @@ namespace Match3Template.Types
 				touchDelta = input.GetTouchPosition(i) - touchPosition0;
 				projectionAmount = Vector2.DotProduct((Vector2)projectionAxis, touchDelta);
 				projectionAmount = Mathf.Clamp(projectionAmount, 0, item.Owner.AsWidget.Width);
-				item.Owner.AsWidget.Position = item.WidgetPosition(item.GridPosition)
+				item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(item.GridPosition)
 					+ projectionAmount * (Vector2)projectionAxis;
 				yield return null;
 			}
@@ -450,26 +469,27 @@ namespace Match3Template.Types
 				}
 			}
 
-			//HashSet<ItemComponent> matchedItems = new HashSet<ItemComponent>();
-			//foreach (var item in items) {
-			//	if (matchedItems.Contains(item) || blownItems.Contains(item)) {
-			//		continue;
-			//	}
-			//	var match = FindMatchForItem(item);
-			//	foreach (var matchedItem in match) {
-			//		matchedItems.Add(matchedItem);
-			//	}
-			//	if (match.Any() && match.All(i => i.Task == null)) {
-			//		foreach (var matchedItem in match) {
-			//			matchedItem.RunTask(BlowTask(matchedItem));
-			//			blownItems.Add(matchedItem);
-			//		}
-			//	}
-			//}
 			foreach (var item in blownItems) {
 				items.Remove(item);
 			}
 		}
+
+		//HashSet<ItemComponent> matchedItems = new HashSet<ItemComponent>();
+		//foreach (var item in items) {
+		//	if (matchedItems.Contains(item) || blownItems.Contains(item)) {
+		//		continue;
+		//	}
+		//	var match = FindMatchForItem(item);
+		//	foreach (var matchedItem in match) {
+		//		matchedItems.Add(matchedItem);
+		//	}
+		//	if (match.Any() && match.All(i => i.Task == null)) {
+		//		foreach (var matchedItem in match) {
+		//			matchedItem.RunTask(BlowTask(matchedItem));
+		//			blownItems.Add(matchedItem);
+		//		}
+		//	}
+		//}
 
 		private IEnumerator<object> SpawnBonusTask(ItemComponent bonusItem, BonusType bonus)
 		{
@@ -700,6 +720,11 @@ namespace Match3Template.Types
 			yield return item.AnimateMatch();
 			items.Remove(item);
 			item.Owner.UnlinkAndDispose();
+		}
+
+		internal int GetDropCount()
+		{
+			return boardConfig.DropCount;
 		}
 	}
 

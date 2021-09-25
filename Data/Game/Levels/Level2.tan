@@ -39,7 +39,8 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
-					"ColumnCount":8
+					"ColumnCount":8,
+					"DropCount":4
 				}
 			],
 			"ContentsPath":"/Shell/GameScreen",
