@@ -67,6 +67,17 @@
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
+			"Color":[4294967295],
+			"ContentsPath":"Externals/MSGCongratz",
+			"Id":"MSGCongratz",
+			"Pivot":[0.5,0.5],
+			"Position":[683,384],
+			"Size":[1366,768],
+			"TangerineFlags":1540,
+			"Visible":false
+		},
+		{
+			"class":"Lime.Frame, Lime",
 			"Anchors":15,
 			"Color":[4294967295],
 			"ContentsPath":"LevelBuyMoves",
