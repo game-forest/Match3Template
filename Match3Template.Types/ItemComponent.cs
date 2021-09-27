@@ -20,11 +20,21 @@ namespace Match3Template.Types
 		None
 	}
 
+	public enum DamageKind
+	{
+		Match,
+		Line,
+		Bomb,
+		Lightning,
+	}
+
 	public class ItemComponent : WidgetBehaviorComponent
 	{
 		public ItemType Type { get; set; }
 		public Task Task { get; private set; }
 		public BonusType BonusType { get; set; } = BonusType.None;
+
+		public int BlockerLives { get; set; } = 2;
 
 		public int Kind
 		{
@@ -99,6 +109,11 @@ namespace Match3Template.Types
 			return Owner.RunAnimation("Start", "Show");
 		}
 
+		public Animation AnimateShown()
+		{
+			return Owner.RunAnimation("Shown", "Show");
+		}
+
 		public Animation AnimateIdle()
 		{
 			if (bonusWidget != null) {
@@ -153,6 +168,41 @@ namespace Match3Template.Types
 			return animation;
 		}
 
+		public Animation AnimateBlowByLine()
+		{
+			var animation = Owner.Animations.Find("DestroyByLine");
+			Owner.RunAnimation("Start", "DestroyByLine");
+			return animation;
+		}
+
+		public Animation AnimateBlowByBomb()
+		{
+			var animation = Owner.Animations.Find("DestroyByBomb");
+			Owner.RunAnimation("Start", "DestroyByBomb");
+			return animation;
+		}
+
+		public Animation AnimateBlowByLightning()
+		{
+			var animation = Owner.Animations.Find("DestroyByLightning");
+			Owner.RunAnimation("Start", "DestroyByLightning");
+			return animation;
+		}
+
+		public Animation AnimateBlockerDamage1()
+		{
+			var animation = Owner.Animations.Find("Progress");
+			Owner.RunAnimation("Match01", "Progress");
+			return animation;
+		}
+
+		public Animation AnimateBlockerDamage2()
+		{
+			var animation = Owner.Animations.Find("Progress");
+			Owner.RunAnimation("Match02", "Progress");
+			return animation;
+		}
+
 		public IEnumerator<object> MoveTo(IntVector2 position, float time)
 		{
 			GridPosition = position;
@@ -179,16 +229,17 @@ namespace Match3Template.Types
 			bonusWidget.CenterOnParent();
 		}
 
-		protected override void Start()
+		protected override void OnOwnerChanged(Node oldOwner)
 		{
-			base.Start();
-			Widget.HitTestTarget = true;
+			base.OnOwnerChanged(oldOwner);
+			if (Widget != null) {
+				Widget.HitTestTarget = true;
+			}
 		}
 
-		protected override void Stop(Node owner)
+		public void Kill()
 		{
 			Widget.HitTestTarget = false;
-			base.Stop(owner);
 			CancelTask();
 			grid[GridPosition] = null;
 			grid = null;

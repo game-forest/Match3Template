@@ -149,22 +149,26 @@ namespace Match3Template.Types
 		{
 			for (int i = 0; i < boardConfig.DropCount; i++) {
 				var drop = CreateItem(RandomEmptyCell(), ItemType.Drop, -1);
+				drop.AnimateShown();
 			}
 
 			for (int i = 0; i < boardConfig.BlockerCount; i++) {
 				var blocker = CreateItem(RandomEmptyCell(), ItemType.Blocker, -1);
+				blocker.AnimateShown();
 			}
 
-			//for (int i = 0; i < boardConfig.ColumnCount * boardConfig.RowCount; i++) {
-			//	var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.RowCount);
-			//	if (grid[gridPosition] == null) {
-			//		int pieceKind = Mathf.RandomItem(boardConfig.AllowedPieces);
-			//		CreateItem(gridPosition, ItemType.Piece, pieceKind);
-			//	}
-			//}
-			////foreach (item in items) {
-			////	match =
-			////}
+			int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount
+				- boardConfig.BlockerCount
+				- boardConfig.DropCount;
+
+			for (int i = 0; i < pieceCount; i++) {
+				var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.RowCount);
+				if (grid[gridPosition] == null) {
+					int pieceKind = Mathf.RandomItem(boardConfig.AllowedPieces);
+					var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
+					item.AnimateShown();
+				}
+			}
 
 			IntVector2 RandomEmptyCell()
 			{
@@ -185,7 +189,8 @@ namespace Match3Template.Types
 				var gridPosition = new IntVector2(i, 0);
 				if (grid[gridPosition] == null) {
 					int pieceKind = Mathf.RandomItem(boardConfig.AllowedPieces);
-					CreateItem(gridPosition, ItemType.Piece, pieceKind);
+					var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
+					item.RunTask(AnimateTask(item.AnimateShow()));
 				}
 			}
 		}
@@ -210,7 +215,6 @@ namespace Match3Template.Types
 			item.GridPosition = gridPosition;
 			item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(gridPosition);
 			items.Add(item);
-			item.RunTask(AnimateTask(item.AnimateShow()));
 			item.AnimateIdle();
 			return item;
 		}
@@ -230,11 +234,49 @@ namespace Match3Template.Types
 				if (
 					CanFall(item)
 					|| CanFallDiagonallyRight(item)
-					|| CanFallDiagonallyLeft(item))
-				{
+					|| CanFallDiagonallyLeft(item)
+				) {
 					item.RunTask(FallTask(item));
 				} else if (item.Type == ItemType.Drop && item.GridPosition.Y == boardConfig.RowCount - 1) {
 					completedDrops.Add(item);
+				} else
+				if (item.Type == ItemType.Blocker) {
+					// Gap filling
+					var p = item.GridPosition;
+					var belowPosition = p + IntVector2.Down;
+					while (true) {
+						if (belowPosition.Y == boardConfig.ColumnCount) {
+							break;
+						}
+						var below = grid[belowPosition];
+						var belowLeft = grid[belowPosition + IntVector2.Left];
+						var belowRight = grid[belowPosition + IntVector2.Right];
+						if (below == null) {
+							if (belowLeft != null && belowLeft.Task == null && belowLeft.Type != ItemType.Blocker) {
+								belowLeft.GridPosition = belowPosition;
+								belowLeft.RunTask(MoveToTask(belowLeft));
+								break;
+							} else if (belowRight != null && belowRight.Task == null && belowRight.Type != ItemType.Blocker) {
+								belowRight.GridPosition = belowPosition;
+								belowRight.RunTask(MoveToTask(belowRight));
+								break;
+							} else if ((belowLeft == null || belowLeft.Type == ItemType.Blocker) && (belowRight == null || belowRight.Type == ItemType.Blocker)) {
+								belowPosition += IntVector2.Down;
+								// TODO: lift pieces somehow
+								//below = grid[belowPosition];
+								//if (below != null && below.Task == null && below.Type != ItemType.Blocker) {
+								//	below.GridPosition = belowPosition + IntVector2.Up;
+								//	break;
+								//} else {
+								//	break;
+								//}
+							} else {
+								break;
+							}
+						} else {
+							break;
+						}
+					}
 				}
 			}
 			foreach (var item in completedDrops) {
@@ -242,9 +284,15 @@ namespace Match3Template.Types
 					ItemWidget = item.Owner.AsWidget
 				};
 				items.Remove(item);
+				item.Kill();
 				item.Owner.Components.Remove(item);
 				DropCompleted?.Invoke(this, e);
 			}
+		}
+
+		private IEnumerator<object> MoveToTask(ItemComponent item)
+		{
+			yield return item.MoveTo(item.GridPosition, match3Config.OneCellFallTime);
 		}
 
 		private bool CanFall(ItemComponent item)
@@ -338,7 +386,7 @@ namespace Match3Template.Types
 				yield break;
 			}
 			var nextItem = grid[item.GridPosition + projectionAxis];
-			if (nextItem?.Task != null) {
+			if (nextItem?.Task != null || nextItem?.Type == ItemType.Blocker) {
 				yield break;
 			}
 			item.AnimateSelect();
@@ -443,7 +491,6 @@ namespace Match3Template.Types
 
 		private void CheckMatches()
 		{
-			HashSet<ItemComponent> blownItems = new HashSet<ItemComponent>();
 			var allMatches = FindAllMatches();
 			foreach (var (match, bonus) in allMatches) {
 				var bonusItem = match.First(i => i.BonusType == BonusType.None);
@@ -451,44 +498,41 @@ namespace Match3Template.Types
 					match.Remove(bonusItem);
 					bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
 				}
-				var queue = new Queue<ItemComponent>(match);
+				var queue = new Queue<(ItemComponent Item, DamageKind DamageKind)>(
+					match.Select(m => (m, DamageKind.Match))
+				);
 				while (queue.Any()) {
-					var item = queue.Dequeue();
+					var (item, damageKind) = queue.Dequeue();
 					if (item == null) {
 						continue;
 					}
 					if (item.Task != null) {
 						continue;
 					}
-					blownItems.Add(item);
-					item.RunTask(BlowTask(item));
+					item.RunTask(BlowTask(item, damageKind));
 					if (item.BonusType == BonusType.HorizontalLine) {
 						for (int i = 0; i < boardConfig.ColumnCount; i++) {
-							queue.Enqueue(grid[new IntVector2(i, item.GridPosition.Y)]);
+							queue.Enqueue((grid[new IntVector2(i, item.GridPosition.Y)], DamageKind.Line));
 						}
 					} else if (item.BonusType == BonusType.VerticalLine) {
 						for (int i = 0; i < boardConfig.RowCount; i++) {
-							queue.Enqueue(grid[new IntVector2(item.GridPosition.X, i)]);
+							queue.Enqueue((grid[new IntVector2(item.GridPosition.X, i)], DamageKind.Line));
 						}
 					} else if (item.BonusType == BonusType.Bomb) {
 						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
 							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
-								queue.Enqueue(grid[new IntVector2(i, j)]);
+								queue.Enqueue((grid[new IntVector2(i, j)], DamageKind.Bomb));
 							}
 						}
 					} else if (item.BonusType == BonusType.Lightning) {
 						var kind = boardConfig.AllowedPieces.RandomItem();
 						foreach (var i in items) {
 							if (i.Kind == kind) {
-								queue.Enqueue(i);
+								queue.Enqueue((i, DamageKind.Lightning));
 							}
 						}
 					}
 				}
-			}
-
-			foreach (var item in blownItems) {
-				items.Remove(item);
 			}
 		}
 
@@ -726,17 +770,37 @@ namespace Match3Template.Types
 		{
 			var tasks = new List<Lime.Task>();
 			foreach (var item in match) {
-				tasks.Add(item.Owner.Tasks.Add(BlowTask(item)));
+				tasks.Add(item.Owner.Tasks.Add(BlowTask(item, DamageKind.Match)));
 			}
 			while (!tasks.All(t => t.Completed)) {
 				yield return null;
 			}
 		}
 
-		private IEnumerator<object> BlowTask(ItemComponent item)
+		private IEnumerator<object> BlowTask(ItemComponent item, DamageKind damageKind)
 		{
-			yield return item.AnimateMatch();
+			yield return item.Type switch {
+				ItemType.Piece => damageKind switch {
+					DamageKind.Match => item.AnimateMatch(),
+					DamageKind.Line => item.AnimateBlowByLine(),
+					DamageKind.Bomb => item.AnimateBlowByBomb(),
+					DamageKind.Lightning => item.AnimateBlowByLightning(),
+					_ => throw new NotImplementedException(),
+				},
+				ItemType.Blocker => item.BlockerLives switch {
+					2 => item.AnimateBlockerDamage1(),
+					1 => item.AnimateBlockerDamage2(),
+					0 => throw new NotImplementedException(),
+					_ => throw new NotImplementedException(),
+				},
+				ItemType.Drop => null,
+				_ => throw new NotImplementedException(),
+			};
+			if (item.Type == ItemType.Blocker && item.BlockerLives > 0) {
+				yield break;
+			}
 			items.Remove(item);
+			item.Kill();
 			item.Owner.UnlinkAndDispose();
 		}
 

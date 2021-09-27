@@ -138,6 +138,7 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
+					"BlockerCount":8,
 					"ColumnCount":8,
 					"DropCount":4
 				},

@@ -7,16 +7,10 @@ namespace Match3Template.Types
 	{
 		public Widget Widget { get; private set; }
 
-		protected override void Start()
+		protected override void OnOwnerChanged(Node oldOwner)
 		{
-			base.Start();
+			base.OnOwnerChanged(oldOwner);
 			Widget = Owner as Widget;
-		}
-
-		protected override void Stop(Node owner)
-		{
-			base.Stop(owner);
-			Widget = null;
 		}
 	}
 }
