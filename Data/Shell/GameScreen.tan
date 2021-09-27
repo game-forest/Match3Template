@@ -3,51 +3,6 @@
 	"Anchors":15,
 	"Animations":[
 		{
-			"Id":"Progress",
-			"Markers":[
-				{
-					"Id":"Act01",
-					"JumpTo":""
-				},
-				{
-					"Action":1,
-					"Frame":20,
-					"Id":"",
-					"JumpTo":""
-				},
-				{
-					"Frame":30,
-					"Id":"Act02"
-				},
-				{
-					"Action":1,
-					"Frame":40,
-					"Id":"",
-					"JumpTo":""
-				},
-				{
-					"Frame":50,
-					"Id":"Act03"
-				},
-				{
-					"Action":1,
-					"Frame":60,
-					"Id":"",
-					"JumpTo":""
-				},
-				{
-					"Frame":70,
-					"Id":"Final"
-				},
-				{
-					"Action":1,
-					"Frame":80,
-					"Id":"",
-					"JumpTo":""
-				}
-			]
-		},
-		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -110,6 +65,42 @@
 		}
 	],
 	"Nodes":[
+		{
+			"class":"Lime.Frame, Lime",
+			"Anchors":15,
+			"Color":[4294967295],
+			"ContentsPath":"LevelBuyMoves",
+			"Id":"LevelBuyMoves",
+			"Pivot":[0.5,0.5],
+			"Position":[683,384],
+			"Size":[1366,768],
+			"TangerineFlags":768,
+			"Visible":false
+		},
+		{
+			"class":"Lime.Frame, Lime",
+			"Anchors":15,
+			"Color":[4294967295],
+			"ContentsPath":"LevelWin",
+			"Id":"LevelWin",
+			"Pivot":[0.5,0.5],
+			"Position":[683,384],
+			"Size":[1366,768],
+			"TangerineFlags":1280,
+			"Visible":false
+		},
+		{
+			"class":"Lime.Frame, Lime",
+			"Anchors":15,
+			"Color":[4294967295],
+			"ContentsPath":"LevelLose",
+			"Id":"LevelLose",
+			"Pivot":[0.5,0.5],
+			"Position":[683,384],
+			"Size":[1366,768],
+			"TangerineFlags":256,
+			"Visible":false
+		},
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
@@ -182,7 +173,7 @@
 							"Pivot":[0.5,0.5],
 							"Position":[168.5,32],
 							"Size":[337,64],
-							"Text":"Moves:",
+							"Text":"Ходы:",
 							"VAlignment":1
 						}
 					],
@@ -269,7 +260,7 @@
 							"Pivot":[0.5,0.5],
 							"Position":[168.5,32],
 							"Size":[337,64],
-							"Text":"Goals:",
+							"Text":"Цели:",
 							"VAlignment":1
 						}
 					],
@@ -290,7 +281,7 @@
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
 			"Size":[1366,768],
-			"TangerineFlags":772
+			"TangerineFlags":4
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -326,61 +317,11 @@
 			"Position":[683,384],
 			"Size":[720,720],
 			"TangerineFlags":512
-		},
-		{
-			"class":"Lime.Frame, Lime",
-			"Anchors":15,
-			"Color":[4294967295],
-			"Id":"Action",
-			"Pivot":[0.5,0.5],
-			"Position":[683,384],
-			"Size":[1366,768],
-			"TangerineFlags":4
-		},
-		{
-			"class":"Lime.Frame, Lime",
-			"Anchors":15,
-			"Color":[4294967295],
-			"Id":"BG",
-			"Nodes":[
-				{
-					"class":"Lime.Image, Lime",
-					"Anchors":11,
-					"Color":[939524096],
-					"Id":"LineGradient",
-					"Pivot":[0.5,1],
-					"Position":[683,773],
-					"Size":[1366,560.38214],
-					"TangerineFlags":4,
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Common/Masks/LineGradient"
-					},
-					"UV1":[1,0.5]
-				},
-				{
-					"class":"Lime.TiledImage, Lime",
-					"Anchors":15,
-					"Color":[4294967295],
-					"Id":"Bg",
-					"Pivot":[0.5,0.5],
-					"Position":[683,381.5],
-					"Size":[1366,763],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"Data/UI/Bg"
-					},
-					"TileSize":[256,512]
-				}
-			],
-			"Pivot":[0.5,0.5],
-			"Position":[683,384],
-			"Size":[1366,768],
-			"TangerineFlags":1280
 		}
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

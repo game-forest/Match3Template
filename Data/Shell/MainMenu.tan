@@ -261,7 +261,7 @@
 				{
 					"class":"Lime.SimpleText, Lime",
 					"Anchors":9,
-					"Color":[2868903935],
+					"Color":[3724541951],
 					"Components":[
 						{
 							"class":"Lime.SignedDistanceFieldComponent, Lime",
@@ -281,12 +281,12 @@
 						"Name":"RussoOne"
 					},
 					"FontHeight":60,
-					"Id":"Text",
+					"Id":"Name",
 					"OverflowMode":1,
 					"Pivot":[0,0.5],
 					"Position":[99.8331,58.459595],
 					"Size":[337,64],
-					"Text":"2021",
+					"Text":"Имя и Фамилия Студента Тут",
 					"TextColor":[4292576057],
 					"VAlignment":1
 				},
@@ -499,6 +499,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

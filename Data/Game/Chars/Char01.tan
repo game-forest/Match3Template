@@ -3,9 +3,6 @@
 	"Animations":[
 		{
 			"ApplyZeroPose":false,
-			"Id":"ZeroPose"
-		},
-		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -58,6 +55,12 @@
 					"Frame":10,
 					"Id":"TrollFace",
 					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":20,
+					"Id":"Sad",
+					"JumpTo":""
 				}
 			]
 		},
@@ -72,14 +75,6 @@
 			"Animators":[
 				{
 					"class":"Lime.Vector2Animator, Lime",
-					"AnimationId":"Idle",
-					"ReadonlyKeys":[
-						[0,0,[1,1]]
-					],
-					"TargetProperty":"Scale"
-				},
-				{
-					"class":"Lime.Vector2Animator, Lime",
 					"AnimationId":"Appear",
 					"ReadonlyKeys":[
 						[0,2,[1,1]],
@@ -90,14 +85,6 @@
 						[17,2,[1,1]]
 					],
 					"TargetProperty":"Scale"
-				},
-				{
-					"class":"Lime.Animator`1[[System.Boolean]], Lime",
-					"AnimationId":"Idle",
-					"ReadonlyKeys":[
-						[13,0,true]
-					],
-					"TargetProperty":"Visible"
 				},
 				{
 					"class":"Lime.Animator`1[[System.Boolean]], Lime",
@@ -206,6 +193,26 @@
 				},
 				{
 					"class":"Lime.Image, Lime",
+					"Animators":[
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,1,[96.60711,137.8249]],
+								[20,1,[91.60711,128.8249]]
+							],
+							"TargetProperty":"Position"
+						},
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Emotion",
+							"ReadonlyKeys":[
+								[0,1,-13.679504],
+								[20,1,-178.6795]
+							],
+							"TargetProperty":"Rotation"
+						}
+					],
 					"Color":[4285822068],
 					"Id":"Mouth",
 					"Pivot":[0.5,0.5],
@@ -225,52 +232,31 @@
 					"Animators":[
 						{
 							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[128,128]]
-							],
-							"TargetProperty":"Size"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[128,128]],
-								[10,0,[128,22]]
+								[10,0,[128,22]],
+								[20,0,[128,128]]
 							],
 							"TargetProperty":"Size"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[0,0]]
-							],
-							"TargetProperty":"UV0"
 						},
 						{
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[0,0]],
-								[10,0,[0,0.5]]
+								[10,0,[0,0.5]],
+								[20,0,[0,0]]
 							],
 							"TargetProperty":"UV0"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[1,1]]
-							],
-							"TargetProperty":"UV1"
 						},
 						{
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[1,1]],
-								[10,0,[1,0.5]]
+								[10,0,[1,0.5]],
+								[20,0,[1,1]]
 							],
 							"TargetProperty":"UV1"
 						}
@@ -292,52 +278,31 @@
 					"Animators":[
 						{
 							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[128,128]]
-							],
-							"TargetProperty":"Size"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[128,128]],
-								[10,0,[128,22]]
+								[10,0,[128,22]],
+								[20,0,[128,128]]
 							],
 							"TargetProperty":"Size"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[1,1]]
-							],
-							"TargetProperty":"UV1"
 						},
 						{
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[1,1]],
-								[10,0,[1,0.5]]
+								[10,0,[1,0.5]],
+								[20,0,[1,1]]
 							],
 							"TargetProperty":"UV1"
-						},
-						{
-							"class":"Lime.Vector2Animator, Lime",
-							"AnimationId":"ZeroPose",
-							"ReadonlyKeys":[
-								[0,0,[0,0]]
-							],
-							"TargetProperty":"UV0"
 						},
 						{
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Emotion",
 							"ReadonlyKeys":[
 								[0,0,[0,0]],
-								[10,0,[0,0.5]]
+								[10,0,[0,0.5]],
+								[20,0,[0,0]]
 							],
 							"TargetProperty":"UV0"
 						}
@@ -383,6 +348,19 @@
 						"class":"Lime.SerializableTexture, Lime",
 						"SerializationPath":"/Common/Masks/CircleBig"
 					}
+				},
+				{
+					"class":"Lime.Image, Lime",
+					"Color":[1476395008],
+					"Id":"CircleBlured",
+					"Pivot":[0.5,0.5],
+					"Position":[126.28711,415.2871],
+					"Scale":[2.985294,1],
+					"Size":[128,128],
+					"Texture":{
+						"class":"Lime.SerializableTexture, Lime",
+						"SerializationPath":"/Common/Masks/CircleBlured"
+					}
 				}
 			],
 			"Pivot":[0.5,0.8622696],
@@ -392,6 +370,7 @@
 	],
 	"Size":[256,512]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
