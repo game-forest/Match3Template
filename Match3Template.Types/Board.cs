@@ -44,9 +44,15 @@ namespace Match3Template.Types
 		public Widget ItemWidget { get; set; }
 	}
 
+	public class TurnMadeEventArgs : EventArgs
+	{
+
+	}
+
 	public class Board
 	{
 		public event EventHandler<DropCompletedEventArgs> DropCompleted;
+		public event EventHandler<TurnMadeEventArgs> TurnMade;
 
 		private readonly Widget topLevelContainer;
 		private readonly Frame itemContainer;
@@ -81,6 +87,8 @@ namespace Match3Template.Types
 
 			return new Board(boardWidget, boardConfig, match3Config);
 		}
+
+		internal int GetTurnCount() => boardConfig.TurnCount;
 
 		public Board(Widget boardWidget, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
 		{
@@ -377,6 +385,7 @@ namespace Match3Template.Types
 					+ projectionAmount * (Vector2)projectionAxis;
 				yield return null;
 			}
+			bool turnMade = false;
 			item.AnimateUnselect();
 			if (projectionAmount > match3Config.DragPercentOfPieceSizeRequiredForSwapActivation) {
 				if (nextItem == null) {
@@ -384,6 +393,7 @@ namespace Match3Template.Types
 					if (match3Config.SwapBackOnNonMatchingSwap) {
 						var match = FindMatchForItem(item);
 						if (FindMatchForItem(item).Any()) {
+							turnMade = true;
 							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 							movingBack = false;
 							if (grid[item.GridPosition - projectionAxis] == null) {
@@ -392,23 +402,31 @@ namespace Match3Template.Types
 						} else {
 							yield return BlowMatch(match);
 						}
+					} else {
+						turnMade = true;
 					}
 				} else {
 					item.SwapWith(nextItem);
 					if (match3Config.SwapBackOnNonMatchingSwap) {
 						if (FindMatchForItem(item).Any() && FindMatchForItem(nextItem).Any()) {
+							turnMade = true;
 							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 							item.SwapWith(nextItem);
 							var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
 							var i1 = nextItem.Owner.Parent.Nodes.IndexOf(nextItem.Owner);
 							item.Owner.Parent.Nodes.Swap(i0, i1);
 						}
+					} else {
+						turnMade = true;
 					}
 				}
 			}
 			yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 			finished = true;
 			movingBack = false;
+			if (turnMade) {
+				TurnMade?.Invoke(this, new TurnMadeEventArgs());
+			}
 		}
 
 		private bool TryGetProjectionAxis(Vector2 touchDelta, out IntVector2 projectionAxis)
@@ -722,10 +740,7 @@ namespace Match3Template.Types
 			item.Owner.UnlinkAndDispose();
 		}
 
-		internal int GetDropCount()
-		{
-			return boardConfig.DropCount;
-		}
+		internal int GetDropCount() => boardConfig.DropCount;
 	}
 
 	public static class IntVector2Extensions

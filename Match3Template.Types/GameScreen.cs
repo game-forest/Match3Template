@@ -23,14 +23,16 @@ namespace Match3Template.Types
 		private Board board;
 		private Widget goalIcon;
 		private IText goalValueText;
+		private IText turnsLeftValueText;
 		private int dropCountValue;
-
+		private int turnsLeft;
 		private int dropCountGoal;
 
 		public GameScreenComponent()
 		{
 
 		}
+
 		private void OnDropCompleted(object sender, DropCompletedEventArgs e)
 		{
 			Owner.Tasks.Add(FlyDropTask(e.ItemWidget));
@@ -54,6 +56,10 @@ namespace Match3Template.Types
 			dropCountValue--;
 			drop.UnlinkAndDispose();
 			goalValueText.Text = dropCountValue.ToString();
+			if (dropCountValue == 0) {
+				// WIN
+				// TODO: ensure won happens once
+			}
 		}
 
 		protected override void Update(float delta)
@@ -66,16 +72,31 @@ namespace Match3Template.Types
 			base.Start();
 			goalIcon = Widget["GoalsIcon"];
 			goalValueText = Widget["GoalsValue"] as IText;
+			turnsLeftValueText = Widget["LimitsValue"] as IText;
 			board = Board.CreateBoard(Owner.GetRoot().AsWidget);
 			dropCountValue = dropCountGoal = board.GetDropCount();
+			turnsLeft = board.GetTurnCount();
+			turnsLeftValueText.Text = turnsLeft.ToString();
 			goalValueText.Text = dropCountGoal.ToString();
 			board.DropCompleted += OnDropCompleted;
+			board.TurnMade += OnTurnMade;
 			Suspend();
+		}
+
+		private void OnTurnMade(object sender, TurnMadeEventArgs e)
+		{
+			turnsLeft--;
+			turnsLeftValueText.Text = turnsLeft.ToString();
+			if (turnsLeft == 0) {
+				// LOSE
+				// TODO: ensure lose happens once
+			}
 		}
 
 		protected override void Stop(Node owner)
 		{
 			board.DropCompleted -= OnDropCompleted;
+			board.TurnMade -= OnTurnMade;
 			board = null;
 			base.Stop(owner);
 		}

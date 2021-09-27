@@ -37,6 +37,9 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public List<(IntVector2, int)> PieceCells { get; private set; } = new List<(IntVector2, int)>();
+
+		[YuzuMember]
+		public int TurnCount { get; set; } = 0;
 	}
 }
 
