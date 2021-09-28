@@ -87,6 +87,459 @@
 				{
 					"class":"Lime.Button, Lime",
 					"Anchors":48,
+					"Animations":[
+						{
+							"IsLegacy":true,
+							"Markers":[
+								{
+									"Action":1,
+									"Id":"Init"
+								},
+								{
+									"Frame":10,
+									"Id":"Normal"
+								},
+								{
+									"Action":1,
+									"Frame":14
+								},
+								{
+									"Frame":18,
+									"Id":"Focus"
+								},
+								{
+									"Action":1,
+									"Frame":24
+								},
+								{
+									"Frame":28,
+									"Id":"Press"
+								},
+								{
+									"Action":1,
+									"Frame":30
+								},
+								{
+									"Frame":31,
+									"Id":"Release"
+								},
+								{
+									"Action":1,
+									"Frame":35
+								},
+								{
+									"Action":1,
+									"Frame":43,
+									"Id":"Disable"
+								}
+							]
+						}
+					],
+					"Color":[4294967295],
+					"Id":"BtnLangs",
+					"Nodes":[
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Anchors":15,
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Dilate":2,
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RussoOne"
+							},
+							"FontHeight":60,
+							"HAlignment":1,
+							"Id":"Caption",
+							"OverflowMode":1,
+							"Pivot":[0.49999973,0.5],
+							"Position":[106.25729,49.81532],
+							"Size":[155.59576,66.63064],
+							"Spacing":-10.2,
+							"Text":"Язык",
+							"VAlignment":1
+						},
+						{
+							"class":"Lime.NineGrid, Lime",
+							"Anchors":15,
+							"BottomOffset":0.5,
+							"Color":[4294967295],
+							"Id":"Btn",
+							"LeftOffset":0.5,
+							"Pivot":[0.5,0.5],
+							"Position":[103.98164,49.81532],
+							"RightOffset":0.5,
+							"Size":[207.96329,99.63064],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/BtnDis"
+							},
+							"TopOffset":0.5
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[71.30313,387.35617],
+					"Rotation":-18.587387,
+					"Size":[207.96329,99.63064]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
+					"Animations":[
+						{
+							"IsLegacy":true,
+							"Markers":[
+								{
+									"Action":1,
+									"Id":"Init"
+								},
+								{
+									"Frame":10,
+									"Id":"Normal"
+								},
+								{
+									"Action":1,
+									"Frame":14
+								},
+								{
+									"Frame":18,
+									"Id":"Focus"
+								},
+								{
+									"Action":1,
+									"Frame":24
+								},
+								{
+									"Frame":28,
+									"Id":"Press"
+								},
+								{
+									"Action":1,
+									"Frame":30
+								},
+								{
+									"Frame":31,
+									"Id":"Release"
+								},
+								{
+									"Action":1,
+									"Frame":35
+								},
+								{
+									"Action":1,
+									"Frame":43,
+									"Id":"Disable"
+								}
+							]
+						}
+					],
+					"Color":[4294967295],
+					"Id":"BtnHelp",
+					"Nodes":[
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Anchors":15,
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Dilate":2,
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RussoOne"
+							},
+							"FontHeight":60,
+							"HAlignment":1,
+							"Id":"Caption",
+							"OverflowMode":1,
+							"Pivot":[0.49999973,0.5],
+							"Position":[165.74539,64],
+							"Size":[274.57202,95],
+							"Spacing":-10.2,
+							"Text":"Помощь",
+							"VAlignment":1
+						},
+						{
+							"class":"Lime.NineGrid, Lime",
+							"Anchors":15,
+							"BottomOffset":0.5,
+							"Color":[4294967295],
+							"Id":"Btn",
+							"LeftOffset":0.5,
+							"Pivot":[0.5,0.5],
+							"Position":[163.46977,64],
+							"RightOffset":0.5,
+							"Size":[326.93954,128],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/BtnRed"
+							},
+							"TopOffset":0.5
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[650.9067,105.16431],
+					"Rotation":5.98085,
+					"Size":[326.93954,128]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
+					"Animations":[
+						{
+							"IsLegacy":true,
+							"Markers":[
+								{
+									"Action":1,
+									"Id":"Init"
+								},
+								{
+									"Frame":10,
+									"Id":"Normal"
+								},
+								{
+									"Action":1,
+									"Frame":14
+								},
+								{
+									"Frame":18,
+									"Id":"Focus"
+								},
+								{
+									"Action":1,
+									"Frame":24
+								},
+								{
+									"Frame":28,
+									"Id":"Press"
+								},
+								{
+									"Action":1,
+									"Frame":30
+								},
+								{
+									"Frame":31,
+									"Id":"Release"
+								},
+								{
+									"Action":1,
+									"Frame":35
+								},
+								{
+									"Action":1,
+									"Frame":43,
+									"Id":"Disable"
+								}
+							]
+						}
+					],
+					"Color":[4294967295],
+					"Id":"BtnCredits",
+					"Nodes":[
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Anchors":15,
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Dilate":2,
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RussoOne"
+							},
+							"FontHeight":60,
+							"HAlignment":1,
+							"Id":"Caption",
+							"OverflowMode":1,
+							"Pivot":[0.49999973,0.5],
+							"Position":[165.74539,64],
+							"Size":[274.57202,95],
+							"Spacing":-10.2,
+							"Text":"Авторы",
+							"VAlignment":1
+						},
+						{
+							"class":"Lime.NineGrid, Lime",
+							"Anchors":15,
+							"BottomOffset":0.5,
+							"Color":[4294967295],
+							"Id":"Btn",
+							"LeftOffset":0.5,
+							"Pivot":[0.5,0.5],
+							"Position":[163.46977,64],
+							"RightOffset":0.5,
+							"Size":[326.93954,128],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/BtnRed"
+							},
+							"TopOffset":0.5
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[185.90668,617.1643],
+					"Rotation":22.314713,
+					"Size":[326.93954,128]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
+					"Animations":[
+						{
+							"IsLegacy":true,
+							"Markers":[
+								{
+									"Action":1,
+									"Id":"Init"
+								},
+								{
+									"Frame":10,
+									"Id":"Normal"
+								},
+								{
+									"Action":1,
+									"Frame":14
+								},
+								{
+									"Frame":18,
+									"Id":"Focus"
+								},
+								{
+									"Action":1,
+									"Frame":24
+								},
+								{
+									"Frame":28,
+									"Id":"Press"
+								},
+								{
+									"Action":1,
+									"Frame":30
+								},
+								{
+									"Frame":31,
+									"Id":"Release"
+								},
+								{
+									"Action":1,
+									"Frame":35
+								},
+								{
+									"Action":1,
+									"Frame":43,
+									"Id":"Disable"
+								}
+							]
+						}
+					],
+					"Color":[4294967295],
+					"Id":"BtnFB",
+					"Nodes":[
+						{
+							"class":"Lime.Image, Lime",
+							"Anchors":33,
+							"Color":[4287978023],
+							"Id":"WinBiege",
+							"Pivot":[0.5,0.5],
+							"Position":[64.95178,62.835693],
+							"Shader":3,
+							"Size":[105,105],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/WinBiege"
+							}
+						},
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Anchors":15,
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Dilate":2,
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RussoOne"
+							},
+							"FontHeight":60,
+							"Id":"Caption",
+							"OverflowMode":1,
+							"Pivot":[0,0.5],
+							"Position":[134.50012,64],
+							"Size":[168.5322,95],
+							"Spacing":-10.2,
+							"Text":"Connect to FB",
+							"VAlignment":1
+						},
+						{
+							"class":"Lime.NineGrid, Lime",
+							"Anchors":15,
+							"BottomOffset":0.5,
+							"Color":[4294967295],
+							"Id":"Btn",
+							"LeftOffset":0.5,
+							"Pivot":[0.5,0.5],
+							"Position":[163.46977,64],
+							"RightOffset":0.5,
+							"Size":[326.93954,128],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"Data/UI/WinBlue"
+							},
+							"TopOffset":0.5
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[588.9067,344.1643],
+					"Rotation":-17.612335,
+					"Size":[326.93954,128]
+				},
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":48,
 					"Color":[4294967295],
 					"ContentsPath":"Externals/BtnOk",
 					"Id":"BtnOk",
@@ -314,7 +767,7 @@
 							"Position":[76,29],
 							"Size":[197.33325,55],
 							"Spacing":-14,
-							"Text":"Music",
+							"Text":"Музыка",
 							"TextColor":[4287880191],
 							"VAlignment":1
 						}
@@ -544,7 +997,7 @@
 							"Position":[76,29],
 							"Size":[197.33325,55],
 							"Spacing":-14,
-							"Text":"Sound",
+							"Text":"Звуки",
 							"TextColor":[4287880191],
 							"VAlignment":1
 						}
@@ -780,8 +1233,242 @@
 						}
 					],
 					"Pivot":[0.5,0.5],
-					"Position":[232.56683,414.06866],
+					"Position":[2492.567,-1381.9314],
 					"Rotation":-4.2667847,
+					"Size":[58.43292,58.43292],
+					"TangerineFlags":2,
+					"Visible":false
+				},
+				{
+					"class":"Lime.Frame, Lime",
+					"Anchors":48,
+					"Color":[4294967295],
+					"Id":"NotificationsGroup",
+					"Nodes":[
+						{
+							"class":"Lime.Frame, Lime",
+							"Animations":[
+								{
+									"IsLegacy":true,
+									"Markers":[
+										{
+											"Id":"Check"
+										},
+										{
+											"Action":1,
+											"Frame":10,
+											"Id":"Checked"
+										},
+										{
+											"Frame":40,
+											"Id":"Uncheck"
+										},
+										{
+											"Action":1,
+											"Frame":50,
+											"Id":"Unchecked"
+										}
+									]
+								}
+							],
+							"Color":[4294967295],
+							"Id":"Check",
+							"Nodes":[
+								{
+									"class":"Lime.Image, Lime",
+									"Animators":[
+										{
+											"class":"Lime.Color4Animator, Lime",
+											"ReadonlyKeys":[
+												[0,0,[0]],
+												[6,0,[4278190080]],
+												[10,0,[4278190080]],
+												[40,0,[4278190080]],
+												[46,0,[4278190080]],
+												[50,0,[0]]
+											],
+											"TargetProperty":"Color"
+										},
+										{
+											"class":"Lime.Vector2Animator, Lime",
+											"ReadonlyKeys":[
+												[0,0,[0.32236573,0.32236573]],
+												[6,0,[0.8714011,0.8714011]],
+												[10,0,[0.6722266,0.6722266]],
+												[40,0,[0.6722266,0.6722266]],
+												[46,0,[0.8714011,0.8714011]],
+												[50,0,[0.32236573,0.32236573]]
+											],
+											"TargetProperty":"Scale"
+										}
+									],
+									"Color":[0],
+									"Id":"BulletCheck",
+									"Pivot":[0.40171,0.66091],
+									"Position":[21.162865,25.447626],
+									"Scale":[0.32236573,0.32236573],
+									"Size":[65,54],
+									"Texture":{
+										"class":"Lime.SerializableTexture, Lime",
+										"SerializationPath":"Data/UI/IcoCheck"
+									}
+								},
+								{
+									"class":"Lime.Image, Lime",
+									"Animators":[
+										{
+											"class":"Lime.Vector2Animator, Lime",
+											"ReadonlyKeys":[
+												[0,0,[0,0]],
+												[1,0,[0.5908704,0.5908704]],
+												[40,0,[0.5908704,0.5908704]],
+												[41,0,[0,0]]
+											],
+											"TargetProperty":"Scale"
+										}
+									],
+									"Color":[4294967295],
+									"Id":"BtnOrange",
+									"Pivot":[0.5,0.5],
+									"Position":[24.831238,20.144005],
+									"Scale":[0,0],
+									"Size":[105,105],
+									"Texture":{
+										"class":"Lime.SerializableTexture, Lime",
+										"SerializationPath":"Data/UI/BtnOrange"
+									}
+								}
+							],
+							"Pivot":[0.5,0.5],
+							"Position":[29.21643,32.21643],
+							"Scale":[0.8806,0.8806],
+							"Size":[47.3913,47.10146]
+						},
+						{
+							"class":"Lime.SimpleText, Lime",
+							"Color":[4294967295],
+							"Components":[
+								{
+									"class":"Lime.SignedDistanceFieldComponent, Lime",
+									"Gradient":[
+										{
+											"Color":[4294967295]
+										},
+										{
+											"Color":[4278190080],
+											"Position":1
+										}
+									]
+								}
+							],
+							"Font":{
+								"Name":"RobotoMed"
+							},
+							"FontHeight":41,
+							"Id":"Text",
+							"Pivot":[0,0.5],
+							"Position":[76,29],
+							"Size":[197.33325,55],
+							"Spacing":-14,
+							"Text":"Уведомления",
+							"TextColor":[4289572269],
+							"VAlignment":1
+						},
+						{
+							"class":"Lime.Button, Lime",
+							"Anchors":15,
+							"Animations":[
+								{
+									"IsLegacy":true,
+									"Markers":[
+										{
+											"Action":1,
+											"Id":"Init"
+										},
+										{
+											"Frame":10,
+											"Id":"Normal"
+										},
+										{
+											"Action":1,
+											"Frame":20
+										},
+										{
+											"Frame":24,
+											"Id":"Focus"
+										},
+										{
+											"Action":1,
+											"Frame":34
+										},
+										{
+											"Frame":38,
+											"Id":"Press"
+										},
+										{
+											"Action":1,
+											"Frame":40
+										},
+										{
+											"Frame":42,
+											"Id":"Release"
+										},
+										{
+											"Action":1,
+											"Frame":46
+										},
+										{
+											"Action":1,
+											"Frame":54,
+											"Id":"Disable"
+										}
+									]
+								}
+							],
+							"Color":[4294967295],
+							"Enabled":false,
+							"Id":"BtnCheck",
+							"Nodes":[
+								{
+									"class":"Lime.NineGrid, Lime",
+									"Animators":[
+										{
+											"class":"Lime.Vector2Animator, Lime",
+											"ReadonlyKeys":[
+												[38,0,[1.12371,1.12371]],
+												[40,0,[0.98909,0.82834]],
+												[42,0,[0.98909,0.82834]],
+												[46,0,[1.12371,1.12371]]
+											],
+											"TargetProperty":"Scale"
+										}
+									],
+									"BottomOffset":0.4,
+									"Color":[1922668953],
+									"Id":"NineGrid2",
+									"LeftOffset":0.4,
+									"Pivot":[0.5,0.5],
+									"Position":[29.21646,29.21646],
+									"RightOffset":0.4,
+									"Rotation":-180,
+									"Scale":[1.12371,1.12371],
+									"Size":[52,52],
+									"Texture":{
+										"class":"Lime.SerializableTexture, Lime",
+										"SerializationPath":"Data/UI/WinGrey"
+									},
+									"TopOffset":0.4
+								}
+							],
+							"Pivot":[0.5,0.5],
+							"Position":[136.49506,29],
+							"Size":[270.9901,58],
+							"TangerineFlags":4
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[229.70047,559.87744],
+					"Rotation":8.952881,
 					"Size":[58.43292,58.43292]
 				},
 				{
@@ -915,7 +1602,7 @@
 							"Position":[76,29],
 							"Size":[197.33325,55],
 							"Spacing":-14,
-							"Text":"Full Screen",
+							"Text":"На весь экран",
 							"TextColor":[4287880191],
 							"VAlignment":1
 						},
@@ -1044,7 +1731,7 @@
 					"Position":[354.66647,179.95714],
 					"Rotation":-3.0702667,
 					"Size":[337,64],
-					"Text":"Options",
+					"Text":"Настройки",
 					"VAlignment":1
 				},
 				{
@@ -1102,6 +1789,7 @@
 	],
 	"Size":[1024,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
