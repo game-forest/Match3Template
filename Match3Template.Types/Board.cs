@@ -1,6 +1,7 @@
 using Lime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Debug = System.Diagnostics.Debug;
 
@@ -70,11 +71,10 @@ namespace Match3Template.Types
 			lightningBonusTemplate = Node.Load<Widget>("Game/Match3/BonusLightning");
 			lineBonusFxTemplate = Node.Load<Widget>("Game/Match3/BonusLineFX");
 			lightningBonusFxTemplate = Node.Load<Widget>("Game/Match3/BonusLightningFX");
-			itemContainer = new Frame {
-				//ClipChildren = ClipMethod.ScissorTest,
-				Width = boardConfig.ColumnCount * pieceTemplate.Width,
-				Height = boardConfig.RowCount * pieceTemplate.Height
-			};
+			itemContainer = new Frame();
+			FillBoard();
+			itemContainer.Width = boardConfig.ColumnCount * pieceTemplate.Width;
+			itemContainer.Height = boardConfig.RowCount * pieceTemplate.Height;
 			topLevelContainer.Nodes.Insert(0, itemContainer);
 			itemContainer.CenterOnParent();
 			topLevelContainer.Tasks.Add(Update);
@@ -84,7 +84,6 @@ namespace Match3Template.Types
 
 		private IEnumerator<object> Update()
 		{
-			FillBoard();
 			while (true) {
 				SpawnItems();
 				Fall();
@@ -142,7 +141,53 @@ namespace Match3Template.Types
 
 		private void FillBoard()
 		{
-			for (int i = 0; i < boardConfig.DropCount; i++) {
+			int dropCountInAsset = 0;
+			int blockerCountInAsset = 0;
+			if (!string.IsNullOrEmpty(boardConfig.LevelFileName)) {
+				using var stream = AssetBundle.Current.OpenFile(boardConfig.LevelFileName + ".txt");
+				using var reader = new StreamReader(stream);
+				int rowCount = 0;
+				int columnCount = 0;
+				while (!reader.EndOfStream) {
+					var line = reader.ReadLine();
+					columnCount = Math.Max(columnCount, line.Length);
+					int x = 0;
+					foreach (var c in line) {
+						var itemType = c switch {
+							var k when c == '0'
+								|| c == '1'
+								|| c == '2'
+								|| c == '3'
+								|| c == '4' => ItemType.Piece,
+							'D' => ItemType.Drop,
+							'B' => ItemType.Blocker,
+							_ => ItemType.None
+						};
+						if (itemType != ItemType.None) {
+							var item = CreateItem(
+								new IntVector2(x, rowCount),
+								itemType,
+								itemType == ItemType.Piece ? c - '0' : -1
+							);
+							item.AnimateShown();
+						}
+						if (itemType == ItemType.Drop) {
+							dropCountInAsset++;
+						}
+						if (itemType == ItemType.Blocker) {
+							blockerCountInAsset++;
+						}
+						x++;
+					}
+					rowCount++;
+				}
+				boardConfig.RowCount = Math.Max(boardConfig.RowCount, rowCount);
+				boardConfig.ColumnCount = Math.Max(boardConfig.ColumnCount, columnCount);
+			}
+			if (!boardConfig.PreFillBoard) {
+				return;
+			}
+			for (int i = 0; i < boardConfig.DropCount - dropCountInAsset; i++) {
 				var drop = CreateItem(
 					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
 					type: ItemType.Drop,
@@ -151,7 +196,7 @@ namespace Match3Template.Types
 				drop.AnimateShown();
 			}
 
-			for (int i = 0; i < boardConfig.BlockerCount; i++) {
+			for (int i = 0; i < boardConfig.BlockerCount - blockerCountInAsset; i++) {
 				var blocker = CreateItem(
 					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
 					type: ItemType.Blocker,

@@ -1,4 +1,5 @@
 using Lime;
+using System;
 using System.Collections.Generic;
 using Yuzu;
 
@@ -27,19 +28,14 @@ namespace Match3Template.Types
 		public int BlockerCount { get; set; } = 0;
 
 		[YuzuMember]
-		public List<IntVector2> CutoutCells { get; private set; } = new List<IntVector2>();
-
-		[YuzuMember]
-		public List<IntVector2> DropCells { get; private set; } = new List<IntVector2>();
-
-		[YuzuMember]
-		public List<IntVector2> BlockerCells { get; private set; } = new List<IntVector2>();
-
-		[YuzuMember]
-		public List<(IntVector2, int)> PieceCells { get; private set; } = new List<(IntVector2, int)>();
-
-		[YuzuMember]
 		public int TurnCount { get; set; } = 0;
+
+		[YuzuMember]
+		public bool PreFillBoard { get; set; } = true;
+
+		[TangerineFileProperty(new[] { "txt" })]
+		[YuzuMember]
+		public string LevelFileName { get; set; }
 	}
 }
 

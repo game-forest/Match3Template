@@ -8,7 +8,8 @@ namespace Match3Template.Types
 	{
 		Piece,
 		Blocker,
-		Drop
+		Drop,
+		None,
 	}
 
 	public enum BonusType

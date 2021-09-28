@@ -140,7 +140,8 @@
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
 					"BlockerCount":8,
 					"ColumnCount":8,
-					"DropCount":4
+					"DropCount":4,
+					"LevelFileName":"Game/Levels/GameLevel2"
 				},
 				{
 					"class":"Match3Template.Types.CreateGameScreenComponent, Match3Template.Types"

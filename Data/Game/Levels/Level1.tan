@@ -138,6 +138,8 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
+					"LevelFileName":"Game/Levels/GameLevel1",
+					"PreFillBoard":false,
 					"RowCount":2
 				},
 				{
