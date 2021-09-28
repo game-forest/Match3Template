@@ -110,38 +110,82 @@ namespace Match3Template.Types
 
 		}
 
-		private IPresenter containerBoundsPresenter;
+		private readonly IPresenter containerBoundsPresenter;
+
+		private static readonly IntVector2[] directionVectors =
+			{ IntVector2.Right, IntVector2.Down, IntVector2.Left, IntVector2.Up };
+
+		[Flags]
+		private enum Direction
+		{
+			Right = 0,
+			Down = 1,
+			Left = 2,
+			Up = 4,
+			Horizontal = Right | Left,
+			Vertical = Up | Down,
+			Any = Horizontal | Vertical,
+		}
+
+		private static readonly Direction[] directions = {
+			Direction.Right, Direction.Down, Direction.Left, Direction.Up
+		};
+
+		private IEnumerable<(ItemComponent Item, IntVector2 Delta, Direction Direction)> EnumerateAdjacentItems(
+			IntVector2 position
+		) {
+			for (int i = 0; i < 4; i++) {
+				var delta = directionVectors[i];
+				yield return (grid[position + delta], delta, directions[i]);
+			}
+		}
 
 		private void FillBoard()
 		{
 			for (int i = 0; i < boardConfig.DropCount; i++) {
-				var drop = CreateItem(RandomEmptyCell(), ItemType.Drop, -1);
+				var drop = CreateItem(
+					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
+					type: ItemType.Drop,
+					kind: -1
+				);
 				drop.AnimateShown();
 			}
 
 			for (int i = 0; i < boardConfig.BlockerCount; i++) {
-				var blocker = CreateItem(RandomEmptyCell(), ItemType.Blocker, -1);
+				var blocker = CreateItem(
+					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
+					type: ItemType.Blocker,
+					kind: -1
+				);
 				blocker.AnimateShown();
 			}
 
-			int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount
-				- boardConfig.BlockerCount
-				- boardConfig.DropCount;
-
-			for (int i = 0; i < pieceCount; i++) {
-				var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.RowCount);
-				if (grid[gridPosition] == null) {
-					int pieceKind = Mathf.RandomItem(boardConfig.AllowedPieces);
-					var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
-					item.AnimateShown();
+			if (boardConfig.AllowedPieces.Any()) {
+				int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount;
+				for (int i = 0; i < pieceCount; i++) {
+					var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.ColumnCount);
+					if (grid[gridPosition] == null) {
+						var adjacentKinds = EnumerateAdjacentItems(gridPosition)
+							.Where(i => i.Item != null)
+							.Select(i => i.Item.Kind)
+							.Distinct();
+						var allowedKinds = boardConfig.AllowedPieces.Except(adjacentKinds).ToList();
+						if (!allowedKinds.Any()) {
+							allowedKinds.Add(boardConfig.AllowedPieces.RandomItem());
+						}
+						int pieceKind = Mathf.RandomItem(allowedKinds);
+						var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
+						item.AnimateShown();
+					}
 				}
 			}
 
-			IntVector2 RandomEmptyCell()
+			IntVector2 RandomEmptyCell(int maxRow, int maxColumn)
 			{
 				do {
 					var gridPosition = new IntVector2(
-						Mathf.RandomInt(boardConfig.ColumnCount), Mathf.RandomInt(boardConfig.RowCount)
+						Mathf.RandomInt(maxColumn),
+						Mathf.RandomInt(maxRow)
 					);
 					if (grid[gridPosition] == null) {
 						return gridPosition;
@@ -461,10 +505,12 @@ namespace Match3Template.Types
 		{
 			var allMatches = FindAllMatches();
 			foreach (var (match, bonus) in allMatches) {
-				var bonusItem = match.First(i => i.BonusType == BonusType.None);
 				if (bonus != BonusType.None) {
-					match.Remove(bonusItem);
-					bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
+					var bonusItem = match.FirstOrDefault(i => i.BonusType == BonusType.None);
+					if (bonusItem != null) {
+						match.Remove(bonusItem);
+						bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
+					}
 				}
 				var queue = new Queue<(ItemComponent Item, DamageKind DamageKind)>(
 					match.Select(m => (m, DamageKind.Match))
@@ -658,13 +704,6 @@ namespace Match3Template.Types
 				var td = new[] { 0, 1 };
 				return new IntVector2(td[d], td[(d + 1) % 2]);
 			}
-		}
-
-		public enum Direction
-		{
-			Any,
-			Horizontal,
-			Vertical,
 		}
 
 		private void ApplyDamageFromMatch(List<ItemComponent> match)
