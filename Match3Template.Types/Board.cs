@@ -6,39 +6,6 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Match3Template.Types
 {
-	[TangerineRegisterNode]
-	public class TangerineBoard : Frame
-	{
-		public TangerineBoard()
-		{
-
-		}
-
-		protected override void OnParentChanged(Node oldParent)
-		{
-			base.OnParentChanged(oldParent);
-			if (Parent == null) {
-				return;
-			}
-			var board = Board.CreateBoard(GetRoot().AsWidget);
-		}
-	}
-
-	[TangerineRegisterComponent]
-	public class CreateBoardComponent : NodeComponent
-	{
-		public CreateBoardComponent()
-		{
-
-		}
-#if !TANGERINE
-		protected override void OnBuilt()
-		{
-			//var board = Board.CreateBoard(Owner.GetRoot().AsWidget);
-		}
-#endif // !TANGERINE
-	}
-
 	public class DropCompletedEventArgs : EventArgs
 	{
 		public Widget ItemWidget { get; set; }
@@ -218,6 +185,7 @@ namespace Match3Template.Types
 			item.AnimateIdle();
 			return item;
 		}
+
 		private IEnumerator<object> AnimateTask(Animation animation)
 		{
 			yield return animation;
@@ -511,47 +479,43 @@ namespace Match3Template.Types
 					}
 					item.RunTask(BlowTask(item, damageKind));
 					if (item.BonusType == BonusType.HorizontalLine) {
+						item.AnimateActBonus();
+						RunHorizontalLineBonusEffect(item.GridPosition);
 						for (int i = 0; i < boardConfig.ColumnCount; i++) {
 							queue.Enqueue((grid[new IntVector2(i, item.GridPosition.Y)], DamageKind.Line));
 						}
 					} else if (item.BonusType == BonusType.VerticalLine) {
+						item.AnimateActBonus();
+						RunVerticalLineBonusEffect(item.GridPosition);
 						for (int i = 0; i < boardConfig.RowCount; i++) {
 							queue.Enqueue((grid[new IntVector2(item.GridPosition.X, i)], DamageKind.Line));
 						}
 					} else if (item.BonusType == BonusType.Bomb) {
+						item.AnimateActBonus();
 						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
 							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
 								queue.Enqueue((grid[new IntVector2(i, j)], DamageKind.Bomb));
 							}
 						}
 					} else if (item.BonusType == BonusType.Lightning) {
+						item.AnimateActBonus();
 						var kind = boardConfig.AllowedPieces.RandomItem();
+						List<IntVector2> targetPositions = new List<IntVector2>();
 						foreach (var i in items) {
-							if (i.Kind == kind) {
+							if (i.Kind == kind && i != item) {
 								queue.Enqueue((i, DamageKind.Lightning));
+								targetPositions.Add(i.GridPosition);
 							}
 						}
+						List<Widget> effects = new List<Widget>();
+						foreach (var targetPosition in targetPositions) {
+							effects.Add(CreateLightningBonusEffectPart(item.GridPosition, targetPosition));
+						}
+						itemContainer.Tasks.Add(RunBonusAnimationTask(effects.ToArray()));
 					}
 				}
 			}
 		}
-
-		//HashSet<ItemComponent> matchedItems = new HashSet<ItemComponent>();
-		//foreach (var item in items) {
-		//	if (matchedItems.Contains(item) || blownItems.Contains(item)) {
-		//		continue;
-		//	}
-		//	var match = FindMatchForItem(item);
-		//	foreach (var matchedItem in match) {
-		//		matchedItems.Add(matchedItem);
-		//	}
-		//	if (match.Any() && match.All(i => i.Task == null)) {
-		//		foreach (var matchedItem in match) {
-		//			matchedItem.RunTask(BlowTask(matchedItem));
-		//			blownItems.Add(matchedItem);
-		//		}
-		//	}
-		//}
 
 		private IEnumerator<object> SpawnBonusTask(ItemComponent bonusItem, BonusType bonus)
 		{
@@ -703,6 +667,37 @@ namespace Match3Template.Types
 			Vertical,
 		}
 
+		private void ApplyDamageFromMatch(List<ItemComponent> match)
+		{
+			foreach (var item in match) {
+				ApplyDamageToAdjacentCells(item.GridPosition, DamageKind.Match);
+			}
+		}
+
+		private void ApplyDamageToAdjacentCells(IntVector2 position, DamageKind damageKind)
+		{
+			for (int i = 0; i < 4; i++) {
+				var delta = new IntVector2(
+					x: Math.Abs(i - 1) - 1,
+					y: -Math.Abs(i - 2) + 1
+				);
+				ApplyDamage(position + delta, damageKind);
+			}
+		}
+
+		private void ApplyDamage(IntVector2 position, DamageKind damageKind)
+		{
+			var item = grid[position];
+			if (item == null || item.Task != null) {
+				return;
+			}
+			if (item.Type == ItemType.Piece) {
+				BlowTask(item, damageKind);
+			} else if (item.Type == ItemType.Blocker) {
+				BlowTask(item, damageKind);
+			}
+		}
+
 		private IEnumerable<ItemComponent> FindMatchForItem(ItemComponent item)
 		{
 			if (item.Type != ItemType.Piece || item.Task != null) {
@@ -766,6 +761,63 @@ namespace Match3Template.Types
 			return r.Distinct();
 		}
 
+		private void RunHorizontalLineBonusEffect(IntVector2 position)
+		{
+			var leftFx = CreateLineBonusEffectPart(position, 2, position.X + 1);
+			var rightFx = CreateLineBonusEffectPart(position, 0, boardConfig.ColumnCount - position.X);
+			topLevelContainer.Tasks.Add(RunBonusAnimationTask(leftFx, rightFx));
+		}
+
+		private void RunVerticalLineBonusEffect(IntVector2 position)
+		{
+			var upFx = CreateLineBonusEffectPart(position, 3, position.Y + 1);
+			var downFx = CreateLineBonusEffectPart(position, 1, boardConfig.RowCount - position.Y);
+			topLevelContainer.Tasks.Add(RunBonusAnimationTask(upFx, downFx));
+		}
+
+		private IEnumerator<object> RunBonusAnimationTask(params Widget[] effects)
+		{
+			var animations = effects.Select(e => e.RunAnimation("Start", "Act")).ToList();
+			while (true) {
+				if (!animations.Any(a => a.IsRunning)) {
+					break;
+				}
+				yield return null;
+			}
+			foreach (var w in effects) {
+				w.UnlinkAndDispose();
+			}
+		}
+
+		private Widget CreateLightningBonusEffectPart(IntVector2 fromPosition, IntVector2 toPosition)
+		{
+			var fx = lightningBonusFxTemplate.Clone<Widget>();
+			// TODO: fx container
+			itemContainer.Nodes.Insert(0, fx);
+			// TODO: dont use item and grid for this
+			fx.Position = grid[fromPosition].GridPositionToWidgetPosition(fromPosition);
+			var spline = fx.Find<Spline>("Spline");
+			var endPoint = spline.Find<SplinePoint>("End");
+			var t = itemContainer.CalcTransitionToSpaceOf(spline);
+			var endPosition = grid[toPosition].GridPositionToWidgetPosition(toPosition);
+			endPosition = t * endPosition;
+			endPoint.Position = endPosition / spline.Size;
+			return fx;
+		}
+
+		private Widget CreateLineBonusEffectPart(IntVector2 position, int direction, int length)
+		{
+			var fx = lineBonusFxTemplate.Clone<Widget>();
+			fx.Rotation = 90 * direction;
+			// TODO: fx container
+			itemContainer.Nodes.Insert(0, fx);
+			// TODO: dont use item and grid for this
+			fx.Position = grid[position].GridPositionToWidgetPosition(position);
+			fx.Width *= length;
+			fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
+			return fx;
+		}
+
 		private IEnumerator<object> BlowMatch(IEnumerable<ItemComponent> match)
 		{
 			var tasks = new List<Lime.Task>();
@@ -796,8 +848,11 @@ namespace Match3Template.Types
 				ItemType.Drop => null,
 				_ => throw new NotImplementedException(),
 			};
-			if (item.Type == ItemType.Blocker && item.BlockerLives > 0) {
-				yield break;
+			if (item.Type == ItemType.Blocker) {
+				item.BlockerLives--;
+				if (item.BlockerLives > 0) {
+					yield break;
+				}
 			}
 			items.Remove(item);
 			item.Kill();

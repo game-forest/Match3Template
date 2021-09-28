@@ -303,9 +303,6 @@
 					"class":"Match3Template.Types.Match3ConfigComponent, Match3Template.Types",
 					"WaitForAnimateDropDownFall":false,
 					"WaitForAnimateDropDownLand":false
-				},
-				{
-					"class":"Match3Template.Types.CreateBoardComponent, Match3Template.Types"
 				}
 			],
 			"Id":"BoardContainer",
