@@ -15,13 +15,8 @@ namespace Match3Template.Application
 		private const float ReferenceDpi = 330f;
 
 		public static readonly List<Display> Displays = new List<Display>() {
-			new Display("iPhone 4", 960, 640, 326),
-			new Display("iPhone 5", 1136, 640, 326),
-			new Display("iPhone 6", 1334, 750, 326),
-			new Display("iPhone 6 Plus", 1980, 1080, 401),
-			new Display("iPad", 1024, 768, 132),
-			new Display("iPad 3", 2048, 1536, 264),
-			new Display("Galaxy Nexus 4", 1280, 768, 318),
+			new Display("Tablet", 1024, 768, 264),
+			new Display("16:9", 1000, 560, 326),
 		};
 
 		public static event Action BeforeOrientationOrResolutionChanged;
@@ -31,7 +26,7 @@ namespace Match3Template.Application
 
 		public static float GetInterfaceScale()
 		{
-			var d = Display.DPI / ReferenceDpi;
+			var d = Display.Dpi / ReferenceDpi;
 			d = (d * 4.0f).Round() * 0.25f;
 			if (IsTabletDisplay()) {
 				d *= 2;

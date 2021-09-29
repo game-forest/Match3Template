@@ -108,7 +108,6 @@ namespace Match3Template.Application
 
 		private void OnUpdateFrame(float delta)
 		{
-			The.Cheats.ProcessCheatKeys();
 			var speedMultiplier = 1.0f;
 			if (TimeAccelerationMode || The.Cheats.IsKeyPressed(Key.Shift) || The.Cheats.IsTripleTouch()) {
 				speedMultiplier = 10.0f;

@@ -36,7 +36,7 @@ namespace Match3Template.Application
 
 		public static string GetDataDirectory()
 		{
-			return Environment.GetDataDirectory("Game Forest", Application.ApplicationName, Version);
+			return Environment.GetDataDirectory("GameForest", Application.ApplicationName, Version);
 		}
 
 		public static void Load()

@@ -13,14 +13,14 @@ namespace Match3Template.Application
 		public IntVector2 Resolution;
 
 		[YuzuMember]
-		public int DPI;
+		public int Dpi;
 
 		public Display(string name, int width, int height, int dpi)
 			: this()
 		{
 			Name = name;
 			Resolution = new IntVector2(width, height);
-			DPI = dpi;
+			Dpi = dpi;
 		}
 
 		public bool Equals(Display other)
@@ -28,7 +28,7 @@ namespace Match3Template.Application
 			return other.Name == Name;
 		}
 
-		private Vector2 PhysicalSize => (Vector2)Resolution / DPI;
+		private Vector2 PhysicalSize => (Vector2)Resolution / Dpi;
 
 		public bool IsTablet
 		{
