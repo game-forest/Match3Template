@@ -3,6 +3,87 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"LevelLose",
+			"Markers":[
+				{
+					"Frame":10,
+					"Id":"Show",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":20,
+					"Id":"Shown",
+					"JumpTo":""
+				},
+				{
+					"Frame":30,
+					"Id":"Hide",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":40,
+					"Id":"Hidden",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"Id":"LevelBuyMoves",
+			"Markers":[
+				{
+					"Frame":10,
+					"Id":"Show",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":20,
+					"Id":"Shown",
+					"JumpTo":""
+				},
+				{
+					"Frame":30,
+					"Id":"Hide",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":40,
+					"Id":"Hidden",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"Id":"LevelWin",
+			"Markers":[
+				{
+					"Frame":10,
+					"Id":"Show",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":20,
+					"Id":"Shown",
+					"JumpTo":""
+				},
+				{
+					"Frame":30,
+					"Id":"Hide",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":40,
+					"Id":"Hidden",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -73,12 +154,33 @@
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
 			"Size":[1366,768],
-			"TangerineFlags":1540,
+			"TangerineFlags":1536,
 			"Visible":false
 		},
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"LevelBuyMoves",
+					"ReadonlyKeys":[
+						[0,1,false],
+						[10,1,true],
+						[40,1,false]
+					],
+					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelBuyMoves",
+					"ReadonlyKeys":[
+						[10,1,"Show@Appear"],
+						[30,1,"Hide@Appear"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"ContentsPath":"LevelBuyMoves",
 			"Id":"LevelBuyMoves",
@@ -91,6 +193,27 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"LevelWin",
+					"ReadonlyKeys":[
+						[0,1,false],
+						[10,1,true],
+						[40,1,false]
+					],
+					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelWin",
+					"ReadonlyKeys":[
+						[10,1,"Show@Appear"],
+						[30,1,"Hide@Appear"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"ContentsPath":"LevelWin",
 			"Id":"LevelWin",
@@ -103,6 +226,27 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":15,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"LevelLose",
+					"ReadonlyKeys":[
+						[0,1,false],
+						[10,1,true],
+						[40,1,false]
+					],
+					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelLose",
+					"ReadonlyKeys":[
+						[10,1,"Show@Appear"],
+						[30,1,"Hide@Appear"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"ContentsPath":"LevelLose",
 			"Id":"LevelLose",
@@ -118,6 +262,17 @@
 			"Color":[4294967295],
 			"Id":"Ui",
 			"Nodes":[
+				{
+					"class":"Lime.Button, Lime",
+					"Anchors":6,
+					"Color":[4294967295],
+					"ContentsPath":"Externals/BtnX",
+					"Id":"BtnExit",
+					"Pivot":[0.5,0.5],
+					"Position":[1300.3335,64],
+					"Scale":[0.8,0.8],
+					"Size":[128,128]
+				},
 				{
 					"class":"Lime.Frame, Lime",
 					"Color":[4294967295],
@@ -331,6 +486,8 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
 
 
 

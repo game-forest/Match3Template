@@ -92,7 +92,9 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"ScenePath":"Shell/MapScreen"
+							"Action": {
+								"ScenePath":"Shell/MapScreen"
+							}
 						}
 					],
 					"ContentsPath":"Externals/BtnPlay",
@@ -108,8 +110,10 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"CloseActiveDialog":false,
-							"ScenePath":"Shell/Options"
+							"Action": {
+								"CloseActiveDialog":false,
+								"ScenePath":"Shell/Options"
+							}
 						}
 					],
 					"ContentsPath":"Externals/BtnOptions",

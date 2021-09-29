@@ -24,14 +24,14 @@ namespace Match3Template.Types
 				(c) => c.PropertyName == "NewDialogAnimation",
 				(c) => {
 					Func<string> getter = () => {
-						var component = (DialogActionComponent)c.Objects.First();
+						var component = (DialogAction)c.Objects.First();
 						return component.ScenePath;
 					};
 					return new AnimationStringPropertyEditor(
 						editorParams: c,
 						multiline: true,
 						nodeProvider: () => {
-							var component = (DialogActionComponent)c.Objects.First();
+							var component = (DialogAction)c.Objects.First();
 							try {
 								return Node.Load(component.ScenePath);
 							} catch {
@@ -176,12 +176,87 @@ namespace Match3Template.Types
 #endif // TANGERINE
 
 	[TangerineRegisterComponent]
-	[AllowOnlyOneComponent]
+	public class DialogActionComponent1 : DialogActionComponent
+	{
+
+	}
+
+	[TangerineRegisterComponent]
+	public class DialogActionComponent2 : DialogActionComponent
+	{
+
+	}
+
+	[TangerineRegisterComponent]
+	public class DialogActionComponent3 : DialogActionComponent
+	{
+
+	}
+
+	[TangerineRegisterComponent]
+	public class DialogActionComponent4 : DialogActionComponent
+	{
+
+	}
+
+	[TangerineRegisterComponent]
 	[TangerineMenuPath("Logic/")]
 	[TangerineTooltip("Opens provided dialog.")]
-	[TangerineAllowedParentTypes(typeof(Button))]
+	[TangerineAllowedParentTypes(typeof(Node))]
+	public class DialogActionComponentList : NodeComponent
+	{
+		[YuzuMember]
+		public AnimableList<DialogAction> Actions { get; private set; } =
+			new AnimableList<DialogAction>();
+
+		public DialogActionComponentList()
+		{
+
+		}
+
+		protected override void OnOwnerChanged(Node oldOwner)
+		{
+			base.OnOwnerChanged(oldOwner);
+			Actions.Owner = Owner;
+		}
+
+		protected override void OnBuilt()
+		{
+			base.OnBuilt();
+			foreach (var action in Actions) {
+				action.OnBuilt(Owner);
+			}
+		}
+	}
+
+	// [AllowMultipleComponents]
+	[TangerineRegisterComponent]
+	// [AllowOnlyOneComponent]
+	[TangerineMenuPath("Logic/")]
+	[TangerineTooltip("Opens provided dialog.")]
+	[TangerineAllowedParentTypes(typeof(Node))]
 	public class DialogActionComponent : NodeComponent
 	{
+		[YuzuMember]
+		public DialogAction Action { get; set; } = new DialogAction();
+		public DialogActionComponent()
+		{
+
+		}
+
+		protected override void OnBuilt()
+		{
+			base.OnBuilt();
+			Action.OnBuilt(Owner);
+		}
+	}
+
+
+	public class DialogAction : Animable
+	{
+		[YuzuMember]
+		public string ButtonName { get; set; }
+
 		[TangerineFileProperty(new[] { "tan" })]
 		[YuzuMember]
 		public string ScenePath { get; set; }
@@ -195,20 +270,22 @@ namespace Match3Template.Types
 		[YuzuMember]
 		public string ActiveDialogAnimation { get; set; }
 
-		public DialogActionComponent()
+		public DialogAction()
 		{
 
 		}
 
-		protected override void OnOwnerChanged(Node oldOwner)
+		public void OnBuilt(Node Owner)
 		{
-			base.OnOwnerChanged(oldOwner);
-			if (oldOwner is Button oldButton) {
-				oldButton.Clicked -= OpenDialog;
+			var button = Owner as Button;
+			if (!string.IsNullOrEmpty(ButtonName)) {
+				button = Owner.TryFind<Button>(ButtonName);
 			}
-			if (Owner is Button button) {
-				button.Clicked += OpenDialog;
+			if (button == null) {
+				System.Console.WriteLine($"Neither `{Owner}` nor `{ButtonName}` is a button.");
+				return;
 			}
+			button.Clicked += OpenDialog;
 		}
 
 		private void OpenDialog()

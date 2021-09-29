@@ -59,6 +59,7 @@ namespace Match3Template.Types
 			if (dropCountValue == 0) {
 				// WIN
 				// TODO: ensure won happens once
+				Owner.RunAnimation("Show", "LevelWin");
 			}
 		}
 
@@ -90,6 +91,7 @@ namespace Match3Template.Types
 			if (turnsLeft == 0) {
 				// LOSE
 				// TODO: ensure lose happens once
+				Owner.RunAnimation("Show", "LevelLose");
 			}
 		}
 

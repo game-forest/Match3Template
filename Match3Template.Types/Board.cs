@@ -143,6 +143,7 @@ namespace Match3Template.Types
 		{
 			int dropCountInAsset = 0;
 			int blockerCountInAsset = 0;
+			int dropToSpawn = 0;
 			if (!string.IsNullOrEmpty(boardConfig.LevelFileName)) {
 				using var stream = AssetBundle.Current.OpenFile(boardConfig.LevelFileName + ".txt");
 				using var reader = new StreamReader(stream);
@@ -183,6 +184,13 @@ namespace Match3Template.Types
 				}
 				boardConfig.RowCount = Math.Max(boardConfig.RowCount, rowCount);
 				boardConfig.ColumnCount = Math.Max(boardConfig.ColumnCount, columnCount);
+				if (boardConfig.DropCount > dropCountInAsset) {
+					boardConfig.DropCount -= dropCountInAsset;
+					dropToSpawn = boardConfig.DropCount;
+				} else {
+					boardConfig.DropCount = dropCountInAsset;
+					dropToSpawn = 0;
+				}
 			}
 			if (!boardConfig.PreFillBoard) {
 				return;
@@ -566,6 +574,9 @@ namespace Match3Template.Types
 						continue;
 					}
 					if (item.Task != null) {
+						continue;
+					}
+					if (item.Type == ItemType.Drop) {
 						continue;
 					}
 					item.RunTask(BlowTask(item, damageKind));

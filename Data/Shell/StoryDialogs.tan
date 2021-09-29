@@ -154,7 +154,7 @@
 						[35,0,"Game/Levels/Level3"],
 						[40,1,"Shell/MainMenu"]
 					],
-					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].ScenePath"
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].Action.ScenePath"
 				},
 				{
 					"class":"Lime.Animator`1[[System.String]], Lime",
@@ -164,7 +164,7 @@
 						[10,0,"Story022@Index"],
 						[29,0,"Hide@Appear"]
 					],
-					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].ActiveDialogAnimation"
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].Action.ActiveDialogAnimation"
 				},
 				{
 					"class":"Lime.Animator`1[[System.Boolean]], Lime",
@@ -176,15 +176,17 @@
 						[35,0,true],
 						[40,0,true]
 					],
-					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].CloseActiveDialog"
+					"TargetProperty":"[Match3Template.Types.DialogActionComponent, Match3Template.Types].Action.CloseActiveDialog"
 				}
 			],
 			"Color":[4294967295],
 			"Components":[
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"ActiveDialogAnimation":"Hide@Appear",
-					"ScenePath":"Game/Levels/Level1"
+					"Action": {
+						"ActiveDialogAnimation":"Hide@Appear",
+						"ScenePath":"Game/Levels/Level1"
+					}
 				}
 			],
 			"Id":"Button",

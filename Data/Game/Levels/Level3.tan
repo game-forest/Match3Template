@@ -107,25 +107,6 @@
 			"Anchors":15,
 			"Color":[4294967295],
 			"Id":"Ui",
-			"Nodes":[
-				{
-					"class":"Lime.Button, Lime",
-					"Anchors":6,
-					"Color":[4294967295],
-					"Components":[
-						{
-							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"ScenePath":""
-						}
-					],
-					"ContentsPath":"/Shell/Externals/BtnX",
-					"Id":"BtnExit",
-					"Pivot":[0.5,0.5],
-					"Position":[1302.7969,61.200195],
-					"Scale":[0.8,0.8],
-					"Size":[128,128]
-				}
-			],
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
 			"Size":[1366,768],
@@ -144,6 +125,14 @@
 				},
 				{
 					"class":"Match3Template.Types.CreateGameScreenComponent, Match3Template.Types"
+				},
+				{
+					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
+					"Action": {
+						"ActiveDialogAnimation":"Hide@Appear",
+						"NewDialogAnimation":"2@Progress,Show@Appear",
+						"ScenePath":"Shell/MapScreen"
+					}
 				}
 			],
 			"ContentsPath":"/Shell/GameScreen",

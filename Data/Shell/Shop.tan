@@ -739,7 +739,9 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"ScenePath":"Shell/MapScreen"
+					"Action": {
+						"ScenePath":"Shell/MapScreen"
+					}
 				}
 			],
 			"ContentsPath":"Externals/BtnX",
