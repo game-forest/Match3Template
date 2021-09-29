@@ -81,6 +81,9 @@ namespace Match3Template.Dialogs
 		protected virtual void Orientate()
 		{
 			var markerName = DisplayInfo.IsLandscapeOrientation() ? "Landscape" : "Portrait";
+			if (DisplayInfo.IsTabletDisplay()) {
+				markerName = "Tablet" + markerName;
+			}
 			foreach (var node in Root.Descendants) {
 				node.TryRunAnimation(markerName, "Resolutions");
 			}

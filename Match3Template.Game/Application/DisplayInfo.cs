@@ -15,8 +15,8 @@ namespace Match3Template.Application
 		private const float ReferenceDpi = 330f;
 
 		public static readonly List<Display> Displays = new List<Display>() {
-			new Display("Tablet", 1024, 768, 264),
-			new Display("16:9", 1000, 560, 326),
+			new Display("Tablet", 1024, 768, 264, true),
+			new Display("16:9", 1000, 560, 326, false),
 		};
 
 		public static event Action BeforeOrientationOrResolutionChanged;

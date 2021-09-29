@@ -15,12 +15,13 @@ namespace Match3Template.Application
 		[YuzuMember]
 		public int Dpi;
 
-		public Display(string name, int width, int height, int dpi)
+		public Display(string name, int width, int height, int dpi, bool isTablet)
 			: this()
 		{
 			Name = name;
 			Resolution = new IntVector2(width, height);
 			Dpi = dpi;
+			IsTablet = isTablet;
 		}
 
 		public bool Equals(Display other)
@@ -30,18 +31,7 @@ namespace Match3Template.Application
 
 		private Vector2 PhysicalSize => (Vector2)Resolution / Dpi;
 
-		public bool IsTablet
-		{
-			get
-			{
-				// Treat all devices with extra-large screens as tablets
-				// http://developer.android.com/guide/practices/screens_support.html
-				var ps = PhysicalSize;
-				if (ps.Y > ps.X) {
-					Toolbox.Swap(ref ps.Y, ref ps.X);
-				}
-				return ps.X >= 6 && ps.Y >= 4.5f;
-			}
-		}
+		[YuzuMember]
+		public bool IsTablet { get; set; }
 	}
 }

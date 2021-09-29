@@ -27,7 +27,7 @@ namespace Match3Template.Application
 
 		public static void SetResolution(Vector2 newResolution)
 		{
-			Display = new Display("Custom", newResolution.X.Round(), newResolution.Y.Round(), 400);
+			Display = new Display("Custom", newResolution.X.Round(), newResolution.Y.Round(), 400, false);
 		}
 
 		public static DeviceOrientation GetDeviceOrientation()
