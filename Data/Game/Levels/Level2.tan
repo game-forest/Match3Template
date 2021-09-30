@@ -104,16 +104,6 @@
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
-			"Anchors":15,
-			"Color":[4294967295],
-			"Id":"Ui",
-			"Pivot":[0.5,0.5],
-			"Position":[683,384],
-			"Size":[1366,768],
-			"TangerineFlags":772
-		},
-		{
-			"class":"Lime.Frame, Lime",
 			"Anchors":48,
 			"Color":[4294967295],
 			"Components":[
@@ -129,7 +119,7 @@
 				},
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"Action": {
+					"Action":{
 						"ActiveDialogAnimation":"Hide@Appear",
 						"ButtonName":"BtnExit",
 						"NewDialogAnimation":"1@Progress,Show@Appear",
