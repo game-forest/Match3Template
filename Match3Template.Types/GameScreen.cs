@@ -59,13 +59,24 @@ namespace Match3Template.Types
 			if (dropCountValue == 0) {
 				// WIN
 				// TODO: ensure won happens once
-				Owner.RunAnimation("Show", "LevelWin");
+				Win();
 			}
+		}
+
+		private void Lose()
+		{
+			Owner.RunAnimation("Show", "LevelLose");
 		}
 
 		protected override void Update(float delta)
 		{
 			base.Update(delta);
+			if (Window.Current.Input.WasKeyPressed(Key.W)) {
+				Win();
+			}
+			if (Window.Current.Input.WasKeyPressed(Key.L)) {
+				Lose();
+			}
 		}
 
 		protected override void Start()
@@ -81,7 +92,6 @@ namespace Match3Template.Types
 			goalValueText.Text = dropCountGoal.ToString();
 			board.DropCompleted += OnDropCompleted;
 			board.TurnMade += OnTurnMade;
-			Suspend();
 		}
 
 		private void OnTurnMade(object sender, TurnMadeEventArgs e)
@@ -91,8 +101,13 @@ namespace Match3Template.Types
 			if (turnsLeft == 0) {
 				// LOSE
 				// TODO: ensure lose happens once
-				Owner.RunAnimation("Show", "LevelLose");
+				Lose();
 			}
+		}
+
+		private void Win()
+		{
+			Owner.RunAnimation("Show", "LevelWin");
 		}
 
 		protected override void Stop(Node owner)

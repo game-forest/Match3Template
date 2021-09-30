@@ -3,6 +3,36 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"LevelBuyMoves",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"Id":"LevelLose",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -105,6 +135,24 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":48,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelLose",
+					"ReadonlyKeys":[
+						[0,0,"Show@LevelLose"]
+					],
+					"TargetProperty":"Trigger"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelBuyMoves",
+					"ReadonlyKeys":[
+						[0,0,"Hide@LevelBuyMoves"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"Components":[
 				{
@@ -131,6 +179,19 @@
 							"ButtonName":"LevelWin/BtnOk",
 							"NewDialogAnimation":"0to1@Progress,Show@Appear",
 							"ScenePath":"Shell/MapScreen"
+						},
+						{
+							"ActiveDialogAnimation":"Hide@Appear",
+							"ButtonName":"Ui/BtnExit",
+							"NewDialogAnimation":"0@Progress,Show@Appear",
+							"ScenePath":"Shell/MapScreen"
+						},
+						{
+							"ButtonName":"LevelBuyMoves/BtnOk"
+						},
+						{
+							"ActiveDialogAnimation":"Start@LevelBuyMoves,Start@LevelLose",
+							"ButtonName":"LevelBuyMoves/BtnCancel"
 						}
 					]
 				}

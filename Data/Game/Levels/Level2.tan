@@ -118,13 +118,34 @@
 					"class":"Match3Template.Types.CreateGameScreenComponent, Match3Template.Types"
 				},
 				{
-					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"Action":{
-						"ActiveDialogAnimation":"Hide@Appear",
-						"ButtonName":"BtnExit",
-						"NewDialogAnimation":"1@Progress,Show@Appear",
-						"ScenePath":"Shell/MapScreen"
-					}
+					"class":"Match3Template.Types.DialogActionComponentList, Match3Template.Types",
+					"Actions":[
+						{
+							"ActiveDialogAnimation":"Hide@Appear",
+							"ButtonName":"LevelLose/BtnOk",
+							"NewDialogAnimation":"1@Progress,Show@Appear",
+							"ScenePath":"Shell/MapScreen"
+						},
+						{
+							"ActiveDialogAnimation":"Hide@Appear",
+							"ButtonName":"LevelWin/BtnOk",
+							"NewDialogAnimation":"1to2@Progress,Show@Appear",
+							"ScenePath":"Shell/MapScreen"
+						},
+						{
+							"ActiveDialogAnimation":"Hide@Appear",
+							"ButtonName":"Ui/BtnExit",
+							"NewDialogAnimation":"1@Progress,Show@Appear",
+							"ScenePath":"Shell/MapScreen"
+						},
+						{
+							"ButtonName":"LevelBuyMoves/BtnOk"
+						},
+						{
+							"ActiveDialogAnimation":"Start@LevelBuyMoves,Start@LevelLose",
+							"ButtonName":"LevelBuyMoves/BtnCancel"
+						}
+					]
 				}
 			],
 			"ContentsPath":"/Shell/GameScreen",

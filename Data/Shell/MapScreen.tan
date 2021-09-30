@@ -244,7 +244,7 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"Action": {
+							"Action":{
 								"ActiveDialogAnimation":"",
 								"CloseActiveDialog":false,
 								"NewDialogAnimation":"",
@@ -410,7 +410,7 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"Action": {
+							"Action":{
 								"ActiveDialogAnimation":"",
 								"CloseActiveDialog":false,
 								"NewDialogAnimation":"",
@@ -484,7 +484,7 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"Action": {
+							"Action":{
 								"ActiveDialogAnimation":"",
 								"CloseActiveDialog":false,
 								"NewDialogAnimation":"",
@@ -502,14 +502,6 @@
 					"class":"Lime.Button, Lime",
 					"Anchors":48,
 					"Animators":[
-						{
-							"class":"Lime.Animator`1[[System.String]], Lime",
-							"AnimationId":"Appear",
-							"ReadonlyKeys":[
-								[15,0,"Unlock@State"]
-							],
-							"TargetProperty":"Trigger"
-						},
 						{
 							"class":"Lime.Animator`1[[System.String]], Lime",
 							"AnimationId":"Progress",
@@ -562,7 +554,7 @@
 					"Components":[
 						{
 							"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-							"Action": {
+							"Action":{
 								"ActiveDialogAnimation":"Hide@Appear",
 								"NewDialogAnimation":"Story01@Index",
 								"ScenePath":"Shell/StoryDialogs"
@@ -621,7 +613,7 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"Action": {
+					"Action":{
 						"ScenePath":"Shell/MainMenu"
 					}
 				}
@@ -701,7 +693,7 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
-					"Action": {
+					"Action":{
 						"ScenePath":"Shell/Shop"
 					}
 				}
@@ -793,6 +785,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
