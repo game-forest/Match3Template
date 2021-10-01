@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Match3Template.Application;
 using Lime;
-using Match3Template.Scenes;
 using System.IO;
 
 namespace Match3Template.Dialogs

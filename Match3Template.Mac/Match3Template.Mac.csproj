@@ -31,6 +31,7 @@
     <Profiling>false</Profiling>
     <AOTMode>None</AOTMode>
     <LangVersion>8.0</LangVersion>
+    <LinkMode>None</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -63,6 +64,8 @@
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug.Profiler|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +80,8 @@
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RemoteScripting">
@@ -110,10 +115,6 @@
       <Project>{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}</Project>
       <Name>Yuzu.Mac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Match3Template.GeneratedScenes\Match3Template.GeneratedScenes.Mac.csproj">
-      <Project>{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}</Project>
-      <Name>Match3Template.GeneratedScenes.Mac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Citrus\\Lime\Extensions\DynamicFont\DynamicFont.Mac.csproj">
       <Project>{B5F74505-80BB-4373-B194-219D743C1FA0}</Project>
       <Name>DynamicFont.Mac</Name>
@@ -125,6 +126,10 @@
     <ProjectReference Include="..\Citrus\\3rdParty\ShaderCompilerBinding\ShaderCompilerBinding.Mac.csproj">
       <Project>{94911E6A-53F9-4B86-9ADE-E3B510C810B9}</Project>
       <Name>ShaderCompilerBinding.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Match3Template.Types\Match3Template.Types.Mac.csproj">
+      <Project>{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}</Project>
+      <Name>Match3Template.Types.Mac</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

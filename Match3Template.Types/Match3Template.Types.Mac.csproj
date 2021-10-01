@@ -29,8 +29,7 @@
     </HttpClientHandler>
     <TlsProvider>
     </TlsProvider>
-    <LinkMode>
-    </LinkMode>
+    <LinkMode>None</LinkMode>
     <XamMacArch>
     </XamMacArch>
     <AOTMode>None</AOTMode>
@@ -52,8 +51,7 @@
     </HttpClientHandler>
     <TlsProvider>
     </TlsProvider>
-    <LinkMode>
-    </LinkMode>
+    <LinkMode>None</LinkMode>
     <XamMacArch>
     </XamMacArch>
     <AOTMode>None</AOTMode>
@@ -67,6 +65,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Tangerine.Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +79,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Orange.Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -87,6 +93,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Orange.Release|AnyCPU'">
     <OutputPath>bin\Orange.Release\</OutputPath>
@@ -96,11 +106,16 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <UseSGen>false</UseSGen>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include=".\**\*.cs" />
@@ -115,6 +130,22 @@
     <ProjectReference Include="..\Citrus\\Yuzu\Yuzu.Mac.csproj">
       <Project>{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}</Project>
       <Name>Yuzu.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Citrus\Orange\Orange.Mac.csproj" Condition="$(Configuration.Contains('Tangerine'))">
+      <Project>{4B2BDD5A-2AAE-46AE-AA1A-8C9308BAA50D}</Project>
+      <Name>Orange.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Citrus\Tangerine\Tangerine.Core\Tangerine.Core.Mac.csproj" Condition="$(Configuration.Contains('Tangerine'))">
+      <Project>{05FB6476-C29B-49A7-918C-A52CAF73FCA7}</Project>
+      <Name>Tangerine.Core.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Citrus\Tangerine\Tangerine.UI.Inspector\Tangerine.UI.Inspector.Mac.csproj" Condition="$(Configuration.Contains('Tangerine'))">
+      <Project>{D6B543CB-0223-4210-BB0F-7D8250760895}</Project>
+      <Name>Tangerine.UI.Inspector.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Citrus\Tangerine\Tangerine.UI\Tangerine.UI.Mac.csproj" Condition="$(Configuration.Contains('Tangerine'))">
+      <Project>{E62BA18F-4E1A-466A-8299-67AD567F17E5}</Project>
+      <Name>Tangerine.UI.Mac</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

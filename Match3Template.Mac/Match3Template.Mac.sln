@@ -5,21 +5,21 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Match3Template.Mac", "Match3Template.Mac.csproj", "{6AC2E264-44BC-4508-B819-CA4B0CBA764B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lime.Mac", "..\Citrus\\Lime\Lime.Mac.csproj", "{DC16EEBF-404D-4610-B87A-15B57464D707}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lime.Mac", "..\Citrus\Lime\Lime.Mac.csproj", "{DC16EEBF-404D-4610-B87A-15B57464D707}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lemon.Mac", "..\Citrus\\Lemon\Lemon.Mac.csproj", "{BB697671-700C-455D-B8EE-66A6B122B949}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lemon.Mac", "..\Citrus\Lemon\Lemon.Mac.csproj", "{BB697671-700C-455D-B8EE-66A6B122B949}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Match3Template.Game", "..\Match3Template.Game\Match3Template.Game.shproj", "{E72754D5-6DF7-42F1-9E14-0EF4D1491621}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuzu.Mac", "..\Citrus\\Yuzu\Yuzu.Mac.csproj", "{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuzu.Mac", "..\Citrus\Yuzu\Yuzu.Mac.csproj", "{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Match3Template.GeneratedScenes.Mac", "..\Match3Template.GeneratedScenes\Match3Template.GeneratedScenes.Mac.csproj", "{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Match3Template.Types.Mac", "..\Match3Template.Types\Match3Template.Types.Mac.csproj", "{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicFont.Mac", "..\Citrus\\Lime\Extensions\DynamicFont\DynamicFont.Mac.csproj", "{B5F74505-80BB-4373-B194-219D743C1FA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicFont.Mac", "..\Citrus\Lime\Extensions\DynamicFont\DynamicFont.Mac.csproj", "{B5F74505-80BB-4373-B194-219D743C1FA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoltenVK", "..\Citrus\\3rdParty\MoltenVK\MoltenVK.csproj", "{25A88ABB-AC39-41AD-92EF-DD91341863C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoltenVK", "..\Citrus\3rdParty\MoltenVK\MoltenVK.csproj", "{25A88ABB-AC39-41AD-92EF-DD91341863C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderCompilerBinding.Mac", "..\Citrus\\3rdParty\ShaderCompilerBinding\ShaderCompilerBinding.Mac.csproj", "{94911E6A-53F9-4B86-9ADE-E3B510C810B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderCompilerBinding.Mac", "..\Citrus\3rdParty\ShaderCompilerBinding\ShaderCompilerBinding.Mac.csproj", "{94911E6A-53F9-4B86-9ADE-E3B510C810B9}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -31,6 +31,10 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Release.Profiler|Any CPU = Release.Profiler|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Tangerine.Release|Any CPU = Tangerine.Release|Any CPU
+		Tangerine.Debug|Any CPU = Tangerine.Debug|Any CPU
+		Orange.Debug|Any CPU = Orange.Debug|Any CPU
+		Orange.Release|Any CPU = Orange.Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Debug.Profiler|Any CPU.ActiveCfg = Debug.Profiler|Any CPU
@@ -41,6 +45,14 @@ Global
 		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Release.Profiler|Any CPU.Build.0 = Release.Profiler|Any CPU
 		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC2E264-44BC-4508-B819-CA4B0CBA764B}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Debug.Profiler|Any CPU.ActiveCfg = Debug.Profiler|Any CPU
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Debug.Profiler|Any CPU.Build.0 = Debug.Profiler|Any CPU
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -49,6 +61,14 @@ Global
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Release.Profiler|Any CPU.Build.0 = Release.Profiler|Any CPU
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC16EEBF-404D-4610-B87A-15B57464D707}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC16EEBF-404D-4610-B87A-15B57464D707}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -57,6 +77,14 @@ Global
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB697671-700C-455D-B8EE-66A6B122B949}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB697671-700C-455D-B8EE-66A6B122B949}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -65,6 +93,14 @@ Global
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F16D8E4-A0F1-4341-83A0-3897FC44EBB8}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -73,6 +109,14 @@ Global
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Tangerine.Release|Any CPU.ActiveCfg = Tangerine.Release|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Tangerine.Release|Any CPU.Build.0 = Tangerine.Release|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Tangerine.Debug|Any CPU.ActiveCfg = Tangerine.Debug|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Tangerine.Debug|Any CPU.Build.0 = Tangerine.Debug|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Orange.Debug|Any CPU.ActiveCfg = Orange.Debug|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Orange.Debug|Any CPU.Build.0 = Orange.Debug|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Orange.Release|Any CPU.ActiveCfg = Orange.Release|Any CPU
+		{1EE9C6F3-E8D7-4FF8-9420-2B4C9CF9B66D}.Orange.Release|Any CPU.Build.0 = Orange.Release|Any CPU
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -81,6 +125,14 @@ Global
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5F74505-80BB-4373-B194-219D743C1FA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F74505-80BB-4373-B194-219D743C1FA0}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -89,6 +141,14 @@ Global
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A88ABB-AC39-41AD-92EF-DD91341863C8}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Debug.Profiler|Any CPU.ActiveCfg = Debug|Any CPU
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Debug.Profiler|Any CPU.Build.0 = Debug|Any CPU
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -97,6 +157,14 @@ Global
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Release.Profiler|Any CPU.Build.0 = Release|Any CPU
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Tangerine.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Tangerine.Release|Any CPU.Build.0 = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Tangerine.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Tangerine.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Orange.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Orange.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Orange.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{94911E6A-53F9-4B86-9ADE-E3B510C810B9}.Orange.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
