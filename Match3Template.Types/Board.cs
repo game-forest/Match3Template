@@ -38,6 +38,12 @@ namespace Match3Template.Types
 		private readonly Grid<ItemComponent> grid = new Grid<ItemComponent>();
 		private readonly List<ItemComponent> items = new List<ItemComponent>();
 
+		private Vector2 CellSize => new Vector2(90, 90);
+
+		internal int GetTurnCount() => boardConfig.TurnCount;
+
+		internal int GetDropCount() => boardConfig.DropCount;
+
 		public static Board CreateBoard(Widget root)
 		{
 			var match3Config = root.SelfAndDescendants
@@ -55,8 +61,6 @@ namespace Match3Template.Types
 
 			return new Board(boardWidget, boardConfig, match3Config);
 		}
-
-		internal int GetTurnCount() => boardConfig.TurnCount;
 
 		public Board(Widget boardWidget, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
 		{
@@ -153,30 +157,30 @@ namespace Match3Template.Types
 					var line = reader.ReadLine();
 					columnCount = Math.Max(columnCount, line.Length);
 					int x = 0;
+					ItemComponent item = null;
 					foreach (var c in line) {
-						var itemType = c switch {
-							var k when c == '0'
-								|| c == '1'
-								|| c == '2'
-								|| c == '3'
-								|| c == '4' => ItemType.Piece,
-							'D' => ItemType.Drop,
-							'B' => ItemType.Blocker,
-							_ => ItemType.None
-						};
-						if (itemType != ItemType.None) {
-							var item = CreateItem(
-								new IntVector2(x, rowCount),
-								itemType,
-								itemType == ItemType.Piece ? c - '0' : -1
-							);
+						switch (c) {
+							case '0':
+							case '1':
+							case '2':
+							case '3':
+							case '4': {
+								item = CreatePiece(new IntVector2(x, rowCount), c - '0');
+								break;
+							}
+							case 'D': {
+								item = CreateDrop(new IntVector2(x, rowCount));
+								dropCountInAsset++;
+								break;
+							}
+							case 'B': {
+								item = CreateBlocker(new IntVector2(x, rowCount));
+								blockerCountInAsset++;
+								break;
+							}
+						}
+						if (item != null) {
 							item.AnimateShown();
-						}
-						if (itemType == ItemType.Drop) {
-							dropCountInAsset++;
-						}
-						if (itemType == ItemType.Blocker) {
-							blockerCountInAsset++;
 						}
 						x++;
 					}
@@ -196,19 +200,15 @@ namespace Match3Template.Types
 				return;
 			}
 			for (int i = 0; i < boardConfig.DropCount - dropCountInAsset; i++) {
-				var drop = CreateItem(
-					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
-					type: ItemType.Drop,
-					kind: -1
+				var drop = CreateDrop(
+					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount)
 				);
 				drop.AnimateShown();
 			}
 
 			for (int i = 0; i < boardConfig.BlockerCount - blockerCountInAsset; i++) {
-				var blocker = CreateItem(
-					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount),
-					type: ItemType.Blocker,
-					kind: -1
+				var blocker = CreateBlocker(
+					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount)
 				);
 				blocker.AnimateShown();
 			}
@@ -219,15 +219,15 @@ namespace Match3Template.Types
 					var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.ColumnCount);
 					if (grid[gridPosition] == null) {
 						var adjacentKinds = EnumerateAdjacentItems(gridPosition)
-							.Where(i => i.Item != null)
-							.Select(i => i.Item.Kind)
+							.Where(i => i.Item is Piece piece)
+							.Select(i => (i.Item as Piece).Kind)
 							.Distinct();
 						var allowedKinds = boardConfig.AllowedPieces.Except(adjacentKinds).ToList();
 						if (!allowedKinds.Any()) {
 							allowedKinds.Add(boardConfig.AllowedPieces.RandomItem());
 						}
 						int pieceKind = Mathf.RandomItem(allowedKinds);
-						var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
+						var item = CreatePiece(gridPosition, pieceKind);
 						item.AnimateShown();
 					}
 				}
@@ -253,39 +253,67 @@ namespace Match3Template.Types
 				var gridPosition = new IntVector2(i, 0);
 				if (grid[gridPosition] == null) {
 					int pieceKind = Mathf.RandomItem(boardConfig.AllowedPieces);
-					var item = CreateItem(gridPosition, ItemType.Piece, pieceKind);
-					item.RunTask(AnimateTask(item.AnimateShow()));
+					var item = CreatePiece(gridPosition, pieceKind);
+					item.RunAnimationTask(item.AnimateShow());
 				}
 			}
 		}
 
-		private ItemComponent CreateItem(IntVector2 gridPosition, ItemType type, int kind)
+		private Piece CreatePiece(IntVector2 gridPosition, int kind)
+		{
+			var w = pieceTemplate.Clone<Widget>();
+			var piece = new Piece(grid, CellSize);
+			SetupItem(piece, w, gridPosition);
+			piece.Kind = kind;
+			return piece;
+		}
+
+		private Blocker CreateBlocker(IntVector2 gridPosition)
+		{
+			var w = blockerTemplate.Clone<Widget>();
+			var blocker = new Blocker(grid, CellSize);
+			SetupItem(blocker, w, gridPosition);
+			return blocker;
+		}
+
+		private Drop CreateDrop(IntVector2 gridPosition)
+		{
+			var w = dropTemplate.Clone<Widget>();
+			var drop = new Drop(grid, CellSize);
+			SetupItem(drop, w, gridPosition);
+			return drop;
+		}
+
+		private Bonus CreateBonus(IntVector2 gridPosition, BonusKind bonusKind)
+		{
+			var w = bonusKind switch {
+				BonusKind.HorizontalLine => lineBonusTemplate.Clone<Widget>(),
+				BonusKind.VerticalLine => lineBonusTemplate.Clone<Widget>(),
+				BonusKind.Bomb => bombBonusTemplate.Clone<Widget>(),
+				BonusKind.Lightning => lightningBonusTemplate.Clone<Widget>(),
+				_ => throw new NotImplementedException(),
+			};
+			if (bonusKind == BonusKind.VerticalLine) {
+				w.Rotation = 90;
+			}
+			var bonus = new Bonus(grid, CellSize);
+			bonus.BonusKind = bonusKind;
+			SetupItem(bonus, w, gridPosition);
+			bonus.RunAnimationTask(bonus.AnimateShow());
+			return bonus;
+		}
+
+		private void SetupItem(ItemComponent item, Widget widget, IntVector2 gridPosition)
 		{
 			if (items.Where(i => i.GridPosition == gridPosition).Any()) {
 				throw new InvalidOperationException();
 			}
-			var w = type switch {
-				ItemType.Piece => pieceTemplate.Clone<Widget>(),
-				ItemType.Blocker => blockerTemplate.Clone<Widget>(),
-				ItemType.Drop => dropTemplate.Clone<Widget>(),
-				_ => throw new NotImplementedException(),
-			};
-			ItemComponent item;
-			// Passing w.Size we set up cell size
-			w.Components.Add(item = new ItemComponent(grid, w.Size));
-			item.Kind = kind;
-			item.Type = type;
-			itemContainer.AddNode(w);
+			widget.Components.Add(item);
+			itemContainer.AddNode(widget);
 			item.GridPosition = gridPosition;
 			item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(gridPosition);
 			items.Add(item);
 			item.AnimateIdle();
-			return item;
-		}
-
-		private IEnumerator<object> AnimateTask(Animation animation)
-		{
-			yield return animation;
 		}
 
 		private void Fall()
@@ -302,10 +330,10 @@ namespace Match3Template.Types
 					|| CanFallDiagonallyLeft(item)
 				) {
 					item.RunTask(FallTask(item));
-				} else if (item.Type == ItemType.Drop && item.GridPosition.Y == boardConfig.RowCount - 1) {
+				} else if (item is Drop && item.GridPosition.Y == boardConfig.RowCount - 1) {
 					completedDrops.Add(item);
 				} else
-				if (item.Type == ItemType.Blocker) {
+				if (item is Blocker) {
 					// Gap filling
 					var p = item.GridPosition;
 					var belowPosition = p + IntVector2.Down;
@@ -317,15 +345,18 @@ namespace Match3Template.Types
 						var belowLeft = grid[belowPosition + IntVector2.Left];
 						var belowRight = grid[belowPosition + IntVector2.Right];
 						if (below == null) {
-							if (belowLeft != null && belowLeft.Task == null && belowLeft.Type != ItemType.Blocker) {
+							if (belowLeft != null && belowLeft.Task == null && !(belowLeft is Blocker)) {
 								belowLeft.GridPosition = belowPosition;
 								belowLeft.RunTask(MoveToTask(belowLeft));
 								break;
-							} else if (belowRight != null && belowRight.Task == null && belowRight.Type != ItemType.Blocker) {
+							} else if (belowRight != null && belowRight.Task == null && !(belowRight is Blocker)) {
 								belowRight.GridPosition = belowPosition;
 								belowRight.RunTask(MoveToTask(belowRight));
 								break;
-							} else if ((belowLeft == null || belowLeft.Type == ItemType.Blocker) && (belowRight == null || belowRight.Type == ItemType.Blocker)) {
+							} else if (
+								(belowLeft == null || belowLeft is Blocker)
+								&& (belowRight == null || belowRight is Blocker)
+							) {
 								belowPosition += IntVector2.Down;
 								// TODO: lift pieces somehow
 								//below = grid[belowPosition];
@@ -363,7 +394,7 @@ namespace Match3Template.Types
 		private bool CanFall(ItemComponent item)
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down;
-			return item.Type != ItemType.Blocker
+			return !(item is Blocker)
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount;
 		}
@@ -372,7 +403,7 @@ namespace Match3Template.Types
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down + IntVector2.Right;
 			var sidePosition = item.GridPosition + IntVector2.Right;
-			return item.Type != ItemType.Blocker
+			return !(item is Blocker)
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount
 				&& belowPosition.X < boardConfig.ColumnCount
@@ -385,7 +416,7 @@ namespace Match3Template.Types
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down + IntVector2.Left;
 			var sidePosition = item.GridPosition + IntVector2.Left;
-			return item.Type != ItemType.Blocker
+			return !(item is Blocker)
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount
 				&& belowPosition.X >= 0
@@ -426,7 +457,7 @@ namespace Match3Template.Types
 			for (int i = 0; i < 4; i++) {
 				if (Window.Current.Input.WasTouchBegan(i)) {
 					var item = WidgetContext.Current.NodeUnderMouse?.Components.Get<ItemComponent>();
-					if (item == null || item.Task != null || item.Type == ItemType.Blocker) {
+					if (item == null || item.Task != null || !item.CanMove) {
 						continue;
 					}
 					item.RunTask(InputTask(item, i));
@@ -446,12 +477,18 @@ namespace Match3Template.Types
 			} while (
 				touchDelta.Length < match3Config.InputDetectionLength && input.IsTouching(i)
 			);
+			if (!input.IsTouching(i) && touchDelta.Length < match3Config.InputDetectionLength) {
+				if (item is Bonus bonus) {
+					yield return BlowTask(item, DamageKind.Match, BonusKind.None);
+				}
+				yield break;
+			}
 			if (!TryGetProjectionAxis(touchDelta, out var projectionAxis)) {
 				// item.AnimateUnselect();
 				yield break;
 			}
 			var nextItem = grid[item.GridPosition + projectionAxis];
-			if (nextItem?.Task != null || nextItem?.Type == ItemType.Blocker) {
+			if (nextItem?.Task != null || nextItem is Blocker) {
 				yield break;
 			}
 			item.AnimateSelect();
@@ -504,24 +541,27 @@ namespace Match3Template.Types
 				if (nextItem == null) {
 					item.GridPosition += projectionAxis;
 					if (match3Config.SwapBackOnNonMatchingSwap) {
-						var match = FindMatchForItem(item);
-						if (FindMatchForItem(item).Any()) {
-							turnMade = true;
-							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
-							movingBack = false;
-							if (grid[item.GridPosition - projectionAxis] == null) {
-								item.GridPosition -= projectionAxis;
+						if (item is Piece piece) {
+							var match = FindMatchForItem(piece);
+							if (FindMatchForItem(piece).Any()) {
+								turnMade = true;
+								yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
+								movingBack = false;
+								if (grid[item.GridPosition - projectionAxis] == null) {
+									item.GridPosition -= projectionAxis;
+								}
+							} else {
+								BlowMatch(match);
 							}
-						} else {
-							yield return BlowMatch(match);
 						}
+
 					} else {
 						turnMade = true;
 					}
 				} else {
 					item.SwapWith(nextItem);
 					if (match3Config.SwapBackOnNonMatchingSwap) {
-						if (FindMatchForItem(item).Any() && FindMatchForItem(nextItem).Any()) {
+						if (item is Piece piece && FindMatchForItem(piece).Any() && nextItem is Piece nextPiece && FindMatchForItem(nextPiece).Any()) {
 							turnMade = true;
 							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
 							item.SwapWith(nextItem);
@@ -556,109 +596,19 @@ namespace Match3Template.Types
 
 		private void CheckMatches()
 		{
-			var allMatches = FindAllMatches();
-			foreach (var (match, bonus) in allMatches) {
-				if (bonus != BonusType.None) {
-					var bonusItem = match.FirstOrDefault(i => i.BonusType == BonusType.None);
-					if (bonusItem != null) {
-						match.Remove(bonusItem);
-						bonusItem.RunTask(SpawnBonusTask(bonusItem, bonus));
-					}
-				}
-				var queue = new Queue<(ItemComponent Item, DamageKind DamageKind)>(
-					match.Select(m => (m, DamageKind.Match))
-				);
-				while (queue.Any()) {
-					var (item, damageKind) = queue.Dequeue();
-					if (item == null) {
-						continue;
-					}
-					if (item.Task != null) {
-						continue;
-					}
-					if (item.Type == ItemType.Drop) {
-						continue;
-					}
-					item.RunTask(BlowTask(item, damageKind));
-					if (item.BonusType == BonusType.HorizontalLine) {
-						item.AnimateActBonus();
-						RunHorizontalLineBonusEffect(item.GridPosition);
-						for (int i = 0; i < boardConfig.ColumnCount; i++) {
-							queue.Enqueue((grid[new IntVector2(i, item.GridPosition.Y)], DamageKind.Line));
-						}
-					} else if (item.BonusType == BonusType.VerticalLine) {
-						item.AnimateActBonus();
-						RunVerticalLineBonusEffect(item.GridPosition);
-						for (int i = 0; i < boardConfig.RowCount; i++) {
-							queue.Enqueue((grid[new IntVector2(item.GridPosition.X, i)], DamageKind.Line));
-						}
-					} else if (item.BonusType == BonusType.Bomb) {
-						item.AnimateActBonus();
-						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
-							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
-								queue.Enqueue((grid[new IntVector2(i, j)], DamageKind.Bomb));
-							}
-						}
-					} else if (item.BonusType == BonusType.Lightning) {
-						item.AnimateActBonus();
-						var kind = boardConfig.AllowedPieces.RandomItem();
-						List<IntVector2> targetPositions = new List<IntVector2>();
-						foreach (var i in items) {
-							if (i.Kind == kind && i != item) {
-								queue.Enqueue((i, DamageKind.Lightning));
-								targetPositions.Add(i.GridPosition);
-							}
-						}
-						List<Widget> effects = new List<Widget>();
-						foreach (var targetPosition in targetPositions) {
-							effects.Add(CreateLightningBonusEffectPart(item.GridPosition, targetPosition));
-						}
-						itemContainer.Tasks.Add(RunBonusAnimationTask(effects.ToArray()));
-					}
-				}
+			var matches = FindAllMatches();
+			foreach (var (match, spawnBonusKind) in matches) {
+				BlowMatch(match);
 			}
 		}
 
-		private IEnumerator<object> SpawnBonusTask(ItemComponent bonusItem, BonusType bonus)
-		{
-			bonusItem.SetBonus(CreateBonusWidget(bonus), bonus);
-			yield return bonusItem.AnimateShowBonus();
-			bonusItem.AnimateIdle();
-		}
-
-		private Widget CreateBonusWidget(BonusType bonus)
-		{
-			var r = bonus switch {
-				BonusType.HorizontalLine => lineBonusTemplate.Clone<Widget>(),
-				BonusType.VerticalLine => lineBonusTemplate.Clone<Widget>(),
-				BonusType.Bomb => bombBonusTemplate.Clone<Widget>(),
-				BonusType.Lightning => lightningBonusTemplate.Clone<Widget>(),
-				_ => throw new NotImplementedException(),
-			};
-			if (bonus == BonusType.VerticalLine) {
-				r.Rotation = 90;
-			}
-			return r;
-		}
-
-		private static bool CanCombineIntoMatch(ItemComponent a, ItemComponent b)
-		{
-			return a != null
-				&& b != null
-				&& a.Task == null
-				&& b.Task == null
-				&& a.Type == ItemType.Piece
-				&& b.Type == ItemType.Piece
-				&& a.Kind == b.Kind;
-		}
-
-		private List<(List<ItemComponent>, BonusType)> FindAllMatches()
+		private List<(List<ItemComponent>, BonusKind)> FindAllMatches()
 		{
 			var hGrid = new Grid<int>();
 			var vGrid = new Grid<int>();
 			var hlGrid = new Grid<int>();
 			var vlGrid = new Grid<int>();
-			var matches = new List<(List<ItemComponent>, BonusType)>();
+			var matches = new List<(List<ItemComponent>, BonusKind)>();
 			var intersections = new Queue<IntVector2>();
 
 			FillGrid(hGrid, hlGrid, 0);
@@ -666,7 +616,7 @@ namespace Match3Template.Types
 
 			while (intersections.Any()) {
 				var i = intersections.Dequeue();
-				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), BonusType.Bomb));
+				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), BonusKind.Bomb));
 			}
 
 			for (int x = 0; x < boardConfig.ColumnCount; x++) {
@@ -676,11 +626,11 @@ namespace Match3Template.Types
 					var pv = vGrid[p];
 					if (ph >= 3) {
 						var match = TraceMatch(hGrid, p, 0);
-						matches.Add((match, match.Count > 3 ? BonusType.HorizontalLine : BonusType.None));
+						matches.Add((match, match.Count > 3 ? BonusKind.HorizontalLine : BonusKind.None));
 					}
 					if (pv >= 3) {
 						var match = TraceMatch(vGrid, p, 1);
-						matches.Add((match, match.Count > 3 ? BonusType.VerticalLine : BonusType.None));
+						matches.Add((match, match.Count > 3 ? BonusKind.VerticalLine : BonusKind.None));
 					}
 				}
 			}
@@ -708,7 +658,7 @@ namespace Match3Template.Types
 							mGrid[p] = mGrid[pp] + 1;
 						} else {
 							if (mGrid[pp] >= 5) {
-								matches.Add((TraceMatch(mGrid, pp, d), BonusType.Lightning));
+								matches.Add((TraceMatch(mGrid, pp, d), BonusKind.Lightning));
 							} else {
 								FillMatchSize(mGrid, lGrid, pp, d);
 								TraceIntersections(mGrid, pp, d);
@@ -717,6 +667,17 @@ namespace Match3Template.Types
 						a = b;
 					}
 				}
+			}
+
+			static bool CanCombineIntoMatch(ItemComponent a, ItemComponent b)
+			{
+				return a != null
+					&& b != null
+					&& a.Task == null
+					&& b.Task == null
+					&& a is Piece pieceA
+					&& b is Piece pieceB
+					&& pieceA.Kind == pieceB.Kind;
 			}
 
 			void FillMatchSize(Grid<int> mGrid, Grid<int> lGrid, IntVector2 s, int d)
@@ -762,50 +723,19 @@ namespace Match3Template.Types
 			}
 		}
 
-		private void ApplyDamageFromMatch(List<ItemComponent> match)
+		private IEnumerable<Piece> FindMatchForItem(Piece piece)
 		{
-			foreach (var item in match) {
-				ApplyDamageToAdjacentCells(item.GridPosition, DamageKind.Match);
-			}
-		}
-
-		private void ApplyDamageToAdjacentCells(IntVector2 position, DamageKind damageKind)
-		{
-			for (int i = 0; i < 4; i++) {
-				var delta = new IntVector2(
-					x: Math.Abs(i - 1) - 1,
-					y: -Math.Abs(i - 2) + 1
-				);
-				ApplyDamage(position + delta, damageKind);
-			}
-		}
-
-		private void ApplyDamage(IntVector2 position, DamageKind damageKind)
-		{
-			var item = grid[position];
-			if (item == null || item.Task != null) {
-				return;
-			}
-			if (item.Type == ItemType.Piece) {
-				BlowTask(item, damageKind);
-			} else if (item.Type == ItemType.Blocker) {
-				BlowTask(item, damageKind);
-			}
-		}
-
-		private IEnumerable<ItemComponent> FindMatchForItem(ItemComponent item)
-		{
-			if (item.Type != ItemType.Piece || item.Task != null) {
-				return Array.Empty<ItemComponent>();
+			if (piece.Task != null) {
+				return Array.Empty<Piece>();
 			}
 			HashSet<IntVector2> Visited = new HashSet<IntVector2>();
-			Queue<(ItemComponent, Direction)> queue = new Queue<(ItemComponent, Direction)>();
-			List<ItemComponent> horizontalMatch = new List<ItemComponent>();
-			List<ItemComponent> verticalMatch = new List<ItemComponent>();
-			Visited.Add(item.GridPosition);
-			horizontalMatch.Add(item);
-			verticalMatch.Add(item);
-			queue.Enqueue((item, Direction.Any));
+			Queue<(Piece, Direction)> queue = new Queue<(Piece, Direction)>();
+			List<Piece> horizontalMatch = new List<Piece>();
+			List<Piece> verticalMatch = new List<Piece>();
+			Visited.Add(piece.GridPosition);
+			horizontalMatch.Add(piece);
+			verticalMatch.Add(piece);
+			queue.Enqueue((piece, Direction.Any));
 			while (queue.Any()) {
 				var (currentItem, direction) = queue.Dequeue();
 				for (int i = 0; i < 4; i++) {
@@ -827,26 +757,26 @@ namespace Match3Template.Types
 					if (Visited.Contains(nextPosition)) {
 						continue;
 					}
-					var nextItem = grid[nextPosition];
+					var nextPiece = grid[nextPosition] as Piece;
 					Visited.Add(nextPosition);
 					if (
-						nextItem != null
-						&& nextItem.Kind == currentItem.Kind
-						&& nextItem.Task == null
+						nextPiece != null
+						&& nextPiece.Kind == currentItem.Kind
+						&& nextPiece.Task == null
 					) {
-						queue.Enqueue((nextItem, nextDirection));
+						queue.Enqueue((nextPiece, nextDirection));
 						switch (nextDirection) {
 							case Direction.Horizontal:
-								horizontalMatch.Add(nextItem);
+								horizontalMatch.Add(nextPiece);
 								break;
 							case Direction.Vertical:
-								verticalMatch.Add(nextItem);
+								verticalMatch.Add(nextPiece);
 								break;
 						}
 					}
 				}
 			}
-			var r = new List<ItemComponent>();
+			var r = new List<Piece>();
 			if (horizontalMatch.Count >= 3) {
 				r.AddRange(horizontalMatch);
 			}
@@ -854,6 +784,166 @@ namespace Match3Template.Types
 				r.AddRange(verticalMatch);
 			}
 			return r.Distinct();
+		}
+
+		private void BlowMatch(IEnumerable<ItemComponent> match)
+		{
+			var bonusKind = BonusKind.None;//spawnBonusKind;
+			foreach (var item in match) {
+				Debug.Assert(item.Task == null);
+				item.RunTask(BlowTask(item, DamageKind.Match, bonusKind));
+				bonusKind = BonusKind.None;
+			}
+		}
+
+		private IEnumerator<object> BlowTask(ItemComponent item, DamageKind damageKind, BonusKind spawnBonusKind)
+		{
+			Animation animation = null;
+			switch (item) {
+				case Piece piece: {
+					animation = damageKind switch {
+						DamageKind.Match => piece.AnimateMatch(),
+						DamageKind.Line => piece.AnimateBlowByLine(),
+						DamageKind.Bomb => piece.AnimateBlowByBomb(),
+						DamageKind.Lightning => piece.AnimateBlowByLightning(),
+						_ => throw new NotImplementedException(),
+					};
+					break;
+				}
+				case Blocker blocker: {
+					animation = blocker.BlockerLives switch {
+						2 => blocker.AnimateBlockerDamage1(),
+						1 => blocker.AnimateBlockerDamage2(),
+						0 => throw new NotImplementedException(),
+						_ => throw new NotImplementedException(),
+					};
+					break;
+				}
+				case Drop drop: {
+					yield break;
+				}
+				case Bonus bonus: {
+					animation = null;//bonus.AnimateAct();
+					break;
+				}
+			};
+
+			yield return animation;
+
+			{
+				if (item is Piece piece && damageKind == DamageKind.Match) {
+					ApplyDamageToAdjacentCells(item.GridPosition, DamageKind.Match);
+				}
+
+				if (item is Blocker blocker) {
+					blocker.BlockerLives--;
+					if (blocker.BlockerLives > 0) {
+						yield break;
+					}
+				}
+
+				if (item is Bonus bonus) {
+					var blowBonusAnimation = bonus.AnimateAct();
+					if (bonus.BonusKind == BonusKind.HorizontalLine) {
+						RunHorizontalLineBonusEffect(item.GridPosition);
+						for (int i = 0; i < boardConfig.ColumnCount; i++) {
+							var blownItem = grid[new IntVector2(i, item.GridPosition.Y)];
+							if (TryBlow(blownItem, DamageKind.Line, BonusKind.None, out var blowTask)) {
+								blownItem.RunTask(blowTask);
+							}
+						}
+					} else if (bonus.BonusKind == BonusKind.VerticalLine) {
+						RunVerticalLineBonusEffect(item.GridPosition);
+						for (int i = 0; i < boardConfig.RowCount; i++) {
+							var blownItem = grid[new IntVector2(item.GridPosition.X, i)];
+							if (TryBlow(blownItem, DamageKind.Line, BonusKind.None, out var blowTask)) {
+								blownItem.RunTask(blowTask);
+							}
+						}
+					} else if (bonus.BonusKind == BonusKind.Bomb) {
+						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
+							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
+								var blownItem = grid[new IntVector2(i, j)];
+								if (TryBlow(blownItem, DamageKind.Bomb, BonusKind.None, out var blowTask)) {
+									blownItem.RunTask(blowTask);
+								}
+							}
+						}
+					} else if (bonus.BonusKind == BonusKind.Lightning) {
+						int[] maxPerKind = new int [boardConfig.AllowedPieces.Max() + 1];
+						foreach (var i in items.OfType<Piece>()) {
+							maxPerKind[i.Kind]++;
+						}
+						var kind = Array.IndexOf(maxPerKind, maxPerKind.Max());
+						var delay = match3Config.DelayBetweenLightningStrikes;
+						foreach (var i in items.OfType<Piece>().ToList()) {
+							if (i.Task == null && i.Kind == kind) {
+								if (TryBlow(i, DamageKind.Lightning, BonusKind.Lightning, out var blowTask)) {
+									var fx = CreateLightningBonusEffectPart(item.GridPosition, i.GridPosition);
+									if (delay != 0.0f) {
+										bonus.AnimateAct();
+									}
+									i.RunTask(Task.Sequence(
+										WaitForAnimationTask(fx.RunAnimation("Start", "Act")),
+										blowTask
+									));
+									if (delay != 0.0f) {
+										yield return delay;
+									}
+								}
+							}
+						}
+					}
+
+					yield return blowBonusAnimation;
+
+					bool TryBlow(ItemComponent i, DamageKind d, BonusKind b, out IEnumerator<object> blowTask)
+					{
+						blowTask = null;
+						if (i == null || i.Task != null) {
+							return false;
+						}
+						blowTask = BlowTask(i, d, b);
+						return true;
+					}
+
+					static IEnumerator<object> WaitForAnimationTask(Animation animation)
+					{
+						yield return animation;
+					}
+				}
+			}
+
+			items.Remove(item);
+			item.Kill();
+			item.Owner.UnlinkAndDispose();
+
+			if (spawnBonusKind != BonusKind.None) {
+				CreateBonus(item.GridPosition, spawnBonusKind);
+			}
+		}
+
+		private void ApplyDamageToAdjacentCells(IntVector2 position, DamageKind damageKind)
+		{
+			for (int i = 0; i < 4; i++) {
+				var delta = new IntVector2(
+					x: Math.Abs(i - 1) - 1,
+					y: -Math.Abs(i - 2) + 1
+				);
+				ApplyDamage(position + delta, damageKind);
+			}
+		}
+
+		private void ApplyDamage(IntVector2 position, DamageKind damageKind)
+		{
+			var item = grid[position];
+			if (item == null || item.Task != null) {
+				return;
+			}
+			// Only blockers accept damage.
+			if (item is Blocker) {
+				item.RunTask(BlowTask(item, damageKind, BonusKind.None));
+			}
 		}
 
 		private void RunHorizontalLineBonusEffect(IntVector2 position)
@@ -868,6 +958,19 @@ namespace Match3Template.Types
 			var upFx = CreateLineBonusEffectPart(position, 3, position.Y + 1);
 			var downFx = CreateLineBonusEffectPart(position, 1, boardConfig.RowCount - position.Y);
 			topLevelContainer.Tasks.Add(RunBonusAnimationTask(upFx, downFx));
+		}
+
+		private Widget CreateLineBonusEffectPart(IntVector2 position, int direction, int length)
+		{
+			var fx = lineBonusFxTemplate.Clone<Widget>();
+			fx.Rotation = 90 * direction;
+			// TODO: fx container
+			itemContainer.Nodes.Insert(0, fx);
+			// TODO: dont use item and grid for this
+			fx.Position = grid[position].GridPositionToWidgetPosition(position);
+			fx.Width *= length;
+			fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
+			return fx;
 		}
 
 		private IEnumerator<object> RunBonusAnimationTask(params Widget[] effects)
@@ -899,62 +1002,6 @@ namespace Match3Template.Types
 			endPoint.Position = endPosition / spline.Size;
 			return fx;
 		}
-
-		private Widget CreateLineBonusEffectPart(IntVector2 position, int direction, int length)
-		{
-			var fx = lineBonusFxTemplate.Clone<Widget>();
-			fx.Rotation = 90 * direction;
-			// TODO: fx container
-			itemContainer.Nodes.Insert(0, fx);
-			// TODO: dont use item and grid for this
-			fx.Position = grid[position].GridPositionToWidgetPosition(position);
-			fx.Width *= length;
-			fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
-			return fx;
-		}
-
-		private IEnumerator<object> BlowMatch(IEnumerable<ItemComponent> match)
-		{
-			var tasks = new List<Lime.Task>();
-			foreach (var item in match) {
-				tasks.Add(item.Owner.Tasks.Add(BlowTask(item, DamageKind.Match)));
-			}
-			while (!tasks.All(t => t.Completed)) {
-				yield return null;
-			}
-		}
-
-		private IEnumerator<object> BlowTask(ItemComponent item, DamageKind damageKind)
-		{
-			yield return item.Type switch {
-				ItemType.Piece => damageKind switch {
-					DamageKind.Match => item.AnimateMatch(),
-					DamageKind.Line => item.AnimateBlowByLine(),
-					DamageKind.Bomb => item.AnimateBlowByBomb(),
-					DamageKind.Lightning => item.AnimateBlowByLightning(),
-					_ => throw new NotImplementedException(),
-				},
-				ItemType.Blocker => item.BlockerLives switch {
-					2 => item.AnimateBlockerDamage1(),
-					1 => item.AnimateBlockerDamage2(),
-					0 => throw new NotImplementedException(),
-					_ => throw new NotImplementedException(),
-				},
-				ItemType.Drop => null,
-				_ => throw new NotImplementedException(),
-			};
-			if (item.Type == ItemType.Blocker) {
-				item.BlockerLives--;
-				if (item.BlockerLives > 0) {
-					yield break;
-				}
-			}
-			items.Remove(item);
-			item.Kill();
-			item.Owner.UnlinkAndDispose();
-		}
-
-		internal int GetDropCount() => boardConfig.DropCount;
 	}
 
 	public static class IntVector2Extensions

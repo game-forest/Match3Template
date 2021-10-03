@@ -33,6 +33,9 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public float DiagonalSwipeDeadZoneAngle { get; set; } = 30.0f;
+
+		[YuzuMember]
+		public float DelayBetweenLightningStrikes { get; set; } = 0.1f;
 	}
 }
 

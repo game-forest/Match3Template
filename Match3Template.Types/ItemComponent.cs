@@ -4,52 +4,10 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Match3Template.Types
 {
-	public enum ItemType
-	{
-		Piece,
-		Blocker,
-		Drop,
-		None,
-	}
-
-	public enum BonusType
-	{
-		HorizontalLine,
-		VerticalLine,
-		Bomb,
-		Lightning,
-		None
-	}
-
-	public enum DamageKind
-	{
-		Match,
-		Line,
-		Bomb,
-		Lightning,
-	}
-
 	public class ItemComponent : WidgetBehaviorComponent
 	{
-		public ItemType Type { get; set; }
 		public Task Task { get; private set; }
-		public BonusType BonusType { get; set; } = BonusType.None;
 
-		public int BlockerLives { get; set; } = 2;
-
-		public int Kind
-		{
-			get => kind;
-			set
-			{
-				if (Owner.Animations.TryFind("Kind", out var kindAnimation)) {
-					var marker = kindAnimation.Markers[value];
-					Owner.RunAnimation(marker.Id, kindAnimation.Id);
-				}
-				kind = value;
-			}
-		}
-		private int kind;
 		public IntVector2 GridPosition
 		{
 			get => gridPosition;
@@ -60,9 +18,13 @@ namespace Match3Template.Types
 				grid[value] = this;
 			}
 		}
+
+		public virtual bool CanMove => false;
+
 		private IntVector2 gridPosition = new IntVector2(int.MinValue, int.MinValue);
 		private Grid<ItemComponent> grid;
 		private IPresenter hasTaskPresenter;
+		private Vector2 cellSize;
 
 		public void SwapWith(ItemComponent item)
 		{
@@ -70,8 +32,6 @@ namespace Match3Template.Types
 			grid[GridPosition] = item;
 			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
 		}
-
-		private Vector2 cellSize;
 
 		public ItemComponent(Grid<ItemComponent> grid, Vector2 cellSize)
 		{
@@ -81,127 +41,35 @@ namespace Match3Template.Types
 
 		public void RunTask(IEnumerator<object> task)
 		{
-			//Debug.Assert(Task == null);
+			Debug.Assert(Task == null);
 			Task = Owner.Tasks.Add(task);
+		}
+
+		public void RunTask(Task task)
+		{
+			Debug.Assert(Task == null);
+			Owner.Tasks.Add(task);
+			Task = task;
+		}
+
+		public void RunAnimationTask(Animation animation)
+		{
+			RunTask(WaitForAnimationTask(animation));
+		}
+
+		private IEnumerator<object> WaitForAnimationTask(Animation animation)
+		{
+			yield return animation;
 		}
 
 		public void CancelTask()
 		{
-			// Debug.Assert(Task != null);
+			//Debug.Assert(Task != null);
 			if (Task != null) {
 				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
 				Owner.Tasks.Remove(Task);
 				Task = null;
 			}
-		}
-
-		public Animation AnimateShowBonus()
-		{
-			return bonusWidget.RunAnimation("Start", "Show");
-		}
-
-		public Animation AnimateActBonus()
-		{
-			return bonusWidget.RunAnimation("Start", "Act");
-		}
-
-		public Animation AnimateShow()
-		{
-			return Owner.RunAnimation("Start", "Show");
-		}
-
-		public Animation AnimateShown()
-		{
-			return Owner.RunAnimation("Shown", "Show");
-		}
-
-		public Animation AnimateIdle()
-		{
-			if (bonusWidget != null) {
-				if (bonusWidget.Animations.TryFind("Idle", out var a)) {
-					a.Run("Start");
-				}
-			}
-			{
-				if (Owner.Animations.TryFind("Idle", out var a)) {
-					a.Run("Start");
-				}
-				return a;
-			}
-		}
-
-		public Animation AnimateDropDownFall()
-		{
-			if (bonusWidget != null) {
-				bonusWidget.RunAnimation("Fall", "DropDown");
-			}
-			return Owner.RunAnimation("Fall", "DropDown");
-		}
-
-		public Animation AnimateDropDownLand()
-		{
-			if (bonusWidget != null) {
-				bonusWidget.RunAnimation("Land", "DropDown");
-			}
-			return Owner.RunAnimation("Land", "DropDown");
-		}
-
-		public Animation AnimateSelect()
-		{
-			if (bonusWidget != null) {
-				bonusWidget.RunAnimation("Select", "Selection");
-			}
-			return Owner.RunAnimation("Select", "Selection");
-		}
-
-		public Animation AnimateUnselect()
-		{
-			if (bonusWidget != null) {
-				bonusWidget.RunAnimation("Unselect", "Selection");
-			}
-			return Owner.RunAnimation("Unselect", "Selection");
-		}
-
-		public Animation AnimateMatch()
-		{
-			var animation = Owner.Animations.Find("Match");
-			Owner.RunAnimation("Start", "Match");
-			return animation;
-		}
-
-		public Animation AnimateBlowByLine()
-		{
-			var animation = Owner.Animations.Find("DestroyByLine");
-			Owner.RunAnimation("Start", "DestroyByLine");
-			return animation;
-		}
-
-		public Animation AnimateBlowByBomb()
-		{
-			var animation = Owner.Animations.Find("DestroyByBomb");
-			Owner.RunAnimation("Start", "DestroyByBomb");
-			return animation;
-		}
-
-		public Animation AnimateBlowByLightning()
-		{
-			var animation = Owner.Animations.Find("DestroyByLightning");
-			Owner.RunAnimation("Start", "DestroyByLightning");
-			return animation;
-		}
-
-		public Animation AnimateBlockerDamage1()
-		{
-			var animation = Owner.Animations.Find("Progress");
-			Owner.RunAnimation("Match01", "Progress");
-			return animation;
-		}
-
-		public Animation AnimateBlockerDamage2()
-		{
-			var animation = Owner.Animations.Find("Progress");
-			Owner.RunAnimation("Match02", "Progress");
-			return animation;
 		}
 
 		public IEnumerator<object> MoveTo(IntVector2 position, float time)
@@ -222,18 +90,10 @@ namespace Match3Template.Types
 			return (Vector2)position * cellSize + cellSize * 0.5f;
 		}
 
-		internal void SetBonus(Widget widget, BonusType bonus)
-		{
-			bonusWidget = widget;
-			BonusType = bonus;
-			Owner.Nodes.Insert(0, bonusWidget);
-			bonusWidget.CenterOnParent();
-		}
-
 		protected override void OnOwnerChanged(Node oldOwner)
 		{
 			base.OnOwnerChanged(oldOwner);
-			if (Widget != null) {
+			if (Widget != null && CanMove) {
 				Widget.HitTestTarget = true;
 			}
 		}
@@ -262,7 +122,43 @@ namespace Match3Template.Types
 			}
 		}
 
-		private Widget bonusWidget;
+		public Animation AnimateShow()
+		{
+			return Owner.RunAnimation("Start", "Show");
+		}
+
+		public Animation AnimateShown()
+		{
+			return Owner.RunAnimation("Shown", "Show");
+		}
+
+		public Animation AnimateIdle()
+		{
+			if (Owner.Animations.TryFind("Idle", out var a)) {
+				a.Run("Start");
+			}
+			return a;
+		}
+
+		public Animation AnimateDropDownFall()
+		{
+			return Owner.RunAnimation("Fall", "DropDown");
+		}
+
+		public Animation AnimateDropDownLand()
+		{
+			return Owner.RunAnimation("Land", "DropDown");
+		}
+
+		public Animation AnimateSelect()
+		{
+			return Owner.RunAnimation("Select", "Selection");
+		}
+
+		public Animation AnimateUnselect()
+		{
+			return Owner.RunAnimation("Unselect", "Selection");
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ namespace Match3Template.Debug
 
 		private static WindowInput Input => The.Window.Input;
 
-		public bool DebugMatch3 { get; set; }
+		public bool DebugMatch3 { get; set; } = true;
 		public static Cheats Instance { get; internal set; } = new Cheats();
 
 		private static RainbowDash.Menu currentMenu;
