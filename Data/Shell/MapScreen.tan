@@ -361,6 +361,7 @@
 								[10,1,"Locked@State"],
 								[20,1,"Locked@State"],
 								[29,1,"Locked@State"],
+								[40,1,"Locked@State"],
 								[44,1,"Unlock@State"],
 								[50,1,"Unlocked@State"],
 								[60,1,"Complete@State"],
@@ -436,11 +437,13 @@
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
 								[10,1,"Locked@State"],
+								[20,1,"Locked@State"],
 								[24,1,"Unlock@State"],
 								[29,1,"Unlocked@State"],
 								[40,1,"Complete@State"],
 								[50,1,"Completed@State"],
-								[60,1,"Completed@State"]
+								[60,1,"Completed@State"],
+								[70,1,"Completed@State"]
 							],
 							"TargetProperty":"Trigger"
 						},
