@@ -26,6 +26,8 @@ namespace Match3Template.Types
 		}
 		private int kind;
 
+		public BonusKind SpawnBonus { get; set; } = BonusKind.None;
+
 		public override bool CanMove => true;
 
 		public Piece(Grid<ItemComponent> grid, Vector2 cellSize) : base(grid, cellSize)

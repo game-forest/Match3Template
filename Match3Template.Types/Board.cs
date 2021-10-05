@@ -479,12 +479,11 @@ namespace Match3Template.Types
 			);
 			if (!input.IsTouching(i) && touchDelta.Length < match3Config.InputDetectionLength) {
 				if (item is Bonus bonus) {
-					yield return BlowTask(item, DamageKind.Match, BonusKind.None);
+					yield return BlowTask(item, DamageKind.Match);
 				}
 				yield break;
 			}
 			if (!TryGetProjectionAxis(touchDelta, out var projectionAxis)) {
-				// item.AnimateUnselect();
 				yield break;
 			}
 			var nextItem = grid[item.GridPosition + projectionAxis];
@@ -505,6 +504,7 @@ namespace Match3Template.Types
 				};
 				nextItem.RunTask(Task.Repeat(syncPosition));
 			} else {
+				// Block 3 items above to prevent them from falling
 				if (projectionAxis.Y == 0) {
 					var itemAbove = grid[item.GridPosition /*- projectionAxis*/ + IntVector2.Up];
 					if (itemAbove != null && itemAbove.Task == null) {
@@ -597,18 +597,18 @@ namespace Match3Template.Types
 		private void CheckMatches()
 		{
 			var matches = FindAllMatches();
-			foreach (var (match, spawnBonusKind) in matches) {
+			foreach (var match in matches) {
 				BlowMatch(match);
 			}
 		}
 
-		private List<(List<ItemComponent>, BonusKind)> FindAllMatches()
+		private List<List<Piece>> FindAllMatches()
 		{
 			var hGrid = new Grid<int>();
 			var vGrid = new Grid<int>();
 			var hlGrid = new Grid<int>();
 			var vlGrid = new Grid<int>();
-			var matches = new List<(List<ItemComponent>, BonusKind)>();
+			var matches = new List<List<Piece>>();
 			var intersections = new Queue<IntVector2>();
 
 			FillGrid(hGrid, hlGrid, 0);
@@ -616,7 +616,9 @@ namespace Match3Template.Types
 
 			while (intersections.Any()) {
 				var i = intersections.Dequeue();
-				matches.Add((TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList(), BonusKind.Bomb));
+				var match = TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList();
+				matches.Add(match);
+				match.First().SpawnBonus = BonusKind.Bomb;
 			}
 
 			for (int x = 0; x < boardConfig.ColumnCount; x++) {
@@ -626,11 +628,13 @@ namespace Match3Template.Types
 					var pv = vGrid[p];
 					if (ph >= 3) {
 						var match = TraceMatch(hGrid, p, 0);
-						matches.Add((match, match.Count > 3 ? BonusKind.HorizontalLine : BonusKind.None));
+						matches.Add(match);
+						match.First().SpawnBonus = match.Count > 3 ? BonusKind.HorizontalLine : BonusKind.None;
 					}
 					if (pv >= 3) {
 						var match = TraceMatch(vGrid, p, 1);
-						matches.Add((match, match.Count > 3 ? BonusKind.VerticalLine : BonusKind.None));
+						matches.Add(match);
+						match.First().SpawnBonus = match.Count > 3 ? BonusKind.VerticalLine : BonusKind.None;
 					}
 				}
 			}
@@ -658,7 +662,9 @@ namespace Match3Template.Types
 							mGrid[p] = mGrid[pp] + 1;
 						} else {
 							if (mGrid[pp] >= 5) {
-								matches.Add((TraceMatch(mGrid, pp, d), BonusKind.Lightning));
+								var match = TraceMatch(mGrid, pp, d);
+								matches.Add(match);
+								match.First().SpawnBonus = BonusKind.Lightning;
 							} else {
 								FillMatchSize(mGrid, lGrid, pp, d);
 								TraceIntersections(mGrid, pp, d);
@@ -701,15 +707,15 @@ namespace Match3Template.Types
 				}
 			}
 
-			List<ItemComponent> TraceMatch(Grid<int> mGrid, IntVector2 s, int d)
+			List<Piece> TraceMatch(Grid<int> mGrid, IntVector2 s, int d)
 			{
 				var step = DeltaFromDirection(d);
 				while (mGrid[s] < mGrid[s + step]) {
 					s += step;
 				}
-				var r = new List<ItemComponent>();
+				var r = new List<Piece>();
 				while (mGrid[s] != 0) {
-					r.Add(grid[s]);
+					r.Add((Piece)grid[s]);
 					mGrid[s] = 0;
 					s -= step;
 				}
@@ -788,15 +794,13 @@ namespace Match3Template.Types
 
 		private void BlowMatch(IEnumerable<ItemComponent> match)
 		{
-			var bonusKind = BonusKind.None;//spawnBonusKind;
 			foreach (var item in match) {
 				Debug.Assert(item.Task == null);
-				item.RunTask(BlowTask(item, DamageKind.Match, bonusKind));
-				bonusKind = BonusKind.None;
+				item.RunTask(BlowTask(item, DamageKind.Match));
 			}
 		}
 
-		private IEnumerator<object> BlowTask(ItemComponent item, DamageKind damageKind, BonusKind spawnBonusKind)
+		private IEnumerator<object> BlowTask(ItemComponent item, DamageKind damageKind)
 		{
 			Animation animation = null;
 			switch (item) {
@@ -848,7 +852,7 @@ namespace Match3Template.Types
 						RunHorizontalLineBonusEffect(item.GridPosition);
 						for (int i = 0; i < boardConfig.ColumnCount; i++) {
 							var blownItem = grid[new IntVector2(i, item.GridPosition.Y)];
-							if (TryBlow(blownItem, DamageKind.Line, BonusKind.None, out var blowTask)) {
+							if (TryBlow(blownItem, DamageKind.Line, out var blowTask)) {
 								blownItem.RunTask(blowTask);
 							}
 						}
@@ -856,7 +860,7 @@ namespace Match3Template.Types
 						RunVerticalLineBonusEffect(item.GridPosition);
 						for (int i = 0; i < boardConfig.RowCount; i++) {
 							var blownItem = grid[new IntVector2(item.GridPosition.X, i)];
-							if (TryBlow(blownItem, DamageKind.Line, BonusKind.None, out var blowTask)) {
+							if (TryBlow(blownItem, DamageKind.Line, out var blowTask)) {
 								blownItem.RunTask(blowTask);
 							}
 						}
@@ -864,7 +868,7 @@ namespace Match3Template.Types
 						for (int i = item.GridPosition.X - 1; i <= item.GridPosition.X + 1; i++) {
 							for (int j = item.GridPosition.Y - 1; j <= item.GridPosition.Y + 1; j++) {
 								var blownItem = grid[new IntVector2(i, j)];
-								if (TryBlow(blownItem, DamageKind.Bomb, BonusKind.None, out var blowTask)) {
+								if (TryBlow(blownItem, DamageKind.Bomb, out var blowTask)) {
 									blownItem.RunTask(blowTask);
 								}
 							}
@@ -878,7 +882,9 @@ namespace Match3Template.Types
 						var delay = match3Config.DelayBetweenLightningStrikes;
 						foreach (var i in items.OfType<Piece>().ToList()) {
 							if (i.Task == null && i.Kind == kind) {
-								if (TryBlow(i, DamageKind.Lightning, BonusKind.Lightning, out var blowTask)) {
+								Debug.Assert(i.SpawnBonus == BonusKind.None);
+								// i.SpawnBonus = BonusKind.Lightning;
+								if (TryBlow(i, DamageKind.Lightning, out var blowTask)) {
 									var fx = CreateLightningBonusEffectPart(item.GridPosition, i.GridPosition);
 									if (delay != 0.0f) {
 										bonus.AnimateAct();
@@ -897,13 +903,13 @@ namespace Match3Template.Types
 
 					yield return blowBonusAnimation;
 
-					bool TryBlow(ItemComponent i, DamageKind d, BonusKind b, out IEnumerator<object> blowTask)
+					bool TryBlow(ItemComponent i, DamageKind d, out IEnumerator<object> blowTask)
 					{
 						blowTask = null;
 						if (i == null || i.Task != null) {
 							return false;
 						}
-						blowTask = BlowTask(i, d, b);
+						blowTask = BlowTask(i, d);
 						return true;
 					}
 
@@ -917,9 +923,10 @@ namespace Match3Template.Types
 			items.Remove(item);
 			item.Kill();
 			item.Owner.UnlinkAndDispose();
-
-			if (spawnBonusKind != BonusKind.None) {
-				CreateBonus(item.GridPosition, spawnBonusKind);
+			{
+				if (item is Piece piece && piece.SpawnBonus != BonusKind.None) {
+					CreateBonus(item.GridPosition, piece.SpawnBonus);
+				}
 			}
 		}
 
@@ -942,7 +949,7 @@ namespace Match3Template.Types
 			}
 			// Only blockers accept damage.
 			if (item is Blocker) {
-				item.RunTask(BlowTask(item, damageKind, BonusKind.None));
+				item.RunTask(BlowTask(item, damageKind));
 			}
 		}
 
