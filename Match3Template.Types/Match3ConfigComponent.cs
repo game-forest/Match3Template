@@ -39,6 +39,7 @@ namespace Match3Template.Types
 
 		[YuzuMember]
 		public Size CellSize { get; set; } = new Size(90, 90);
+		public float BoardScale { get; set; } = 1.0f;
 
 		public Vector2 GridPositionToWidgetPosition(IntVector2 position)
 		{

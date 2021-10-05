@@ -96,6 +96,23 @@ namespace Match3Template.Types
 			topLevelContainer.Tasks.Add(Update);
 			containerBoundsPresenter = new WidgetBoundsPresenter(Color4.Red, 2.0f);
 			topLevelContainer.Tasks.Add(CheckCheatsTask);
+
+			topLevelContainer.Tasks.Add(Task.Repeat(() => {
+				UpdateBoardScale();
+				return true;
+			}));
+			UpdateBoardScale();
+		}
+
+		void UpdateBoardScale()
+		{
+			var widthAspect = topLevelContainer.Width / itemContainer.Width;
+			var heightAspect = topLevelContainer.Height / itemContainer.Height;
+			match3Config.BoardScale = Mathf.Min(widthAspect, heightAspect);
+			itemContainer.Scale = new Vector2(match3Config.BoardScale);
+			itemContainer.CenterOnParent();
+			bgContainer.Scale = new Vector2(match3Config.BoardScale);
+			bgContainer.CenterOnParent();
 		}
 
 		private IEnumerator<object> Update()
@@ -570,7 +587,11 @@ namespace Match3Template.Types
 			while (input.IsTouching(i)) {
 				touchDelta = input.GetTouchPosition(i) - touchPosition0;
 				projectionAmount = Vector2.DotProduct((Vector2)projectionAxis, touchDelta);
-				projectionAmount = Mathf.Clamp(projectionAmount, 0, item.Owner.AsWidget.Width);
+				projectionAmount = Mathf.Clamp(
+					value: 1.0f / match3Config.BoardScale * projectionAmount,
+					min: 0,
+					max: item.Owner.AsWidget.Width
+				);
 				item.Owner.AsWidget.Position = match3Config.GridPositionToWidgetPosition(item.GridPosition)
 					+ projectionAmount * (Vector2)projectionAxis;
 				yield return null;
