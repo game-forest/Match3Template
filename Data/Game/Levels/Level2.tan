@@ -112,7 +112,8 @@
 					"BlockerCount":8,
 					"ColumnCount":8,
 					"DropCount":4,
-					"LevelFileName":"Game/Levels/GameLevel2"
+					"LevelFileName":"Game/Levels/GameLevel2",
+					"TurnCount":36
 				},
 				{
 					"class":"Match3Template.Types.CreateGameScreenComponent, Match3Template.Types"

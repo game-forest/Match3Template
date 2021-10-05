@@ -111,7 +111,8 @@
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
 					"ColumnCount":16,
 					"LevelFileName":"Game/Levels/GameLevel3",
-					"RowCount":16
+					"RowCount":16,
+					"TurnCount":48
 				},
 				{
 					"class":"Match3Template.Types.CreateGameScreenComponent, Match3Template.Types"

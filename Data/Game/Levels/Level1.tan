@@ -407,8 +407,7 @@
 			],
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
-			"Size":[1366,768],
-			"TangerineFlags":4
+			"Size":[1366,768]
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -449,7 +448,7 @@
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
 			"Size":[1366,768],
-			"TangerineFlags":1284
+			"TangerineFlags":1280
 		}
 	],
 	"Size":[1366,768]
