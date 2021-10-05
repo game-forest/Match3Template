@@ -24,7 +24,6 @@ namespace Match3Template.Types
 		private IntVector2 gridPosition = new IntVector2(int.MinValue, int.MinValue);
 		private Grid<ItemComponent> grid;
 		private IPresenter hasTaskPresenter;
-		private Vector2 cellSize;
 
 		public void SwapWith(ItemComponent item)
 		{
@@ -33,10 +32,9 @@ namespace Match3Template.Types
 			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
 		}
 
-		public ItemComponent(Grid<ItemComponent> grid, Vector2 cellSize)
+		public ItemComponent(Grid<ItemComponent> grid)
 		{
 			this.grid = grid;
-			this.cellSize = cellSize;
 		}
 
 		public void RunTask(IEnumerator<object> task)
@@ -76,18 +74,13 @@ namespace Match3Template.Types
 		{
 			GridPosition = position;
 			var p0 = Widget.Position;
-			var p1 = GridPositionToWidgetPosition(position);
+			var p1 = config.GridPositionToWidgetPosition(position);
 			var t = time;
 			do {
 				t -= Task.Current.Delta;
 				Widget.Position = t < 0.0f ? p1 : Mathf.Lerp(1.0f - t / time, p0, p1);
 				yield return null;
 			} while (t > 0.0f);
-		}
-
-		public Vector2 GridPositionToWidgetPosition(IntVector2 position)
-		{
-			return (Vector2)position * cellSize + cellSize * 0.5f;
 		}
 
 		protected override void OnOwnerChanged(Node oldOwner)
@@ -97,6 +90,17 @@ namespace Match3Template.Types
 				Widget.HitTestTarget = true;
 			}
 		}
+
+		protected override void Start()
+		{
+			var n = Owner;
+			while (config == null) {
+				config = n.Components.Get<Match3ConfigComponent>();
+				n = n.Parent;
+			}
+		}
+
+		private Match3ConfigComponent config = null;
 
 		public void Kill()
 		{

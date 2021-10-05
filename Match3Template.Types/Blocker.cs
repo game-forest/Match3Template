@@ -2,9 +2,10 @@ using Lime;
 
 namespace Match3Template.Types
 {
+
 	public class Blocker : ItemComponent
 	{
-		public Blocker(Grid<ItemComponent> grid, Lime.Vector2 cellSize) : base(grid, cellSize)
+		public Blocker(Grid<ItemComponent> grid) : base(grid)
 		{
 		}
 

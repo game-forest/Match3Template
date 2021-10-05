@@ -13,7 +13,7 @@ namespace Match3Template.Types
 
 	public class Bonus : ItemComponent
 	{
-		public Bonus(Grid<ItemComponent> grid, Vector2 cellSize) : base(grid, cellSize)
+		public Bonus(Grid<ItemComponent> grid) : base(grid)
 		{
 		}
 

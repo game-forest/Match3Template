@@ -24,11 +24,13 @@ namespace Match3Template.Types
 
 		private readonly Widget topLevelContainer;
 		private readonly Frame itemContainer;
+		private readonly Frame bgContainer;
 		private readonly BoardConfigComponent boardConfig;
 		private readonly Match3ConfigComponent match3Config;
 		private readonly Widget pieceTemplate;
 		private readonly Widget dropTemplate;
 		private readonly Widget blockerTemplate;
+		private readonly Widget cutoutCellTemplate;
 		private readonly Widget lineBonusTemplate;
 		private readonly Widget bombBonusTemplate;
 		private readonly Widget lightningBonusTemplate;
@@ -70,17 +72,27 @@ namespace Match3Template.Types
 			pieceTemplate = Node.Load<Widget>("Game/Match3/MultiMarble");
 			dropTemplate = Node.Load<Widget>("Game/Match3/Drop");
 			blockerTemplate = Node.Load<Widget>("Game/Match3/ObstacleSticker");
+			cutoutCellTemplate = Node.Load<Widget>("Game/Match3/ObstacleUnbreakable");
 			lineBonusTemplate = Node.Load<Widget>("Game/Match3/BonusLine");
 			bombBonusTemplate = Node.Load<Widget>("Game/Match3/BonusBomb");
 			lightningBonusTemplate = Node.Load<Widget>("Game/Match3/BonusLightning");
 			lineBonusFxTemplate = Node.Load<Widget>("Game/Match3/BonusLineFX");
 			lightningBonusFxTemplate = Node.Load<Widget>("Game/Match3/BonusLightningFX");
+
+			bgContainer = new Frame();
 			itemContainer = new Frame();
 			FillBoard();
-			itemContainer.Width = boardConfig.ColumnCount * pieceTemplate.Width;
-			itemContainer.Height = boardConfig.RowCount * pieceTemplate.Height;
+
+			bgContainer.Width = boardConfig.ColumnCount * match3Config.CellSize.Width;
+			bgContainer.Height = boardConfig.RowCount * match3Config.CellSize.Height;
+			topLevelContainer.Nodes.Insert(0, bgContainer);
+			bgContainer.CenterOnParent();
+
+			itemContainer.Width = boardConfig.ColumnCount * match3Config.CellSize.Width;
+			itemContainer.Height = boardConfig.RowCount * match3Config.CellSize.Height;
 			topLevelContainer.Nodes.Insert(0, itemContainer);
 			itemContainer.CenterOnParent();
+
 			topLevelContainer.Tasks.Add(Update);
 			containerBoundsPresenter = new WidgetBoundsPresenter(Color4.Red, 2.0f);
 			topLevelContainer.Tasks.Add(CheckCheatsTask);
@@ -159,23 +171,28 @@ namespace Match3Template.Types
 					int x = 0;
 					ItemComponent item = null;
 					foreach (var c in line) {
+						var p = new IntVector2(x, rowCount);
 						switch (c) {
 							case '0':
 							case '1':
 							case '2':
 							case '3':
 							case '4': {
-								item = CreatePiece(new IntVector2(x, rowCount), c - '0');
+								item = CreatePiece(p, c - '0');
 								break;
 							}
 							case 'D': {
-								item = CreateDrop(new IntVector2(x, rowCount));
+								item = CreateDrop(p);
 								dropCountInAsset++;
 								break;
 							}
 							case 'B': {
-								item = CreateBlocker(new IntVector2(x, rowCount));
+								item = CreateBlocker(p);
 								blockerCountInAsset++;
+								break;
+							}
+							case 'U': {
+								item = CreateCutoutCell(p);
 								break;
 							}
 						}
@@ -196,54 +213,68 @@ namespace Match3Template.Types
 					dropToSpawn = 0;
 				}
 			}
-			if (!boardConfig.PreFillBoard) {
-				return;
-			}
-			for (int i = 0; i < boardConfig.DropCount - dropCountInAsset; i++) {
-				var drop = CreateDrop(
-					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount)
-				);
-				drop.AnimateShown();
-			}
 
-			for (int i = 0; i < boardConfig.BlockerCount - blockerCountInAsset; i++) {
-				var blocker = CreateBlocker(
-					gridPosition: RandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount)
-				);
-				blocker.AnimateShown();
-			}
+			if (boardConfig.PreFillBoard) {
+				for (int i = 0; i < boardConfig.DropCount - dropCountInAsset; i++) {
+					if (TryGetRandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount, out var p)) {
+						var drop = CreateDrop(p);
+						drop.AnimateShown();
+					}
+				}
 
-			if (boardConfig.AllowedPieces.Any()) {
-				int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount;
-				for (int i = 0; i < pieceCount; i++) {
-					var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.ColumnCount);
-					if (grid[gridPosition] == null) {
-						var adjacentKinds = EnumerateAdjacentItems(gridPosition)
-							.Where(i => i.Item is Piece piece)
-							.Select(i => (i.Item as Piece).Kind)
-							.Distinct();
-						var allowedKinds = boardConfig.AllowedPieces.Except(adjacentKinds).ToList();
-						if (!allowedKinds.Any()) {
-							allowedKinds.Add(boardConfig.AllowedPieces.RandomItem());
+				for (int i = 0; i < boardConfig.BlockerCount - blockerCountInAsset; i++) {
+					if (TryGetRandomEmptyCell(boardConfig.RowCount - 1, boardConfig.ColumnCount, out var p)) {
+						var blocker = CreateBlocker(p);
+						blocker.AnimateShown();
+					}
+				}
+
+				if (boardConfig.AllowedPieces.Any()) {
+					int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount;
+					for (int i = 0; i < pieceCount; i++) {
+						var gridPosition = new IntVector2(i % boardConfig.ColumnCount, i / boardConfig.ColumnCount);
+						if (grid[gridPosition] == null) {
+							var adjacentKinds = EnumerateAdjacentItems(gridPosition)
+								.Where(i => i.Item is Piece piece)
+								.Select(i => (i.Item as Piece).Kind)
+								.Distinct();
+							var allowedKinds = boardConfig.AllowedPieces.Except(adjacentKinds).ToList();
+							if (!allowedKinds.Any()) {
+								allowedKinds.Add(boardConfig.AllowedPieces.RandomItem());
+							}
+							int pieceKind = Mathf.RandomItem(allowedKinds);
+							var item = CreatePiece(gridPosition, pieceKind);
+							item.AnimateShown();
 						}
-						int pieceKind = Mathf.RandomItem(allowedKinds);
-						var item = CreatePiece(gridPosition, pieceKind);
-						item.AnimateShown();
 					}
 				}
 			}
 
-			IntVector2 RandomEmptyCell(int maxRow, int maxColumn)
-			{
-				do {
-					var gridPosition = new IntVector2(
-						Mathf.RandomInt(maxColumn),
-						Mathf.RandomInt(maxRow)
-					);
-					if (grid[gridPosition] == null) {
-						return gridPosition;
+			var backgroundCellTemplate = Node.Load<Frame>("Game/Match3/Cell")["Cell"];
+			for (int i = 0; i < boardConfig.RowCount; i++) {
+				for (int j = 0; j < boardConfig.ColumnCount; j++) {
+					var p = new IntVector2(j, i);
+					if (grid[p] is CutoutCell) {
+						continue;
 					}
-				} while (true);
+					var bg = backgroundCellTemplate.Clone<Image>();
+					bg.Position = match3Config.GridPositionToWidgetPosition(p);
+					bgContainer.AddNode(bg);
+				}
+			}
+
+			bool TryGetRandomEmptyCell(int maxRow, int maxColumn, out IntVector2 cell)
+			{
+				cell = default;
+				var cells = Enumerable.Range(0, maxColumn)
+					.SelectMany(x => Enumerable.Range(0, maxRow).Select(y => new IntVector2(x, y)));
+				var emptyCells = cells.Where(c => grid[c] == null);
+				if (emptyCells.Any()) {
+					cell = emptyCells.ToList().RandomItem();
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
 
@@ -262,7 +293,7 @@ namespace Match3Template.Types
 		private Piece CreatePiece(IntVector2 gridPosition, int kind)
 		{
 			var w = pieceTemplate.Clone<Widget>();
-			var piece = new Piece(grid, CellSize);
+			var piece = new Piece(grid);
 			SetupItem(piece, w, gridPosition);
 			piece.Kind = kind;
 			return piece;
@@ -271,7 +302,7 @@ namespace Match3Template.Types
 		private Blocker CreateBlocker(IntVector2 gridPosition)
 		{
 			var w = blockerTemplate.Clone<Widget>();
-			var blocker = new Blocker(grid, CellSize);
+			var blocker = new Blocker(grid);
 			SetupItem(blocker, w, gridPosition);
 			return blocker;
 		}
@@ -279,9 +310,17 @@ namespace Match3Template.Types
 		private Drop CreateDrop(IntVector2 gridPosition)
 		{
 			var w = dropTemplate.Clone<Widget>();
-			var drop = new Drop(grid, CellSize);
+			var drop = new Drop(grid);
 			SetupItem(drop, w, gridPosition);
 			return drop;
+		}
+
+		private CutoutCell CreateCutoutCell(IntVector2 gridPosition)
+		{
+			var w = cutoutCellTemplate.Clone<Widget>();
+			var cutoutCell = new CutoutCell(grid);
+			SetupItem(cutoutCell, w, gridPosition);
+			return cutoutCell;
 		}
 
 		private Bonus CreateBonus(IntVector2 gridPosition, BonusKind bonusKind)
@@ -296,8 +335,9 @@ namespace Match3Template.Types
 			if (bonusKind == BonusKind.VerticalLine) {
 				w.Rotation = 90;
 			}
-			var bonus = new Bonus(grid, CellSize);
-			bonus.BonusKind = bonusKind;
+			var bonus = new Bonus(grid) {
+				BonusKind = bonusKind
+			};
 			SetupItem(bonus, w, gridPosition);
 			bonus.RunAnimationTask(bonus.AnimateShow());
 			return bonus;
@@ -311,7 +351,7 @@ namespace Match3Template.Types
 			widget.Components.Add(item);
 			itemContainer.AddNode(widget);
 			item.GridPosition = gridPosition;
-			item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(gridPosition);
+			item.Owner.AsWidget.Position = match3Config.GridPositionToWidgetPosition(gridPosition);
 			items.Add(item);
 			item.AnimateIdle();
 		}
@@ -333,7 +373,7 @@ namespace Match3Template.Types
 				} else if (item is Drop && item.GridPosition.Y == boardConfig.RowCount - 1) {
 					completedDrops.Add(item);
 				} else
-				if (item is Blocker) {
+				if (!item.CanMove) {
 					// Gap filling
 					var p = item.GridPosition;
 					var belowPosition = p + IntVector2.Down;
@@ -345,17 +385,17 @@ namespace Match3Template.Types
 						var belowLeft = grid[belowPosition + IntVector2.Left];
 						var belowRight = grid[belowPosition + IntVector2.Right];
 						if (below == null) {
-							if (belowLeft != null && belowLeft.Task == null && !(belowLeft is Blocker)) {
+							if (belowLeft != null && belowLeft.Task == null && !(belowLeft.CanMove)) {
 								belowLeft.GridPosition = belowPosition;
 								belowLeft.RunTask(MoveToTask(belowLeft));
 								break;
-							} else if (belowRight != null && belowRight.Task == null && !(belowRight is Blocker)) {
+							} else if (belowRight != null && belowRight.Task == null && !(belowRight.CanMove)) {
 								belowRight.GridPosition = belowPosition;
 								belowRight.RunTask(MoveToTask(belowRight));
 								break;
 							} else if (
-								(belowLeft == null || belowLeft is Blocker)
-								&& (belowRight == null || belowRight is Blocker)
+								(belowLeft == null || belowLeft.CanMove)
+								&& (belowRight == null || belowRight.CanMove)
 							) {
 								belowPosition += IntVector2.Down;
 								// TODO: lift pieces somehow
@@ -394,7 +434,7 @@ namespace Match3Template.Types
 		private bool CanFall(ItemComponent item)
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down;
-			return !(item is Blocker)
+			return item.CanMove
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount;
 		}
@@ -403,7 +443,7 @@ namespace Match3Template.Types
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down + IntVector2.Right;
 			var sidePosition = item.GridPosition + IntVector2.Right;
-			return !(item is Blocker)
+			return item.CanMove
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount
 				&& belowPosition.X < boardConfig.ColumnCount
@@ -416,7 +456,7 @@ namespace Match3Template.Types
 		{
 			var belowPosition = item.GridPosition + IntVector2.Down + IntVector2.Left;
 			var sidePosition = item.GridPosition + IntVector2.Left;
-			return !(item is Blocker)
+			return item.CanMove
 				&& grid[belowPosition] == null
 				&& belowPosition.Y < boardConfig.RowCount
 				&& belowPosition.X >= 0
@@ -487,7 +527,7 @@ namespace Match3Template.Types
 				yield break;
 			}
 			var nextItem = grid[item.GridPosition + projectionAxis];
-			if (nextItem?.Task != null || nextItem is Blocker) {
+			if (nextItem?.Task != null || (!nextItem?.CanMove ?? false)) {
 				yield break;
 			}
 			item.AnimateSelect();
@@ -531,7 +571,7 @@ namespace Match3Template.Types
 				touchDelta = input.GetTouchPosition(i) - touchPosition0;
 				projectionAmount = Vector2.DotProduct((Vector2)projectionAxis, touchDelta);
 				projectionAmount = Mathf.Clamp(projectionAmount, 0, item.Owner.AsWidget.Width);
-				item.Owner.AsWidget.Position = item.GridPositionToWidgetPosition(item.GridPosition)
+				item.Owner.AsWidget.Position = match3Config.GridPositionToWidgetPosition(item.GridPosition)
 					+ projectionAmount * (Vector2)projectionAxis;
 				yield return null;
 			}
@@ -973,8 +1013,7 @@ namespace Match3Template.Types
 			fx.Rotation = 90 * direction;
 			// TODO: fx container
 			itemContainer.Nodes.Insert(0, fx);
-			// TODO: dont use item and grid for this
-			fx.Position = grid[position].GridPositionToWidgetPosition(position);
+			fx.Position = match3Config.GridPositionToWidgetPosition(position);
 			fx.Width *= length;
 			if (ICheatManager.Instance.DebugMatch3) {
 				fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
@@ -1001,12 +1040,11 @@ namespace Match3Template.Types
 			var fx = lightningBonusFxTemplate.Clone<Widget>();
 			// TODO: fx container
 			itemContainer.Nodes.Insert(0, fx);
-			// TODO: dont use item and grid for this
-			fx.Position = grid[fromPosition].GridPositionToWidgetPosition(fromPosition);
+			fx.Position = match3Config.GridPositionToWidgetPosition(fromPosition);
 			var spline = fx.Find<Spline>("Spline");
 			var endPoint = spline.Find<SplinePoint>("End");
 			var t = itemContainer.CalcTransitionToSpaceOf(spline);
-			var endPosition = grid[toPosition].GridPositionToWidgetPosition(toPosition);
+			var endPosition = match3Config.GridPositionToWidgetPosition(toPosition);
 			endPosition = t * endPosition;
 			endPoint.Position = endPosition / spline.Size;
 			return fx;
