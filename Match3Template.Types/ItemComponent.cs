@@ -4,6 +4,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Match3Template.Types
 {
+
 	public class ItemComponent : WidgetBehaviorComponent
 	{
 		public Task Task { get; private set; }

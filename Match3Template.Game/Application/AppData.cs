@@ -4,11 +4,23 @@ using Yuzu;
 
 namespace Match3Template.Application
 {
+	public class Progress : IProgress
+	{
+		[YuzuMember]
+		public int Coins { get; set; } = 10;
+
+		[YuzuMember]
+		public int LastSeenCoins { get; set; } = 10;
+	}
+
 	public class AppData
 	{
 		public const string Version = "1.0";
 
 		public static AppData Instance;
+
+		[YuzuMember]
+		public Progress Progress { get; set; } = new Progress();
 
 		[YuzuMember]
 		public float MusicVolume = 1;
@@ -54,6 +66,7 @@ namespace Match3Template.Application
 			if (Instance == null) {
 				Instance = new AppData();
 			}
+			IProgress.Instance = Instance.Progress;
 			AudioSystem.SetGroupVolume(AudioChannelGroup.Music, Instance.MusicVolume);
 			AudioSystem.SetGroupVolume(AudioChannelGroup.Effects, Instance.EffectsVolume);
 		}

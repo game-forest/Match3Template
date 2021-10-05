@@ -112,9 +112,25 @@
 						[10,0,"Show@Appear"]
 					],
 					"TargetProperty":"Trigger"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"Progress",
+					"ReadonlyKeys":[
+						[0,1,null],
+						[20,1,"Bullet01/IcoPlay"],
+						[40,1,"Bullet02/IcoPlay"],
+						[60,1,"Bullet03/IcoPlay"]
+					],
+					"TargetProperty":"[Match3Template.Types.CoinBalanceComponent, Match3Template.Types].FlyFromWidgetName"
 				}
 			],
 			"Color":[4294967295],
+			"Components":[
+				{
+					"class":"Match3Template.Types.CoinBalanceComponent, Match3Template.Types"
+				}
+			],
 			"ContentsPath":"Externals/Coins",
 			"Id":"Coins",
 			"Pivot":[0.5,0.5],
@@ -716,6 +732,7 @@
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
 					"Action":{
+						"ActiveDialogAnimation":"Hide@Appear",
 						"CloseActiveDialog":false,
 						"ScenePath":"Shell/Shop"
 					}
@@ -808,6 +825,9 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
+
 
 
 

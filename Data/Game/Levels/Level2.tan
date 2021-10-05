@@ -79,12 +79,6 @@
 					"Id":"Act03"
 				},
 				{
-					"Action":1,
-					"Frame":57,
-					"Id":"",
-					"JumpTo":""
-				},
-				{
 					"Frame":60,
 					"Id":"Final"
 				},

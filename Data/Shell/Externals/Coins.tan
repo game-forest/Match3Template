@@ -68,27 +68,35 @@
 		}
 	],
 	"Color":[4294967295],
+	"Components":[
+		{
+			"class":"Match3Template.Types.CoinBalanceComponent, Match3Template.Types"
+		}
+	],
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
 			"Animations":[
 				{
-					"Id":"Loop",
+					"Id":"Add",
 					"Markers":[
 						{
-							"Action":1,
-							"Id":"Still",
+							"Id":"Start",
 							"JumpTo":""
 						},
 						{
-							"Frame":1,
-							"Id":"Loop"
+							"Frame":34,
+							"Id":"Add"
 						},
 						{
-							"Action":2,
-							"Frame":8,
+							"Frame":39,
+							"Id":"AddAmountHere"
+						},
+						{
+							"Action":1,
+							"Frame":41,
 							"Id":"",
-							"JumpTo":"Loop"
+							"JumpTo":""
 						}
 					]
 				},
@@ -96,312 +104,347 @@
 					"IsLegacy":true
 				}
 			],
-			"Animators":[
-				{
-					"class":"Lime.Animator`1[[System.String]], Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[1,0,"Still@Loop"],
-						[20,0,"Loop@Loop"],
-						[34,0,"Still@Loop"]
-					],
-					"TargetProperty":"Trigger"
-				},
-				{
-					"class":"Lime.Vector2Animator, Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[1,2,[1,1]],
-						[6,2,[2.5853753,2.5853753]],
-						[20,2,[2.5853753,2.5853753]],
-						[26,2,[2.090695,2.090695]],
-						[34,2,[1,1]],
-						[41,2,[1.8848248,1.8848248]]
-					],
-					"TargetProperty":"Scale"
-				},
-				{
-					"class":"Lime.Color4Animator, Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[34,0,[4294967295]],
-						[41,0,[16777215]]
-					],
-					"TargetProperty":"Color"
-				},
-				{
-					"class":"Lime.Animator`1[[Lime.Blending, Lime]], Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[34,0,1],
-						[35,0,3]
-					],
-					"TargetProperty":"Blending"
-				},
-				{
-					"class":"Lime.Animator`1[[System.Boolean]], Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[0,0,false],
-						[1,0,true]
-					],
-					"TargetProperty":"Visible"
-				}
-			],
 			"Color":[4294967295],
-			"Id":"Fly",
+			"Id":"FlyGroup",
 			"Nodes":[
 				{
-					"class":"Lime.ImageCombiner, Lime",
-					"Blending":3,
-					"Id":"ImageCombiner"
-				},
-				{
-					"class":"Lime.Image, Lime",
+					"class":"Lime.Frame, Lime",
+					"Animations":[
+						{
+							"Id":"Loop",
+							"Markers":[
+								{
+									"Action":1,
+									"Id":"Still",
+									"JumpTo":""
+								},
+								{
+									"Frame":1,
+									"Id":"Loop"
+								},
+								{
+									"Action":2,
+									"Frame":8,
+									"Id":"",
+									"JumpTo":"Loop"
+								}
+							]
+						},
+						{
+							"IsLegacy":true
+						}
+					],
 					"Animators":[
+						{
+							"class":"Lime.Animator`1[[System.String]], Lime",
+							"AnimationId":"Add",
+							"ReadonlyKeys":[
+								[1,0,"Still@Loop"],
+								[20,0,"Loop@Loop"],
+								[34,0,"Still@Loop"]
+							],
+							"TargetProperty":"Trigger"
+						},
 						{
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Add",
 							"ReadonlyKeys":[
-								[4,0,[-10.547014,-3.5847754]],
-								[19,0,[72.57443,66.14269]]
+								[1,2,[1,1]],
+								[6,2,[2.5853753,2.5853753]],
+								[20,2,[2.5853753,2.5853753]],
+								[26,2,[2.090695,2.090695]],
+								[34,2,[1,1]],
+								[41,2,[1.8848248,1.8848248]]
 							],
-							"TargetProperty":"Position"
-						}
-					],
-					"Color":[1799660516],
-					"Id":"LineGradient",
-					"Pivot":[0.5,0.5],
-					"Position":[-10.547014,-3.5847754],
-					"Rotation":-45,
-					"Scale":[1,0.17964761],
-					"Size":[256,256],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Common/Masks/LineGradient"
-					}
-				},
-				{
-					"class":"Lime.Image, Lime",
-					"Animators":[
+							"TargetProperty":"Scale"
+						},
 						{
-							"class":"Lime.Animator`1[[Lime.ITexture, Lime]], Lime",
-							"AnimationId":"Loop",
+							"class":"Lime.Color4Animator, Lime",
+							"AnimationId":"Add",
 							"ReadonlyKeys":[
-								[
-									1,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin05"
-									}
-								],
-								[
-									2,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin06"
-									}
-								],
-								[
-									3,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin07"
-									}
-								],
-								[
-									4,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin08"
-									}
-								],
-								[
-									5,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin01"
-									}
-								],
-								[
-									6,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin02"
-									}
-								],
-								[
-									7,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin03"
-									}
-								],
-								[
-									8,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin04"
-									}
-								]
+								[34,0,[4294967295]],
+								[41,0,[16777215]]
 							],
-							"TargetProperty":"Texture"
+							"TargetProperty":"Color"
+						},
+						{
+							"class":"Lime.Animator`1[[Lime.Blending, Lime]], Lime",
+							"AnimationId":"Add",
+							"ReadonlyKeys":[
+								[34,0,1],
+								[35,0,3]
+							],
+							"TargetProperty":"Blending"
+						},
+						{
+							"class":"Lime.Animator`1[[System.Boolean]], Lime",
+							"AnimationId":"Add",
+							"ReadonlyKeys":[
+								[0,0,false],
+								[1,0,true]
+							],
+							"TargetProperty":"Visible"
 						}
 					],
 					"Color":[4294967295],
-					"Id":"Coin",
-					"Pivot":[0.5,0.5],
-					"Position":[32,32],
-					"Shader":3,
-					"Size":[64,64],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Shell/Data/Coins/Coin05"
-					}
-				},
-				{
-					"class":"Lime.Image, Lime",
-					"Animators":[
+					"Id":"Fly",
+					"Nodes":[
 						{
-							"class":"Lime.Animator`1[[Lime.ITexture, Lime]], Lime",
-							"AnimationId":"Loop",
-							"ReadonlyKeys":[
-								[
-									1,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin05"
-									}
-								],
-								[
-									2,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin06"
-									}
-								],
-								[
-									3,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin07"
-									}
-								],
-								[
-									4,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin08"
-									}
-								],
-								[
-									5,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin01"
-									}
-								],
-								[
-									6,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin02"
-									}
-								],
-								[
-									7,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin03"
-									}
-								],
-								[
-									8,
-									1,
-									{
-										"class":"Lime.SerializableTexture, Lime",
-										"SerializationPath":"/Shell/Data/Coins/Coin04"
-									}
-								]
+							"class":"Lime.ImageCombiner, Lime",
+							"Blending":3,
+							"Id":"ImageCombiner"
+						},
+						{
+							"class":"Lime.Image, Lime",
+							"Animators":[
+								{
+									"class":"Lime.Vector2Animator, Lime",
+									"AnimationId":"Add",
+									"ReadonlyKeys":[
+										[4,0,[-10.547014,-3.5847754]],
+										[19,0,[72.57443,66.14269]]
+									],
+									"TargetProperty":"Position"
+								}
 							],
-							"TargetProperty":"Texture"
+							"Color":[1799660516],
+							"Id":"LineGradient",
+							"Pivot":[0.5,0.5],
+							"Position":[-10.547014,-3.5847754],
+							"Rotation":-45,
+							"Scale":[1,0.17964761],
+							"Size":[256,256],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"/Common/Masks/LineGradient"
+							}
+						},
+						{
+							"class":"Lime.Image, Lime",
+							"Animators":[
+								{
+									"class":"Lime.Animator`1[[Lime.ITexture, Lime]], Lime",
+									"AnimationId":"Loop",
+									"ReadonlyKeys":[
+										[
+											1,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin05"
+											}
+										],
+										[
+											2,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin06"
+											}
+										],
+										[
+											3,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin07"
+											}
+										],
+										[
+											4,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin08"
+											}
+										],
+										[
+											5,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin01"
+											}
+										],
+										[
+											6,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin02"
+											}
+										],
+										[
+											7,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin03"
+											}
+										],
+										[
+											8,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin04"
+											}
+										]
+									],
+									"TargetProperty":"Texture"
+								}
+							],
+							"Color":[4294967295],
+							"Id":"Coin",
+							"Pivot":[0.5,0.5],
+							"Position":[32,32],
+							"Shader":3,
+							"Size":[64,64],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"/Shell/Data/Coins/Coin05"
+							}
+						},
+						{
+							"class":"Lime.Image, Lime",
+							"Animators":[
+								{
+									"class":"Lime.Animator`1[[Lime.ITexture, Lime]], Lime",
+									"AnimationId":"Loop",
+									"ReadonlyKeys":[
+										[
+											1,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin05"
+											}
+										],
+										[
+											2,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin06"
+											}
+										],
+										[
+											3,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin07"
+											}
+										],
+										[
+											4,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin08"
+											}
+										],
+										[
+											5,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin01"
+											}
+										],
+										[
+											6,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin02"
+											}
+										],
+										[
+											7,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin03"
+											}
+										],
+										[
+											8,
+											1,
+											{
+												"class":"Lime.SerializableTexture, Lime",
+												"SerializationPath":"/Shell/Data/Coins/Coin04"
+											}
+										]
+									],
+									"TargetProperty":"Texture"
+								}
+							],
+							"Color":[4294967295],
+							"Id":"Coin",
+							"Pivot":[0.5,0.5],
+							"Position":[32,32],
+							"Size":[64,64],
+							"Texture":{
+								"class":"Lime.SerializableTexture, Lime",
+								"SerializationPath":"/Shell/Data/Coins/Coin05"
+							}
 						}
 					],
-					"Color":[4294967295],
-					"Id":"Coin",
 					"Pivot":[0.5,0.5],
-					"Position":[32,32],
+					"Position":[517,621.4167],
 					"Size":[64,64],
-					"Texture":{
-						"class":"Lime.SerializableTexture, Lime",
-						"SerializationPath":"/Shell/Data/Coins/Coin05"
-					}
-				}
-			],
-			"Pivot":[0.5,0.5],
-			"Position":[128,348.9167],
-			"Size":[64,64],
-			"Visible":false
-		},
-		{
-			"class":"Lime.SplineGear, Lime",
-			"Animators":[
-				{
-					"class":"Lime.NumericAnimator, Lime",
-					"AnimationId":"Add",
-					"ReadonlyKeys":[
-						[20,0,0],
-						[34,0,1]
-					],
-					"TargetProperty":"SplineOffset"
-				}
-			],
-			"Id":"SplineGear",
-			"SplineRef":{
-				"Id":"Spline"
-			},
-			"WidgetRef":{
-				"Id":"Fly"
-			}
-		},
-		{
-			"class":"Lime.Spline, Lime",
-			"Color":[4294967295],
-			"Id":"Spline",
-			"Nodes":[
-				{
-					"class":"Lime.SplinePoint, Lime",
-					"Id":"Start",
-					"Position":[0.5,1.0203886],
-					"TangentAngle":-102.87515,
-					"TangentWeight":0.7180471
+					"Visible":false
 				},
 				{
-					"class":"Lime.SplinePoint, Lime",
-					"Id":"End",
-					"Position":[0.40942937,0.49887797],
-					"TangentAngle":-41.721794,
-					"TangentWeight":1.1745415
+					"class":"Lime.SplineGear, Lime",
+					"Animators":[
+						{
+							"class":"Lime.NumericAnimator, Lime",
+							"AnimationId":"Add",
+							"ReadonlyKeys":[
+								[20,0,0],
+								[34,0,1]
+							],
+							"TargetProperty":"SplineOffset"
+						}
+					],
+					"Id":"SplineGear",
+					"SplineRef":{
+						"Id":"Spline"
+					},
+					"WidgetRef":{
+						"Id":"Fly"
+					}
+				},
+				{
+					"class":"Lime.Spline, Lime",
+					"Color":[4294967295],
+					"Id":"Spline",
+					"Nodes":[
+						{
+							"class":"Lime.SplinePoint, Lime",
+							"Id":"Start",
+							"Position":[0.5,1.0203886],
+							"TangentAngle":-102.87515,
+							"TangentWeight":0.7180471
+						},
+						{
+							"class":"Lime.SplinePoint, Lime",
+							"Id":"End",
+							"Position":[0.40942937,0.49887797],
+							"TangentAngle":-41.721794,
+							"TangentWeight":1.1745415
+						}
+					],
+					"Pivot":[0.5,0.5],
+					"Position":[517,304.5],
+					"Size":[1034,609]
 				}
 			],
 			"Pivot":[0.5,0.5],
-			"Position":[128,32],
-			"Size":[1034,609]
+			"Position":[128,54.208344],
+			"Size":[1034,653.4167]
 		},
 		{
 			"class":"Lime.Frame, Lime",
@@ -666,6 +709,8 @@
 	],
 	"Size":[256,64]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
+
 
 
 

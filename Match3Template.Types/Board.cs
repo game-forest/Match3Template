@@ -44,6 +44,8 @@ namespace Match3Template.Types
 
 		internal int GetTurnCount() => boardConfig.TurnCount;
 
+		internal void SetTurnCount(int turnCount) => boardConfig.TurnCount = turnCount;
+
 		internal int GetDropCount() => boardConfig.DropCount;
 
 		public static Board CreateBoard(Widget root)

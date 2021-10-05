@@ -312,7 +312,12 @@ namespace Match3Template.Types
 				}
 			}
 			if (!string.IsNullOrEmpty(scenePath)) {
-				var dialog = m.Open(scenePath);
+				IDialog dialog;
+				if (m.GetActiveDialog() == null || m.GetActiveDialog().Path != scenePath) {
+					dialog = m.Open(scenePath);
+				} else {
+					dialog = m.GetActiveDialog();
+				}
 				RunAnimationFromTriggerString(dialog.Root, newDialogAnimation);
 			}
 		}

@@ -6,6 +6,8 @@ namespace Match3Template
 	{
 		public Widget Root { get; }
 
+		public string Path { get; }
+
 		void Close();
 	}
 
@@ -22,5 +24,14 @@ namespace Match3Template
 		static ICheatManager Instance { get; set; }
 
 		public bool DebugMatch3 { get; }
+	}
+
+	public interface IProgress
+	{
+		public static IProgress Instance { get; set; }
+
+		public int Coins { get; set; }
+
+		public int LastSeenCoins { get; set; }
 	}
 }

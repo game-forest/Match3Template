@@ -3,6 +3,22 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"CongratulationsMessage",
+			"Markers":[
+				{
+					"Frame":10,
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":50,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"LevelLose",
 			"Markers":[
 				{
@@ -148,6 +164,25 @@
 	"Nodes":[
 		{
 			"class":"Lime.Frame, Lime",
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"CongratulationsMessage",
+					"ReadonlyKeys":[
+						[10,0,"Show"]
+					],
+					"TargetProperty":"Trigger"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"CongratulationsMessage",
+					"ReadonlyKeys":[
+						[0,1,false],
+						[10,1,true]
+					],
+					"TargetProperty":"Visible"
+				}
+			],
 			"Color":[4294967295],
 			"ContentsPath":"Externals/MSGCongratz",
 			"Id":"MSGCongratz",
@@ -486,6 +521,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
