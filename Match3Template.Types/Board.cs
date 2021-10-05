@@ -976,7 +976,9 @@ namespace Match3Template.Types
 			// TODO: dont use item and grid for this
 			fx.Position = grid[position].GridPositionToWidgetPosition(position);
 			fx.Width *= length;
-			fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
+			if (ICheatManager.Instance.DebugMatch3) {
+				fx.CompoundPostPresenter.Add(new WidgetBoundsPresenter(Color4.Blue, 2.0f));
+			}
 			return fx;
 		}
 

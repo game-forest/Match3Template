@@ -26,7 +26,7 @@ namespace Match3Template.Debug
 			}
 			ICheatManager.Instance = this;
 			Enabled = true;
-			IsDebugInfoVisible = true;
+			IsDebugInfoVisible = false;
 			DebugMatch3 = false;
 		}
 
