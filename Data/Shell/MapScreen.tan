@@ -578,13 +578,24 @@
 								[10,0,"Show@Appear,Loop@Idle"]
 							],
 							"TargetProperty":"Trigger"
+						},
+						{
+							"class":"Lime.Vector2Animator, Lime",
+							"AnimationId":"Progress",
+							"ReadonlyKeys":[
+								[10,1,[413.5,394.5]],
+								[20,1,[621.5,351.5]],
+								[40,1,[808.5,332.5]],
+								[60,1,[1018.5,314.5]]
+							],
+							"TargetProperty":"Position"
 						}
 					],
 					"Color":[4294967295],
 					"ContentsPath":"/Game/Chars/Char01",
 					"Id":"Char01",
 					"Pivot":[0.5,0.89453125],
-					"Position":[453.5,395.5],
+					"Position":[413.5,394.5],
 					"Scale":[0.2538824,0.2538824],
 					"Size":[256,512]
 				}
@@ -694,6 +705,7 @@
 				{
 					"class":"Match3Template.Types.DialogActionComponent, Match3Template.Types",
 					"Action":{
+						"CloseActiveDialog":false,
 						"ScenePath":"Shell/Shop"
 					}
 				}
@@ -785,6 +797,7 @@
 	],
 	"Size":[1366,768]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
