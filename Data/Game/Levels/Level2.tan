@@ -3,6 +3,36 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"LevelBuyMoves",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"Id":"LevelLose",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -79,12 +109,12 @@
 					"Id":"Act03"
 				},
 				{
-					"Frame":60,
+					"Frame":55,
 					"Id":"Final"
 				},
 				{
 					"Action":1,
-					"Frame":80,
+					"Frame":75,
 					"Id":"",
 					"JumpTo":""
 				}
@@ -99,13 +129,31 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":48,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelBuyMoves",
+					"ReadonlyKeys":[
+						[0,0,"Hide@LevelBuyMoves"]
+					],
+					"TargetProperty":"Trigger"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelLose",
+					"ReadonlyKeys":[
+						[0,0,"Show@LevelLose"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
 					"BlockerCount":8,
 					"ColumnCount":8,
-					"DropCount":4,
+					"DropCount":3,
 					"LevelFileName":"Game/Levels/GameLevel2",
 					"TurnCount":36
 				},
@@ -134,11 +182,14 @@
 							"ScenePath":"Shell/MapScreen"
 						},
 						{
-							"ButtonName":"LevelBuyMoves/BtnOk"
+							"ActiveDialogAnimation":"Start@LevelBuyMoves",
+							"ButtonName":"LevelBuyMoves/BtnOk",
+							"CloseActiveDialog":false
 						},
 						{
 							"ActiveDialogAnimation":"Start@LevelBuyMoves,Start@LevelLose",
-							"ButtonName":"LevelBuyMoves/BtnCancel"
+							"ButtonName":"LevelBuyMoves/BtnCancel",
+							"CloseActiveDialog":false
 						}
 					]
 				}
@@ -162,10 +213,10 @@
 							"class":"Lime.Color4Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[70,0,[2949043]],
-								[72,0,[4281139123]],
-								[76,0,[4281139123]],
-								[80,0,[2949043]]
+								[65,0,[2949043]],
+								[67,0,[4281139123]],
+								[71,0,[4281139123]],
+								[75,0,[2949043]]
 							],
 							"TargetProperty":"Color"
 						},
@@ -173,8 +224,8 @@
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[70,0,[0.67346936,0.859375]],
-								[80,0,[1.1686674,1.3038793]]
+								[65,0,[0.67346936,0.859375]],
+								[75,0,[1.1686674,1.3038793]]
 							],
 							"TargetProperty":"Scale"
 						}
@@ -199,10 +250,10 @@
 							"class":"Lime.Color4Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[66,0,[2949043]],
-								[68,0,[4281139123]],
-								[72,0,[4281139123]],
-								[76,0,[2949043]]
+								[61,0,[2949043]],
+								[63,0,[4281139123]],
+								[67,0,[4281139123]],
+								[71,0,[2949043]]
 							],
 							"TargetProperty":"Color"
 						},
@@ -210,8 +261,8 @@
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[66,0,[0.67346936,0.859375]],
-								[76,0,[1.1686674,1.3038793]]
+								[61,0,[0.67346936,0.859375]],
+								[71,0,[1.1686674,1.3038793]]
 							],
 							"TargetProperty":"Scale"
 						}
@@ -236,10 +287,10 @@
 							"class":"Lime.Color4Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[60,0,[2949043]],
-								[62,0,[4281139123]],
-								[66,0,[4281139123]],
-								[70,0,[2949043]]
+								[55,0,[2949043]],
+								[57,0,[4281139123]],
+								[61,0,[4281139123]],
+								[65,0,[2949043]]
 							],
 							"TargetProperty":"Color"
 						},
@@ -247,8 +298,8 @@
 							"class":"Lime.Vector2Animator, Lime",
 							"AnimationId":"Progress",
 							"ReadonlyKeys":[
-								[60,0,[0.67346936,0.859375]],
-								[70,0,[1.1686674,1.3038793]]
+								[55,0,[0.67346936,0.859375]],
+								[65,0,[1.1686674,1.3038793]]
 							],
 							"TargetProperty":"Scale"
 						}
@@ -334,8 +385,7 @@
 								[45,2,[0.76086956,1.25]],
 								[48,2,[1.3043479,0.7113402]],
 								[51,2,[0.9574468,1.0673077]],
-								[54,2,[1.1041666,0.95098037]],
-								[57,2,[1,1]]
+								[54,2,[1.1041666,0.95098037]]
 							],
 							"TargetProperty":"Scale"
 						}

@@ -3,6 +3,36 @@
 	"Anchors":15,
 	"Animations":[
 		{
+			"Id":"LevelBuyMoves",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
+			"Id":"LevelLose",
+			"Markers":[
+				{
+					"Id":"Start",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":10,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"Appear",
 			"Markers":[
 				{
@@ -99,13 +129,32 @@
 		{
 			"class":"Lime.Frame, Lime",
 			"Anchors":48,
+			"Animators":[
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelBuyMoves",
+					"ReadonlyKeys":[
+						[0,0,"Hide@LevelBuyMoves"]
+					],
+					"TargetProperty":"Trigger"
+				},
+				{
+					"class":"Lime.Animator`1[[System.String]], Lime",
+					"AnimationId":"LevelLose",
+					"ReadonlyKeys":[
+						[0,0,"Show@LevelLose"]
+					],
+					"TargetProperty":"Trigger"
+				}
+			],
 			"Color":[4294967295],
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
-					"ColumnCount":16,
+					"ColumnCount":8,
+					"DropCount":3,
 					"LevelFileName":"Game/Levels/GameLevel3",
-					"RowCount":16,
+					"PreFillBoard":false,
 					"TurnCount":48
 				},
 				{
@@ -133,11 +182,14 @@
 							"ScenePath":"Shell/MapScreen"
 						},
 						{
-							"ButtonName":"LevelBuyMoves/BtnOk"
+							"ActiveDialogAnimation":"Start@LevelBuyMoves",
+							"ButtonName":"LevelBuyMoves/BtnOk",
+							"CloseActiveDialog":false
 						},
 						{
 							"ActiveDialogAnimation":"Start@LevelBuyMoves,Start@LevelLose",
-							"ButtonName":"LevelBuyMoves/BtnCancel"
+							"ButtonName":"LevelBuyMoves/BtnCancel",
+							"CloseActiveDialog":false
 						}
 					]
 				}
@@ -146,7 +198,8 @@
 			"Id":"GameScreen",
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
-			"Size":[1366,768]
+			"Size":[1366,768],
+			"TangerineFlags":4
 		},
 		{
 			"class":"Lime.Frame, Lime",

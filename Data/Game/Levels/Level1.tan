@@ -151,7 +151,16 @@
 			"Components":[
 				{
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
-					"DropCount":2,
+					"AllowedPieces":[
+						0,
+						1,
+						2,
+						3,
+						4,
+						0,
+						1
+					],
+					"DropCount":3,
 					"LevelFileName":"Game/Levels/GameLevel1",
 					"PreFillBoard":false,
 					"RowCount":2,
@@ -198,7 +207,8 @@
 			"Id":"GameScreen",
 			"Pivot":[0.5,0.5],
 			"Position":[683,384],
-			"Size":[1366,768]
+			"Size":[1366,768],
+			"TangerineFlags":4
 		},
 		{
 			"class":"Lime.Frame, Lime",

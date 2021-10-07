@@ -98,7 +98,7 @@
 				},
 				{
 					"Action":1,
-					"Frame":7,
+					"Frame":10,
 					"Id":"",
 					"JumpTo":""
 				}
@@ -199,7 +199,7 @@
 					"AnimationId":"Act",
 					"ReadonlyKeys":[
 						[0,2,[0.5355391,0.5355391]],
-						[7,2,[1.755106,1.755106]]
+						[10,2,[2.625233,2.625233]]
 					],
 					"TargetProperty":"Scale"
 				},
@@ -208,8 +208,8 @@
 					"AnimationId":"Act",
 					"ReadonlyKeys":[
 						[0,0,[40447]],
-						[5,0,[1023450623]],
-						[7,0,[40447]]
+						[5,0,[1342217727]],
+						[10,0,[40447]]
 					],
 					"TargetProperty":"Color"
 				},
@@ -284,6 +284,7 @@
 					"class":"Lime.Vector2Animator, Lime",
 					"AnimationId":"DropDown",
 					"ReadonlyKeys":[
+						[3,2,[45,45]],
 						[10,2,[45,45]],
 						[14,2,[45,55]],
 						[17,2,[45,40]],
@@ -295,6 +296,8 @@
 					"class":"Lime.Vector2Animator, Lime",
 					"AnimationId":"DropDown",
 					"ReadonlyKeys":[
+						[0,0,[1,1]],
+						[3,2,[1.0454909,0.9250985]],
 						[10,2,[1.0454909,0.9250985]],
 						[14,2,[1.135749,0.7648449]],
 						[17,2,[0.897194,1.0312572]],
@@ -362,6 +365,14 @@
 						[0,1,[4294967295]]
 					],
 					"TargetProperty":"Color"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,0,[45,45]]
+					],
+					"TargetProperty":"Position"
 				}
 			],
 			"Color":[4294967295],
@@ -393,7 +404,7 @@
 					"AnimationId":"Act",
 					"ReadonlyKeys":[
 						[0,2,[0.54697335,0.54697335]],
-						[7,2,[1.3410641,1.3410641]]
+						[7,2,[2.105669,2.105669]]
 					],
 					"TargetProperty":"Scale"
 				},
@@ -402,7 +413,7 @@
 					"AnimationId":"Act",
 					"ReadonlyKeys":[
 						[0,0,[40447]],
-						[3,0,[1040227839]],
+						[3,0,[4278230527]],
 						[7,0,[40447]]
 					],
 					"TargetProperty":"Color"
@@ -475,11 +486,19 @@
 						]
 					],
 					"TargetProperty":"Texture"
+				},
+				{
+					"class":"Lime.Color4Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,0,[40447]]
+					],
+					"TargetProperty":"Color"
 				}
 			],
 			"Blending":3,
 			"Color":[40447],
-			"Id":"CircleBlured",
+			"Id":"Explo",
 			"Pivot":[0.5,0.5],
 			"Position":[45,45],
 			"Scale":[0.54697335,0.54697335],
@@ -493,6 +512,7 @@
 	"Pivot":[0.5,0.5],
 	"Size":[90,90]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 
