@@ -143,7 +143,7 @@ namespace Match3Template.Debug
 			debugInfoStrings.Add(info);
 		}
 
-		public void RenderDebugInfo()
+		public void RenderDebugInfo(int drawCallCount)
 		{
 			if (!IsDebugInfoVisible) {
 				return;
@@ -159,9 +159,10 @@ namespace Match3Template.Debug
 			float y = 0;
 
 			var fields = new List<string> {
-				$"FPS: {The.Window.FPS}",
-				$"Window Size: {The.Window.ClientSize}",
-				$"World Size: {The.World.Size}",
+				$"Fps: {The.Window.FPS}",
+				$"Window size: {The.Window.ClientSize}",
+				$"World size: {The.World.Size}",
+				$"Draw calls: {drawCallCount}",
 			};
 #if PROFILER
 			if (Lime.Profiler.Graphics.Overdraw.MetricRequired) {

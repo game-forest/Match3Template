@@ -116,7 +116,6 @@ namespace Match3Template.Application
 				speedMultiplier = 0.1f;
 			}
 
-			delta *= speedMultiplier;
 			UpdateWorld(delta * speedMultiplier);
 			The.World.PrepareToRender();
 		}
@@ -176,10 +175,11 @@ namespace Match3Template.Application
 
 		private void OnRenderFrame()
 		{
+			var drawCallCount = Renderer.DrawCalls;
 			Renderer.BeginFrame();
 			SetupViewportAndProjectionMatrix();
 			World.RenderAll();
-			The.Cheats.RenderDebugInfo();
+			The.Cheats.RenderDebugInfo(drawCallCount);
 			Renderer.EndFrame();
 		}
 
