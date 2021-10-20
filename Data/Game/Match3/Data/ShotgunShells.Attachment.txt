@@ -1,0 +1,18 @@
+{
+	"class":"Lime.Model3DAttachmentParser+ModelAttachmentFormat, Lime",
+	"Animations":{
+		"Take 001":{
+			"Markers":{
+				"Start":{
+					"Action":"Start"
+				},
+				"End":{
+					"Action":"Jump",
+					"Frame":90,
+					"JumpTarget":"Start"
+				}
+			},
+			"SourceAnimationId":"Take 001"
+		}
+	}
+}
