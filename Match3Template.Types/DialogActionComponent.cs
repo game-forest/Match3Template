@@ -38,7 +38,7 @@ namespace Match3Template.Types
 								return null;
 							}
 						},
-						needInvalidateNode: new Property<string>(getter).DistinctUntilChanged()
+						needInvalidateNode: new DelegateDataflowProvider<string>(getter).DistinctUntilChanged()
 					);
 				}
 			));
@@ -50,7 +50,7 @@ namespace Match3Template.Types
 					nodeProvider: () => {
 						return Document.Current.RootNode;
 					},
-					needInvalidateNode: new Property<string>(() => string.Empty).DistinctUntilChanged()
+					needInvalidateNode: new DelegateDataflowProvider<string>(() => string.Empty).DistinctUntilChanged()
 				)
 			));
 		}
