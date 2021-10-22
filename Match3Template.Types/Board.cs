@@ -22,7 +22,7 @@ namespace Match3Template.Types
 		public event EventHandler<DropCompletedEventArgs> DropCompleted;
 		public event EventHandler<TurnMadeEventArgs> TurnMade;
 
-		private readonly Widget topLevelContainer;
+		private readonly Widget boardContainer;
 		private readonly Frame itemContainer;
 		private readonly Frame bgContainer;
 		private readonly BoardConfigComponent boardConfig;
@@ -40,8 +40,6 @@ namespace Match3Template.Types
 		private readonly Grid<ItemComponent> grid = new Grid<ItemComponent>();
 		private readonly List<ItemComponent> items = new List<ItemComponent>();
 
-		private Vector2 CellSize => new Vector2(90, 90);
-
 		internal int GetTurnCount() => boardConfig.TurnCount;
 
 		internal void SetTurnCount(int turnCount) => boardConfig.TurnCount = turnCount;
@@ -55,20 +53,20 @@ namespace Match3Template.Types
 				?.Components
 				.Get<Match3ConfigComponent>();
 
-			var boardWidget = root.SelfAndDescendants
+			var boardContainer = root.SelfAndDescendants
 				.FirstOrDefault(n => n.Components.Contains<BoardConfigComponent>())
 				as Widget;
 
-			var boardConfig = boardWidget?.Components.Get<BoardConfigComponent>();
+			var boardConfig = boardContainer?.Components.Get<BoardConfigComponent>();
 
-			boardWidget = boardWidget["BoardContainer"];
+			boardContainer = boardContainer["BoardContainer"];
 
-			return new Board(boardWidget, boardConfig, match3Config);
+			return new Board(boardContainer, boardConfig, match3Config);
 		}
 
-		public Board(Widget boardWidget, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
+		public Board(Widget boardContainer, BoardConfigComponent boardConfig, Match3ConfigComponent match3Config)
 		{
-			this.topLevelContainer = boardWidget;
+			this.boardContainer = boardContainer;
 			this.boardConfig = boardConfig;
 			this.match3Config = match3Config;
 			pieceTemplate = Node.Load<Widget>("Game/Match3/MultiMarble");
@@ -85,21 +83,21 @@ namespace Match3Template.Types
 			itemContainer = new Frame();
 			FillBoard();
 
-			bgContainer.Width = boardConfig.ColumnCount * match3Config.CellSize.Width;
-			bgContainer.Height = boardConfig.RowCount * match3Config.CellSize.Height;
-			topLevelContainer.Nodes.Insert(0, bgContainer);
+			bgContainer.Width = boardConfig.ColumnCount * match3Config.CellSize;
+			bgContainer.Height = boardConfig.RowCount * match3Config.CellSize;
+			this.boardContainer.Nodes.Insert(0, bgContainer);
 			bgContainer.CenterOnParent();
 
-			itemContainer.Width = boardConfig.ColumnCount * match3Config.CellSize.Width;
-			itemContainer.Height = boardConfig.RowCount * match3Config.CellSize.Height;
-			topLevelContainer.Nodes.Insert(0, itemContainer);
+			itemContainer.Width = boardConfig.ColumnCount * match3Config.CellSize;
+			itemContainer.Height = boardConfig.RowCount * match3Config.CellSize;
+			this.boardContainer.Nodes.Insert(0, itemContainer);
 			itemContainer.CenterOnParent();
 
-			topLevelContainer.Tasks.Add(Update);
+			this.boardContainer.Tasks.Add(this.Update);
 			containerBoundsPresenter = new WidgetBoundsPresenter(Color4.Red, 2.0f);
-			topLevelContainer.Tasks.Add(CheckCheatsTask);
+			this.boardContainer.Tasks.Add(this.CheckCheatsTask);
 
-			topLevelContainer.Tasks.Add(Task.Repeat(() => {
+			this.boardContainer.Tasks.Add(Task.Repeat(() => {
 				UpdateBoardScale();
 				return true;
 			}));
@@ -108,8 +106,8 @@ namespace Match3Template.Types
 
 		void UpdateBoardScale()
 		{
-			var widthAspect = topLevelContainer.Width / itemContainer.Width;
-			var heightAspect = topLevelContainer.Height / itemContainer.Height;
+			var widthAspect = boardContainer.Width / itemContainer.Width;
+			var heightAspect = boardContainer.Height / itemContainer.Height;
 			match3Config.BoardScale = Mathf.Min(widthAspect, heightAspect);
 			itemContainer.Scale = new Vector2(match3Config.BoardScale);
 			itemContainer.CenterOnParent();
@@ -123,7 +121,7 @@ namespace Match3Template.Types
 				SpawnItems();
 				Fall();
 				HandleInput();
-				CheckMatches();
+				ProcessMatches();
 				yield return null;
 			}
 		}
@@ -146,16 +144,20 @@ namespace Match3Template.Types
 
 		private readonly IPresenter containerBoundsPresenter;
 
-		private static readonly IntVector2[] directionVectors =
-			{ IntVector2.Right, IntVector2.Down, IntVector2.Left, IntVector2.Up };
+		private static readonly IntVector2[] directionVectors =	{
+			IntVector2.Right,
+			IntVector2.Down,
+			IntVector2.Left,
+			IntVector2.Up
+		};
 
 		[Flags]
 		private enum Direction
 		{
-			Right = 0,
-			Down = 1,
-			Left = 2,
-			Up = 4,
+			Right = 1,
+			Down = 2,
+			Left = 4,
+			Up = 8,
 			Horizontal = Right | Left,
 			Vertical = Up | Down,
 			Any = Horizontal | Vertical,
@@ -164,6 +166,8 @@ namespace Match3Template.Types
 		private static readonly Direction[] directions = {
 			Direction.Right, Direction.Down, Direction.Left, Direction.Up
 		};
+
+		private int swapIndex;
 
 		private IEnumerable<(ItemComponent Item, IntVector2 Delta, Direction Direction)> EnumerateAdjacentItems(
 			IntVector2 position
@@ -312,7 +316,7 @@ namespace Match3Template.Types
 		private Piece CreatePiece(IntVector2 gridPosition, int kind)
 		{
 			var w = pieceTemplate.Clone<Widget>();
-			var piece = new Piece(grid);
+			var piece = new Piece(w, gridPosition, Item_SetGridPosition, Item_Kill);
 			SetupItem(piece, w, gridPosition);
 			piece.Kind = kind;
 			return piece;
@@ -321,7 +325,7 @@ namespace Match3Template.Types
 		private Blocker CreateBlocker(IntVector2 gridPosition)
 		{
 			var w = blockerTemplate.Clone<Widget>();
-			var blocker = new Blocker(grid);
+			var blocker = new Blocker(w, gridPosition, Item_SetGridPosition, Item_Kill);
 			SetupItem(blocker, w, gridPosition);
 			return blocker;
 		}
@@ -329,7 +333,7 @@ namespace Match3Template.Types
 		private Drop CreateDrop(IntVector2 gridPosition)
 		{
 			var w = dropTemplate.Clone<Widget>();
-			var drop = new Drop(grid);
+			var drop = new Drop(w, gridPosition, Item_SetGridPosition, Item_Kill);
 			SetupItem(drop, w, gridPosition);
 			return drop;
 		}
@@ -337,7 +341,7 @@ namespace Match3Template.Types
 		private CutoutCell CreateCutoutCell(IntVector2 gridPosition)
 		{
 			var w = cutoutCellTemplate.Clone<Widget>();
-			var cutoutCell = new CutoutCell(grid);
+			var cutoutCell = new CutoutCell(w, gridPosition, Item_SetGridPosition, Item_Kill);
 			SetupItem(cutoutCell, w, gridPosition);
 			return cutoutCell;
 		}
@@ -354,7 +358,7 @@ namespace Match3Template.Types
 			if (bonusKind == BonusKind.VerticalLine) {
 				w.Rotation = 90;
 			}
-			var bonus = new Bonus(grid) {
+			var bonus = new Bonus(w, gridPosition, Item_SetGridPosition, Item_Kill) {
 				BonusKind = bonusKind
 			};
 			SetupItem(bonus, w, gridPosition);
@@ -367,12 +371,21 @@ namespace Match3Template.Types
 			if (items.Where(i => i.GridPosition == gridPosition).Any()) {
 				throw new InvalidOperationException();
 			}
-			widget.Components.Add(item);
 			itemContainer.AddNode(widget);
-			item.GridPosition = gridPosition;
-			item.Owner.AsWidget.Position = match3Config.GridPositionToWidgetPosition(gridPosition);
 			items.Add(item);
 			item.AnimateIdle();
+		}
+		void Item_SetGridPosition(ItemComponent item, IntVector2 gridPosition)
+		{
+			grid[item.GridPosition] = null;
+			System.Diagnostics.Debug.Assert(grid[gridPosition] == null);
+			grid[gridPosition] = item;
+		}
+
+		void Item_Kill(ItemComponent item)
+		{
+			grid[item.GridPosition] = null;
+			items.Remove(item);
 		}
 
 		private void Fall()
@@ -438,7 +451,6 @@ namespace Match3Template.Types
 				var e = new DropCompletedEventArgs() {
 					ItemWidget = item.Owner.AsWidget
 				};
-				items.Remove(item);
 				item.Kill();
 				item.Owner.Components.Remove(item);
 				DropCompleted?.Invoke(this, e);
@@ -524,342 +536,229 @@ namespace Match3Template.Types
 			}
 		}
 
-		private IEnumerator<object> InputTask(ItemComponent item, int i)
+		private IEnumerator<object> InputTask(ItemComponent item, int touchIndex)
 		{
 			var input = Window.Current.Input;
-			var touchPosition0 = input.GetTouchPosition(i);
-			Vector2 touchDelta;
+			var touchPosition0 = input.GetTouchPosition(touchIndex);
 			var originalItemPosition = item.Owner.AsWidget.Position;
+			Vector2 touchDelta;
 			do {
 				yield return null;
-				touchDelta = input.GetTouchPosition(i) - touchPosition0;
+				touchDelta = input.GetTouchPosition(touchIndex) - touchPosition0;
 			} while (
-				touchDelta.Length < match3Config.InputDetectionLength && input.IsTouching(i)
+				touchDelta.Length < match3Config.InputDetectionLength && input.IsTouching(touchIndex)
 			);
-			if (!input.IsTouching(i) && touchDelta.Length < match3Config.InputDetectionLength) {
+			if (!TryGetProjectionAxis(touchDelta, out var projectionAxis)) {
 				if (item is Bonus bonus) {
 					yield return BlowTask(item, DamageKind.Match);
 				}
 				yield break;
 			}
-			if (!TryGetProjectionAxis(touchDelta, out var projectionAxis)) {
-				yield break;
-			}
 			var nextItem = grid[item.GridPosition + projectionAxis];
-			if (nextItem?.Task != null || (!nextItem?.CanMove ?? false)) {
+			if (nextItem == null || nextItem.Task != null || !nextItem.CanMove) {
 				yield break;
 			}
-			item.AnimateSelect();
-			// Make sure touched widget is above other widgets.
 			item.Owner.Parent.Nodes.Swap(0, item.Owner.Parent.Nodes.IndexOf(item.Owner));
-			bool finished = false;
-			bool movingBack = true;
-			if (nextItem != null) {
-				var nextItemOriginalPosition = nextItem.Owner.AsWidget.Position;
-				Func<bool> syncPosition = () => {
-					nextItem.Owner.AsWidget.Position = nextItemOriginalPosition
-						+ (originalItemPosition - item.Owner.AsWidget.Position);
-					return !finished;
-				};
-				nextItem.RunTask(Task.Repeat(syncPosition));
-			} else {
-				// Block 3 items above to prevent them from falling
-				if (projectionAxis.Y == 0) {
-					var itemAbove = grid[item.GridPosition /*- projectionAxis*/ + IntVector2.Up];
-					if (itemAbove != null && itemAbove.Task == null) {
-						itemAbove.RunTask(Task.Repeat(() => {
-							return movingBack;
-						}));
-					}
-					itemAbove = grid[item.GridPosition - projectionAxis + IntVector2.Up];
-					if (itemAbove != null && itemAbove.Task == null) {
-						itemAbove.RunTask(Task.Repeat(() => {
-							return movingBack;
-						}));
-					}
-					itemAbove = grid[item.GridPosition + projectionAxis + IntVector2.Up];
-					if (itemAbove != null && itemAbove.Task == null) {
-						itemAbove.RunTask(Task.Repeat(() => {
-							return movingBack;
-						}));
-					}
+			var swapActivationDistance = match3Config.DragPercentOfPieceSizeRequiredForSwapActivation
+				* 0.01 * match3Config.CellSize;
+			var nextItemOriginalPosition = nextItem.Owner.AsWidget.Position;
+			bool syncFinished = false;
+			int swapPhase = 0;
+			Func<bool> syncPosition = () => {
+				var delta = (originalItemPosition - item.Owner.AsWidget.Position);
+				nextItem.Owner.AsWidget.Position = nextItemOriginalPosition + delta;
+				if (swapPhase == 0) {
+					nextItem.ApplyAnimationPercent(delta.Length / match3Config.CellSize, "Swap", "Backward");
+				} else {
+					nextItem.ApplyAnimationPercent(delta.Length / match3Config.CellSize, "Swap", "Forward");
 				}
-			}
+				return !syncFinished;
+			};
+			nextItem.RunTask(Task.Repeat(syncPosition));
 			float projectionAmount = 0.0f;
-			while (input.IsTouching(i)) {
-				touchDelta = input.GetTouchPosition(i) - touchPosition0;
+			while (input.IsTouching(touchIndex)) {
+				touchDelta = input.GetTouchPosition(touchIndex) - touchPosition0;
 				projectionAmount = Vector2.DotProduct((Vector2)projectionAxis, touchDelta);
 				projectionAmount = Mathf.Clamp(
 					value: 1.0f / match3Config.BoardScale * projectionAmount,
 					min: 0,
-					max: item.Owner.AsWidget.Width
+					max: match3Config.CellSize
 				);
-				item.Owner.AsWidget.Position = match3Config.GridPositionToWidgetPosition(item.GridPosition)
+				item.Owner.AsWidget.Position = ((Vector2)item.GridPosition + Vector2.Half) * match3Config.CellSize
 					+ projectionAmount * (Vector2)projectionAxis;
+				item.ApplyAnimationPercent(projectionAmount / match3Config.CellSize, "Swap", "Forward");
 				yield return null;
 			}
-			bool turnMade = false;
 			item.AnimateUnselect();
-			if (projectionAmount > match3Config.DragPercentOfPieceSizeRequiredForSwapActivation) {
-				if (nextItem == null) {
-					item.GridPosition += projectionAxis;
-					if (match3Config.SwapBackOnNonMatchingSwap) {
-						if (item is Piece piece) {
-							var match = FindMatchForItem(piece);
-							if (FindMatchForItem(piece).Any()) {
-								turnMade = true;
-								yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
-								movingBack = false;
-								if (grid[item.GridPosition - projectionAxis] == null) {
-									item.GridPosition -= projectionAxis;
+			var timeRatioPassed = projectionAmount / match3Config.CellSize;
+			var timeRatioLeft = 1.0f - timeRatioPassed;
+			if (projectionAmount > swapActivationDistance) {
+				SwapItems(item, nextItem);
+				yield return item.MoveTo(item.GridPosition, timeRatioLeft * match3Config.SwapTime, (t) => {
+					item.ApplyAnimationPercent(timeRatioPassed + t * timeRatioLeft, "Swap", "Forward");
+				});
+				item.SwapIndex = swapIndex;
+				nextItem.SwapIndex = swapIndex;
+				swapIndex++;
+				if (match3Config.SwapBackOnNonMatchingSwap) {
+					bool success = false;
+					var matches = FindMatches();
+					foreach (var match in matches) {
+						foreach (var p in match.SelectMany(i => i).Distinct()) {
+							if (p == item || p == nextItem) {
+								if (match.SelectMany(i => i).Except(new[] { item, nextItem }).All(i => i.Task == null)) {
+									success = true;
 								}
-							} else {
-								BlowMatch(match);
 							}
 						}
-
-					} else {
-						turnMade = true;
+					}
+					if (!success) {
+						swapPhase = 1;
+						yield return match3Config.UnsuccessfulSwapDelay;
+						var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
+						var i1 = nextItem.Owner.Parent.Nodes.IndexOf(nextItem.Owner);
+						item.Owner.Parent.Nodes.Swap(i0, i1);
+						SwapItems(item, nextItem);
+						yield return item.MoveTo(item.GridPosition, match3Config.SwapTime, (t) => {
+							item.ApplyAnimationPercent(t, "Swap", "Backward");
+						});
 					}
 				} else {
-					item.SwapWith(nextItem);
-					if (match3Config.SwapBackOnNonMatchingSwap) {
-						if (item is Piece piece && FindMatchForItem(piece).Any() && nextItem is Piece nextPiece && FindMatchForItem(nextPiece).Any()) {
-							turnMade = true;
-							yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
-							item.SwapWith(nextItem);
-							var i0 = item.Owner.Parent.Nodes.IndexOf(item.Owner);
-							var i1 = nextItem.Owner.Parent.Nodes.IndexOf(nextItem.Owner);
-							item.Owner.Parent.Nodes.Swap(i0, i1);
+					yield return item.MoveTo(item.GridPosition, match3Config.SwapTime * timeRatioLeft, (t) => {
+						item.ApplyAnimationPercent(timeRatioPassed + t * timeRatioLeft, "Swap", "Forward");
+					});
+				}
+			} else {
+				yield return item.MoveTo(item.GridPosition, match3Config.SwapTime * timeRatioPassed, (t) => {
+					item.ApplyAnimationPercent((1.0f - t) * timeRatioPassed, "Swap", "Forward");
+				});
+			}
+			syncFinished = true;
+
+			bool TryGetProjectionAxis(Vector2 touchDelta, out IntVector2 projectionAxis)
+			{
+				projectionAxis = default;
+				if (touchDelta.Length < match3Config.InputDetectionLength) {
+					return false;
+				}
+				var angle = Mathf.Wrap360(Mathf.RadToDeg * Mathf.Atan2(touchDelta));
+				int sectorIndex = 3 - ((int)((angle + 45.0f) / 90)) % 4;
+				projectionAxis = new IntVector2(Math.Abs(sectorIndex - 1) - 1, 1 - Math.Abs(sectorIndex - 2));
+				var halfDeadAngle = match3Config.DiagonalSwipeDeadZoneAngle * 0.5f;
+				if (angle % 90.0f > 45.0f - halfDeadAngle && angle % 90.0f < 45.0f + halfDeadAngle) {
+					return false;
+				}
+				return true;
+			}
+
+			static void SwapItems(ItemComponent lhs, ItemComponent rhs)
+			{
+				var t1 = lhs.GridPosition;
+				var t2 = rhs.GridPosition;
+				lhs.GridPosition = new IntVector2(int.MaxValue, int.MaxValue);
+				rhs.GridPosition = new IntVector2(int.MinValue, int.MinValue);
+				lhs.GridPosition = t2;
+				rhs.GridPosition = t1;
+			}
+		}
+
+		private void ProcessMatches()
+		{
+			var matches = FindMatches();
+			foreach (var matchList in matches) {
+				bool hasTask = false;
+				foreach (var match in matchList) {
+					if (match.Any(p => p.Task != null)) {
+						hasTask = true;
+						break;
+					}
+				}
+				if (hasTask) {
+					break;
+				}
+				var distinctPieces = matchList
+					.SelectMany(i => i)
+					.Distinct()
+					.OrderBy(i => -i.SwapIndex)
+					.ToList();
+				var hasFivePlusMatch = matchList.Any(i => i.Count >= 5);
+				var hasIntersections = matchList.Count > 1;
+				if (hasFivePlusMatch) {
+					distinctPieces.First().SpawnBonus = BonusKind.Lightning;
+				} else if (hasIntersections) {
+					distinctPieces.First().SpawnBonus = BonusKind.Bomb;
+				} else {
+					foreach (var match in matchList) {
+						if (match.Count() == 4) {
+							match.Sort((a, b) => b.SwapIndex - a.SwapIndex);
+							match.First().SpawnBonus = match.All(i => i.GridPosition.X == match.First().GridPosition.X)
+								? BonusKind.HorizontalLine : BonusKind.VerticalLine;
 						}
-					} else {
-						turnMade = true;
 					}
 				}
-			}
-			yield return item.MoveTo(item.GridPosition, match3Config.PieceReturnOnTouchEndTime);
-			finished = true;
-			movingBack = false;
-			if (turnMade) {
-				TurnMade?.Invoke(this, new TurnMadeEventArgs());
+				BlowMatch(distinctPieces);
 			}
 		}
 
-		private bool TryGetProjectionAxis(Vector2 touchDelta, out IntVector2 projectionAxis)
+		private List<List<List<Piece>>> FindMatches()
 		{
-			var angle = Mathf.Wrap360(Mathf.RadToDeg * Mathf.Atan2(touchDelta));
-			int sectorIndex = 3 - ((int)((angle + 45.0f) / 90)) % 4;
-			projectionAxis = new IntVector2(Math.Abs(sectorIndex - 1) - 1, 1 - Math.Abs(sectorIndex - 2));
-			var halfDeadAngle = match3Config.DiagonalSwipeDeadZoneAngle * 0.5f;
-			if (angle % 90.0f > 45.0f - halfDeadAngle && angle % 90.0f < 45.0f + halfDeadAngle) {
-				return false;
-			}
-			return true;
-		}
-
-		private void CheckMatches()
-		{
-			var matches = FindAllMatches();
-			foreach (var match in matches) {
-				BlowMatch(match);
-			}
-		}
-
-		private List<List<Piece>> FindAllMatches()
-		{
-			var hGrid = new Grid<int>();
-			var vGrid = new Grid<int>();
-			var hlGrid = new Grid<int>();
-			var vlGrid = new Grid<int>();
-			var matches = new List<List<Piece>>();
-			var intersections = new Queue<IntVector2>();
-
-			FillGrid(hGrid, hlGrid, 0);
-			FillGrid(vGrid, vlGrid, 1);
-
-			while (intersections.Any()) {
-				var i = intersections.Dequeue();
-				var match = TraceMatch(hGrid, i, 0).Union(TraceMatch(vGrid, i, 1)).Distinct().ToList();
-				matches.Add(match);
-				match.First().SpawnBonus = BonusKind.Bomb;
-			}
-
-			for (int x = 0; x < boardConfig.ColumnCount; x++) {
-				for (int y = 0; y < boardConfig.RowCount; y++) {
-					var p = new IntVector2(x, y);
-					var ph = hGrid[p];
-					var pv = vGrid[p];
-					if (ph >= 3) {
-						var match = TraceMatch(hGrid, p, 0);
-						matches.Add(match);
-						match.First().SpawnBonus = match.Count > 3 ? BonusKind.HorizontalLine : BonusKind.None;
-					}
-					if (pv >= 3) {
-						var match = TraceMatch(vGrid, p, 1);
-						matches.Add(match);
-						match.First().SpawnBonus = match.Count > 3 ? BonusKind.VerticalLine : BonusKind.None;
-					}
-				}
-			}
-
+			var matches = new List<List<List<Piece>>>();
+			var matchMap = new Grid<List<List<Piece>>>();
+			Pass(0);
+			Pass(1);
 			return matches;
 
-			void FillGrid(Grid<int> mGrid, Grid<int> lGrid, int d)
+			void Pass(int passIndex)
 			{
-				var dims = new [] { boardConfig.ColumnCount, boardConfig.RowCount };
-				for (int i = 0; i < dims[d]; i++) {
-					ItemComponent a = null;
-					for (int j = 0; j < dims[(d + 1) % 2]; j++) {
-						var t = new [] { i, j };
-						var p = new IntVector2(t[d], t[(d + 1) % 2]);
-						if (j == 0) {
-							a = grid[p];
-							continue;
-						}
-						var b = grid[p];
-						var pp = p - DeltaFromDirection(d);
-						if (CanCombineIntoMatch(a, b)) {
-							if (mGrid[pp] == 0) {
-								mGrid[pp] = 1;
-							}
-							mGrid[p] = mGrid[pp] + 1;
+				int[] boardSize = { boardConfig.ColumnCount, boardConfig.RowCount };
+				for (int i = 0; i <= boardSize[passIndex]; i++) {
+					Piece a = null;
+					var matchLength = 1;
+					List<Piece> match = new List<Piece>();
+					for (int j = -1; j <= boardSize[(passIndex + 1) % 2]; j++) {
+						var (x, y) = passIndex == 0 ? (i, j) : (j, i);
+						var p = new IntVector2(x, y);
+						var b = grid[p] as Piece;
+						if (a?.CanMatch(b) ?? false) {
+							matchLength++;
 						} else {
-							if (mGrid[pp] >= 5) {
-								var match = TraceMatch(mGrid, pp, d);
-								matches.Add(match);
-								match.First().SpawnBonus = BonusKind.Lightning;
-							} else {
-								FillMatchSize(mGrid, lGrid, pp, d);
-								TraceIntersections(mGrid, pp, d);
+							if (matchLength >= 3) {
+								var newMatch = match.ToList();
+								var matchList = new List<List<Piece>>();
+								matchList.Add(newMatch);
+								var intersectedMatchLists = match
+									.Select(i => matchMap[i.GridPosition])
+									.Where(i => i != null)
+									.Distinct()
+									.ToList();
+								foreach (var ml in intersectedMatchLists) {
+									matches.Remove(ml);
+									foreach (var m in ml) {
+										matchList.Add(m);
+									}
+								}
+								foreach (var m in matchList) {
+									foreach (var piece in m) {
+										matchMap[piece.GridPosition] = matchList;
+									}
+								}
+								matches.Add(matchList);
 							}
+							matchLength = 1;
+							match.Clear();
 						}
+						match.Add(b);
 						a = b;
 					}
 				}
 			}
-
-			static bool CanCombineIntoMatch(ItemComponent a, ItemComponent b)
-			{
-				return a != null
-					&& b != null
-					&& a.Task == null
-					&& b.Task == null
-					&& a is Piece pieceA
-					&& b is Piece pieceB
-					&& pieceA.Kind == pieceB.Kind;
-			}
-
-			void FillMatchSize(Grid<int> mGrid, Grid<int> lGrid, IntVector2 s, int d)
-			{
-				var step = DeltaFromDirection(d);
-				var v = mGrid[s];
-				while (mGrid[s] != 0) {
-					lGrid[s] = v;
-					s -= step;
-				}
-			}
-
-			void TraceIntersections(Grid<int> mGrid, IntVector2 s, int d)
-			{
-				var step = DeltaFromDirection(d);
-				while (mGrid[s] != 0) {
-					if (hlGrid[s] >= 3 && vlGrid[s] >= 3) {
-						intersections.Enqueue(s);
-					}
-					s -= step;
-				}
-			}
-
-			List<Piece> TraceMatch(Grid<int> mGrid, IntVector2 s, int d)
-			{
-				var step = DeltaFromDirection(d);
-				while (mGrid[s] < mGrid[s + step]) {
-					s += step;
-				}
-				var r = new List<Piece>();
-				while (mGrid[s] != 0) {
-					r.Add((Piece)grid[s]);
-					mGrid[s] = 0;
-					s -= step;
-				}
-				return r;
-			}
-
-			IntVector2 DeltaFromDirection(int d)
-			{
-				var td = new[] { 0, 1 };
-				return new IntVector2(td[d], td[(d + 1) % 2]);
-			}
 		}
 
-		private IEnumerable<Piece> FindMatchForItem(Piece piece)
+		private void BlowMatch(IEnumerable<Piece> match)
 		{
-			if (piece.Task != null) {
-				return Array.Empty<Piece>();
-			}
-			HashSet<IntVector2> Visited = new HashSet<IntVector2>();
-			Queue<(Piece, Direction)> queue = new Queue<(Piece, Direction)>();
-			List<Piece> horizontalMatch = new List<Piece>();
-			List<Piece> verticalMatch = new List<Piece>();
-			Visited.Add(piece.GridPosition);
-			horizontalMatch.Add(piece);
-			verticalMatch.Add(piece);
-			queue.Enqueue((piece, Direction.Any));
-			while (queue.Any()) {
-				var (currentItem, direction) = queue.Dequeue();
-				for (int i = 0; i < 4; i++) {
-					var delta = new IntVector2(
-						x: Math.Abs(i - 1) - 1,
-						y: -Math.Abs(i - 2) + 1
-					);
-					Direction nextDirection = delta switch {
-						IntVector2 (-1, 0) => Direction.Horizontal,
-						IntVector2 (1, 0) => Direction.Horizontal,
-						IntVector2 (0, -1) => Direction.Vertical,
-						IntVector2 (0, 1) => Direction.Vertical,
-						_ => throw new NotImplementedException()
-					};
-					if (direction != Direction.Any && nextDirection != direction) {
-						continue;
-					}
-					var nextPosition = currentItem.GridPosition + delta;
-					if (Visited.Contains(nextPosition)) {
-						continue;
-					}
-					var nextPiece = grid[nextPosition] as Piece;
-					Visited.Add(nextPosition);
-					if (
-						nextPiece != null
-						&& nextPiece.Kind == currentItem.Kind
-						&& nextPiece.Task == null
-					) {
-						queue.Enqueue((nextPiece, nextDirection));
-						switch (nextDirection) {
-							case Direction.Horizontal:
-								horizontalMatch.Add(nextPiece);
-								break;
-							case Direction.Vertical:
-								verticalMatch.Add(nextPiece);
-								break;
-						}
-					}
-				}
-			}
-			var r = new List<Piece>();
-			if (horizontalMatch.Count >= 3) {
-				r.AddRange(horizontalMatch);
-			}
-			if (verticalMatch.Count >= 3) {
-				r.AddRange(verticalMatch);
-			}
-			return r.Distinct();
-		}
-
-		private void BlowMatch(IEnumerable<ItemComponent> match)
-		{
-			foreach (var item in match) {
-				Debug.Assert(item.Task == null);
-				item.RunTask(BlowTask(item, DamageKind.Match));
+			foreach (var piece in match) {
+				Debug.Assert(piece.Task == null);
+				piece.RunTask(BlowTask(piece, DamageKind.Match));
 			}
 		}
 
@@ -952,10 +851,13 @@ namespace Match3Template.Types
 									if (delay != 0.0f) {
 										bonus.AnimateAct();
 									}
-									i.RunTask(Task.Sequence(
-										WaitForAnimationTask(fx.RunAnimation("Start", "Act")),
-										blowTask
-									));
+									i.RunTask(
+										(new[] {
+											WaitForAnimationTask(fx.RunAnimation("Start", "Act")),
+											blowTask,
+										}).Cast<object>()
+										.GetEnumerator()
+									);
 									if (delay != 0.0f) {
 										yield return delay;
 									}
@@ -983,7 +885,6 @@ namespace Match3Template.Types
 				}
 			}
 
-			items.Remove(item);
 			item.Kill();
 			item.Owner.UnlinkAndDispose();
 			{
@@ -1020,14 +921,14 @@ namespace Match3Template.Types
 		{
 			var leftFx = CreateLineBonusEffectPart(position, 2, position.X + 1);
 			var rightFx = CreateLineBonusEffectPart(position, 0, boardConfig.ColumnCount - position.X);
-			topLevelContainer.Tasks.Add(RunBonusAnimationTask(leftFx, rightFx));
+			boardContainer.Tasks.Add(RunBonusAnimationTask(leftFx, rightFx));
 		}
 
 		private void RunVerticalLineBonusEffect(IntVector2 position)
 		{
 			var upFx = CreateLineBonusEffectPart(position, 3, position.Y + 1);
 			var downFx = CreateLineBonusEffectPart(position, 1, boardConfig.RowCount - position.Y);
-			topLevelContainer.Tasks.Add(RunBonusAnimationTask(upFx, downFx));
+			boardContainer.Tasks.Add(RunBonusAnimationTask(upFx, downFx));
 		}
 
 		private Widget CreateLineBonusEffectPart(IntVector2 position, int direction, int length)

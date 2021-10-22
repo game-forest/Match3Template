@@ -1,4 +1,5 @@
 using Lime;
+using System;
 
 namespace Match3Template.Types
 {
@@ -30,8 +31,22 @@ namespace Match3Template.Types
 
 		public override bool CanMove => true;
 
-		public Piece(Grid<ItemComponent> grid) : base(grid)
+		public Piece(
+			Node itemWidget,
+			IntVector2 gridPosition,
+			Action<ItemComponent, IntVector2> onSetGridPosition,
+			Action<ItemComponent> onKill
+		) : base(itemWidget, gridPosition, onSetGridPosition, onKill) {
+			//var kindAnimation = Owner.Animations.Find("Kind");
+			//Owner.RunAnimation(marker.Id, kindAnimation.Id);
+			//var marker = kindAnimation.Markers[kind];
+			//this.kind = kind;
+		}
+
+		public bool CanMatch(Piece otherPiece)
 		{
+			return otherPiece != null
+				&& otherPiece.kind == this.kind;
 		}
 
 		public Animation AnimateMatch()

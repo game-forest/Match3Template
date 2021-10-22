@@ -1,4 +1,5 @@
 using Lime;
+using System;
 
 namespace Match3Template.Types
 {
@@ -13,8 +14,12 @@ namespace Match3Template.Types
 
 	public class Bonus : ItemComponent
 	{
-		public Bonus(Grid<ItemComponent> grid) : base(grid)
-		{
+		public Bonus(
+			Node itemWidget,
+			IntVector2 gridPosition,
+			Action<ItemComponent, IntVector2> onSetGridPosition,
+			Action<ItemComponent> onKill
+		) : base(itemWidget, gridPosition, onSetGridPosition, onKill) {
 		}
 
 		public BonusKind BonusKind { get; set; } = BonusKind.None;

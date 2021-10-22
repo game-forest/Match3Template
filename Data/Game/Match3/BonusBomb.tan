@@ -5,6 +5,33 @@
 			"Id":"ZeroPose"
 		},
 		{
+			"Id":"Swap",
+			"Markers":[
+				{
+					"Frame":10,
+					"Id":"Forward",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":30,
+					"Id":"",
+					"JumpTo":""
+				},
+				{
+					"Frame":40,
+					"Id":"Backward",
+					"JumpTo":""
+				},
+				{
+					"Action":1,
+					"Frame":60,
+					"Id":"",
+					"JumpTo":""
+				}
+			]
+		},
+		{
 			"Id":"Idle",
 			"Markers":[
 				{
@@ -159,6 +186,80 @@
 						[0,1,[1,1]]
 					],
 					"TargetProperty":"Scale"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,1,[1,1]]
+					],
+					"TargetProperty":"Scale"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[1,1]]
+					],
+					"TargetProperty":"Scale"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,1,[45,45]]
+					],
+					"TargetProperty":"Position"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[45,45]]
+					],
+					"TargetProperty":"Position"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[10,0,[98,98]],
+						[20,0,[136.75371,136.75371]],
+						[30,0,[98,98]],
+						[40,0,[98,98]],
+						[50,0,[77.59998,77.59998]],
+						[60,0,[98,98]]
+					],
+					"TargetProperty":"Size"
+				},
+				{
+					"class":"Lime.NumericAnimator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[10,0,0],
+						[20,0,180],
+						[30,0,360],
+						[40,0,0],
+						[50,0,-180],
+						[60,0,-360]
+					],
+					"TargetProperty":"Rotation"
+				},
+				{
+					"class":"Lime.Color4Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,1,[16777215]]
+					],
+					"TargetProperty":"Color"
+				},
+				{
+					"class":"Lime.Color4Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[16777215]]
+					],
+					"TargetProperty":"Color"
 				}
 			],
 			"Blending":3,
@@ -166,7 +267,7 @@
 			"Id":"Add",
 			"Pivot":[0.5,0.5],
 			"Position":[45,45],
-			"Size":[96,98],
+			"Size":[98,98],
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
 				"SerializationPath":"Bonuses/Bomb/Bomb"
@@ -245,6 +346,22 @@
 						[0,1,[40447]]
 					],
 					"TargetProperty":"Color"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,1,false]
+					],
+					"TargetProperty":"Enabled"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,false]
+					],
+					"TargetProperty":"Enabled"
 				}
 			],
 			"Blending":3,
@@ -374,6 +491,72 @@
 						[0,0,[45,45]]
 					],
 					"TargetProperty":"Position"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[45,45]]
+					],
+					"TargetProperty":"Position"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[10,132608,[90,90]]
+					],
+					"TargetProperty":"Size"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[10,132608,[90,90]],
+						[20,132608,[125.59013,125.59013]],
+						[30,0,[90,90]],
+						[40,132608,[90,90]],
+						[50,132608,[71.26529,71.26529]],
+						[60,0,[90,90]]
+					],
+					"TargetProperty":"Size"
+				},
+				{
+					"class":"Lime.NumericAnimator, Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[10,0,0]
+					],
+					"TargetProperty":"Rotation"
+				},
+				{
+					"class":"Lime.NumericAnimator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[10,0,0],
+						[20,0,180],
+						[30,0,360],
+						[40,0,0],
+						[50,0,-180],
+						[60,0,-360]
+					],
+					"TargetProperty":"Rotation"
+				},
+				{
+					"class":"Lime.Color4Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[4294967295]]
+					],
+					"TargetProperty":"Color"
+				},
+				{
+					"class":"Lime.Vector2Animator, Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,[1,1]]
+					],
+					"TargetProperty":"Scale"
 				}
 			],
 			"Color":[4294967295],
@@ -495,6 +678,22 @@
 						[0,0,[40447]]
 					],
 					"TargetProperty":"Color"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"ZeroPose",
+					"ReadonlyKeys":[
+						[0,1,false]
+					],
+					"TargetProperty":"Visible"
+				},
+				{
+					"class":"Lime.Animator`1[[System.Boolean]], Lime",
+					"AnimationId":"Swap",
+					"ReadonlyKeys":[
+						[0,1,false]
+					],
+					"TargetProperty":"Visible"
 				}
 			],
 			"Blending":3,
@@ -507,12 +706,14 @@
 			"Texture":{
 				"class":"Lime.SerializableTexture, Lime",
 				"SerializationPath":"/Common/Masks/Shock1"
-			}
+			},
+			"Visible":false
 		}
 	],
 	"Pivot":[0.5,0.5],
 	"Size":[90,90]
 }{8069CDD4-F02F-4981-A3CB-A0BAD4018D00}
+
 
 
 

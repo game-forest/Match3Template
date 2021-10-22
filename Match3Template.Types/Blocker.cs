@@ -1,12 +1,17 @@
 using Lime;
+using System;
 
 namespace Match3Template.Types
 {
 
 	public class Blocker : ItemComponent
 	{
-		public Blocker(Grid<ItemComponent> grid) : base(grid)
-		{
+		public Blocker(
+			Node itemWidget,
+			IntVector2 gridPosition,
+			Action<ItemComponent, IntVector2> onSetGridPosition,
+			Action<ItemComponent> onKill
+		) : base(itemWidget, gridPosition, onSetGridPosition, onKill) {
 		}
 
 		public int BlockerLives { get; set; } = 2;

@@ -38,13 +38,19 @@ namespace Match3Template.Types
 		public float DelayBetweenLightningStrikes { get; set; } = 0.1f;
 
 		[YuzuMember]
-		public Size CellSize { get; set; } = new Size(90, 90);
+		public float CellSize { get; set; } = 90.0f;
+
 		public float BoardScale { get; set; } = 1.0f;
+
+		[YuzuMember]
+		public object UnsuccessfulSwapDelay { get; set; } = 0.1f;
+
+		[YuzuMember]
+		public float SwapTime { get; set; } = 0.2f;
 
 		public Vector2 GridPositionToWidgetPosition(IntVector2 position)
 		{
-			var size = (Vector2)CellSize;
-			return (Vector2)position * size + size * 0.5f;
+			return ((Vector2)position + Vector2.Half) * CellSize;
 		}
 	}
 }

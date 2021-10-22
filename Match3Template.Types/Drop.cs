@@ -1,11 +1,16 @@
 using Lime;
+using System;
 
 namespace Match3Template.Types
 {
 	public class Drop : ItemComponent
 	{
-		public Drop(Grid<ItemComponent> grid) : base(grid)
-		{
+		public Drop(
+			Node itemWidget,
+			IntVector2 gridPosition,
+			Action<ItemComponent, IntVector2> onSetGridPosition,
+			Action<ItemComponent> onKill
+		) : base(itemWidget, gridPosition, onSetGridPosition, onKill) {
 		}
 
 		public override bool CanMove => true;

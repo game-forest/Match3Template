@@ -1,4 +1,5 @@
 using Lime;
+using System;
 using System.Collections.Generic;
 using Debug = System.Diagnostics.Debug;
 
@@ -9,61 +10,71 @@ namespace Match3Template.Types
 	{
 		public Task Task { get; private set; }
 
+		public void RunTask(IEnumerator<object> task)
+		{
+			System.Diagnostics.Debug.Assert(Task == null);
+			if (ICheatManager.Instance.DebugMatch3) {
+				if (hasTaskPresenter == null) {
+					hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f);
+				}
+				Owner.CompoundPostPresenter.Add(hasTaskPresenter);
+			}
+			Task = Task.Sequence(task, ClearTaskTask());
+			Owner.Tasks.Add(Task);
+		}
+
+		private IEnumerator<object> ClearTaskTask()
+		{
+			Task = null;
+			if (ICheatManager.Instance.DebugMatch3) {
+				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+			}
+			yield break;
+		}
+
+		private static IPresenter hasTaskPresenter;
+
 		public IntVector2 GridPosition
 		{
 			get => gridPosition;
 			set
 			{
-				grid[gridPosition] = null;
-				gridPosition = value;
-				grid[value] = this;
+				onSetGridPosition.Invoke(this, value);
+				this.gridPosition = value;
 			}
 		}
 
-		public virtual bool CanMove => false;
+		private Action<ItemComponent, IntVector2> onSetGridPosition;
+		private Action<ItemComponent> onKill;
 
 		private IntVector2 gridPosition = new IntVector2(int.MinValue, int.MinValue);
-		private Grid<ItemComponent> grid;
-		private IPresenter hasTaskPresenter;
 
-		public void SwapWith(ItemComponent item)
-		{
-			grid[item.GridPosition] = this;
-			grid[GridPosition] = item;
-			Lime.Toolbox.Swap(ref item.gridPosition, ref gridPosition);
+		public virtual bool CanMove => false;
+
+		public int SwapIndex { get; internal set; }
+
+		public ItemComponent(
+			Node itemWidget,
+			IntVector2 gridPosition,
+			Action<ItemComponent, IntVector2> onSetGridPosition,
+			Action<ItemComponent> onKill
+		) {
+			itemWidget.Components.Add(this);
+			this.onSetGridPosition = onSetGridPosition;
+			this.onKill = onKill;
+			GridPosition = gridPosition;
 		}
 
-		public ItemComponent(Grid<ItemComponent> grid)
-		{
-			this.grid = grid;
-		}
+		public void RunAnimationTask(Animation animation) => RunTask(WaitForAnimationTask(animation));
 
-		public void RunTask(IEnumerator<object> task)
-		{
-			Debug.Assert(Task == null);
-			Task = Owner.Tasks.Add(task);
-		}
-
-		public void RunTask(Task task)
-		{
-			Debug.Assert(Task == null);
-			Owner.Tasks.Add(task);
-			Task = task;
-		}
-
-		public void RunAnimationTask(Animation animation)
-		{
-			RunTask(WaitForAnimationTask(animation));
-		}
-
-		private IEnumerator<object> WaitForAnimationTask(Animation animation)
+		private static IEnumerator<object> WaitForAnimationTask(Animation animation)
 		{
 			yield return animation;
 		}
 
 		public void CancelTask()
 		{
-			//Debug.Assert(Task != null);
+			Debug.Assert(Task != null);
 			if (Task != null) {
 				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
 				Owner.Tasks.Remove(Task);
@@ -71,17 +82,32 @@ namespace Match3Template.Types
 			}
 		}
 
-		public IEnumerator<object> MoveTo(IntVector2 position, float time)
+		public IEnumerator<object> MoveTo(IntVector2 position, float time, Action<float> onStep = null)
 		{
 			GridPosition = position;
 			var p0 = Widget.Position;
-			var p1 = config.GridPositionToWidgetPosition(position);
+			var p1 = ((Vector2)position + Vector2.Half) * config.CellSize;
+			if (time == 0.0f) {
+				Widget.Position = p1;
+				yield break;
+			}
 			var t = time;
 			do {
 				t -= Task.Current.Delta;
 				Widget.Position = t < 0.0f ? p1 : Mathf.Lerp(1.0f - t / time, p0, p1);
+				onStep?.Invoke(1.0f - (t < 0.0f ? 0.0f : t) / time);
 				yield return null;
 			} while (t > 0.0f);
+		}
+
+		public void ApplyAnimationPercent(float t, string animationName, string markerName)
+		{
+			var animation = Owner.Animations.Find(animationName);
+			var markers = animation.Markers;
+			var m0 = markers.Find(markerName);
+			var m1 = markers[markers.IndexOf(m0) + 1];
+			animation.Time = (m1.Time - m0.Time) * t + m0.Time;
+			animation.ApplyAnimators();
 		}
 
 		protected override void OnOwnerChanged(Node oldOwner)
@@ -99,6 +125,7 @@ namespace Match3Template.Types
 				config = n.Components.Get<Match3ConfigComponent>();
 				n = n.Parent;
 			}
+			Widget.Position = ((Vector2)gridPosition + Vector2.Half) * config.CellSize;
 		}
 
 		private Match3ConfigComponent config = null;
@@ -106,36 +133,16 @@ namespace Match3Template.Types
 		public void Kill()
 		{
 			Widget.HitTestTarget = false;
-			CancelTask();
-			grid[GridPosition] = null;
-			grid = null;
+			// CancelTask();
+			onKill?.Invoke(this);
 		}
 
 		protected override void Update(float delta)
 		{
-			base.Update(delta);
-			if (Task != null && Task.Completed) {
-				Task = null;
-				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
-			}
-			if (
-				Task != null
-				&& !Owner.CompoundPostPresenter.Contains(hasTaskPresenter)
-				&& ICheatManager.Instance.DebugMatch3
-			) {
-				Owner.CompoundPostPresenter.Add(hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f));
-			}
 		}
 
-		public Animation AnimateShow()
-		{
-			return Owner.RunAnimation("Start", "Show");
-		}
-
-		public Animation AnimateShown()
-		{
-			return Owner.RunAnimation("Shown", "Show");
-		}
+		public Animation AnimateShow() => Owner.RunAnimation("Start", "Show");
+		public Animation AnimateShown() => Owner.RunAnimation("Shown", "Show");
 
 		public Animation AnimateIdle()
 		{
@@ -145,24 +152,14 @@ namespace Match3Template.Types
 			return a;
 		}
 
-		public Animation AnimateDropDownFall()
-		{
-			return Owner.RunAnimation("Fall", "DropDown");
-		}
+		public Animation AnimateDropDownFall() => Owner.RunAnimation("Fall", "DropDown");
+		public Animation AnimateDropDownLand() => Owner.RunAnimation("Land", "DropDown");
+		public Animation AnimateSelect() => Owner.RunAnimation("Select", "Selection");
+		public Animation AnimateUnselect() => Owner.RunAnimation("Unselect", "Selection");
 
-		public Animation AnimateDropDownLand()
+		internal object MoveTo(IntVector2 gridPosition, object p1, Action<float> p2)
 		{
-			return Owner.RunAnimation("Land", "DropDown");
-		}
-
-		public Animation AnimateSelect()
-		{
-			return Owner.RunAnimation("Select", "Selection");
-		}
-
-		public Animation AnimateUnselect()
-		{
-			return Owner.RunAnimation("Unselect", "Selection");
+			throw new NotImplementedException();
 		}
 	}
 }
