@@ -252,6 +252,10 @@ namespace Match3Template.Types
 					}
 				}
 
+				if (!boardConfig.AllowedPieces.Any()) {
+					boardConfig.AllowedPieces.AddRange(new [] { 0, 1, 2, 3, 4 });
+				}
+
 				if (boardConfig.AllowedPieces.Any()) {
 					int pieceCount = boardConfig.ColumnCount * boardConfig.RowCount;
 					for (int i = 0; i < pieceCount; i++) {

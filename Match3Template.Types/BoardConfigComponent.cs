@@ -19,7 +19,7 @@ namespace Match3Template.Types
 		public int ColumnCount { get; set; } = 4;
 
 		[YuzuMember]
-		public List<int> AllowedPieces { get; private set; } = new List<int> { 0, 1, 2, 3, 4 };
+		public List<int> AllowedPieces { get; private set; } = new List<int> { };
 
 		[YuzuMember]
 		public int DropCount { get; set; } = 0;
