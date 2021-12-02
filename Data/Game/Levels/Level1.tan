@@ -153,11 +153,6 @@
 					"class":"Match3Template.Types.BoardConfigComponent, Match3Template.Types",
 					"AllowedPieces":[
 						0,
-						1,
-						2,
-						3,
-						4,
-						0,
 						1
 					],
 					"DropCount":3,

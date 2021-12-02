@@ -307,6 +307,9 @@ namespace Match3Template.Types
 
 		private void SpawnItems()
 		{
+			if (!boardConfig.AllowedPieces.Any()) {
+				boardConfig.AllowedPieces.AddRange(items.OfType<Piece>().Select(p => p.Kind).Distinct());
+			}
 			for (int i = 0; i < boardConfig.ColumnCount; i++) {
 				var gridPosition = new IntVector2(i, 0);
 				if (grid[gridPosition] == null) {
@@ -554,6 +557,7 @@ namespace Match3Template.Types
 			);
 			if (!TryGetProjectionAxis(touchDelta, out var projectionAxis)) {
 				if (item is Bonus bonus) {
+					TurnMade?.Invoke(this, new TurnMadeEventArgs());
 					yield return BlowTask(item, DamageKind.Match);
 				}
 				yield break;
@@ -605,7 +609,12 @@ namespace Match3Template.Types
 				item.SwapIndex = swapIndex;
 				nextItem.SwapIndex = swapIndex;
 				swapIndex++;
-				if (match3Config.SwapBackOnNonMatchingSwap) {
+				if (item is Bonus bonus) {
+					TurnMade?.Invoke(this, new TurnMadeEventArgs());
+					syncFinished = true;
+					yield return BlowTask(item, DamageKind.Match);
+					yield break;
+				} else if (match3Config.SwapBackOnNonMatchingSwap) {
 					bool success = false;
 					var matches = FindMatches();
 					foreach (var match in matches) {

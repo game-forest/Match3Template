@@ -14,10 +14,7 @@ namespace Match3Template.Types
 		{
 			System.Diagnostics.Debug.Assert(Task == null);
 			if (ICheatManager.Instance.DebugMatch3) {
-				if (hasTaskPresenter == null) {
-					hasTaskPresenter = new WidgetBoundsPresenter(Color4.Green, 2.0f);
-				}
-				Owner.CompoundPostPresenter.Add(hasTaskPresenter);
+				Owner.CompoundPostPresenter.Add(TaskPresenter);
 			}
 			Task = Task.Sequence(task, ClearTaskTask());
 			Owner.Tasks.Add(Task);
@@ -27,12 +24,27 @@ namespace Match3Template.Types
 		{
 			Task = null;
 			if (ICheatManager.Instance.DebugMatch3) {
-				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+				Owner.CompoundPostPresenter.Remove(TaskPresenter);
 			}
 			yield break;
 		}
 
-		private static IPresenter hasTaskPresenter;
+		protected override void Update(float dt)
+		{
+			if (debugEnabled != ICheatManager.Instance.DebugMatch3) {
+				debugEnabled = ICheatManager.Instance.DebugMatch3;
+				if (debugEnabled && Task != null) {
+					Owner.CompoundPostPresenter.Add(TaskPresenter);
+				}
+				if (!debugEnabled) {
+					Owner.CompoundPostPresenter.Remove(TaskPresenter);
+				}
+			}
+		}
+
+		private bool debugEnabled;
+		private static IPresenter TaskPresenter => taskPresenter ??= new WidgetBoundsPresenter(Color4.Green, 2.0f);
+		private static IPresenter taskPresenter;
 
 		public IntVector2 GridPosition
 		{
@@ -63,6 +75,7 @@ namespace Match3Template.Types
 			this.onSetGridPosition = onSetGridPosition;
 			this.onKill = onKill;
 			GridPosition = gridPosition;
+			debugEnabled = ICheatManager.Instance.DebugMatch3;
 		}
 
 		public void RunAnimationTask(Animation animation) => RunTask(WaitForAnimationTask(animation));
@@ -76,7 +89,7 @@ namespace Match3Template.Types
 		{
 			Debug.Assert(Task != null);
 			if (Task != null) {
-				Owner.CompoundPostPresenter.Remove(hasTaskPresenter);
+				Owner.CompoundPostPresenter.Remove(TaskPresenter);
 				Owner.Tasks.Remove(Task);
 				Task = null;
 			}
@@ -135,10 +148,6 @@ namespace Match3Template.Types
 			Widget.HitTestTarget = false;
 			// CancelTask();
 			onKill?.Invoke(this);
-		}
-
-		protected override void Update(float delta)
-		{
 		}
 
 		public Animation AnimateShow() => Owner.RunAnimation("Start", "Show");
