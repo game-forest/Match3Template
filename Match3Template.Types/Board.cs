@@ -856,11 +856,14 @@ namespace Match3Template.Types
 							}
 						}
 					} else if (bonus.BonusKind == BonusKind.Lightning) {
-						int[] maxPerKind = new int [boardConfig.AllowedPieces.Max() + 1];
+						var maxPerKind = new Dictionary<int, int>();
 						foreach (var i in items.OfType<Piece>()) {
+							if (!maxPerKind.ContainsKey(i.Kind)) {
+								maxPerKind.Add(i.Kind, 0);
+							}
 							maxPerKind[i.Kind]++;
 						}
-						var kind = Array.IndexOf(maxPerKind, maxPerKind.Max());
+						var kind = maxPerKind.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 						var delay = match3Config.DelayBetweenLightningStrikes;
 						foreach (var i in items.OfType<Piece>().ToList()) {
 							if (i.Task == null && i.Kind == kind) {
